@@ -46,6 +46,42 @@ var (
 	// AvalancheLocalChainID ...
 	AvalancheLocalChainID = big.NewInt(43112)
 
+	JUNEChainID  = big.NewInt(220_001)
+	ETH1ChainID  = big.NewInt(220_002)
+	MBTC1ChainID = big.NewInt(220_003)
+	DOGE1ChainID = big.NewInt(220_004)
+	TUSD1ChainID = big.NewInt(220_005)
+	DAI1ChainID  = big.NewInt(220_006)
+	LTC1ChainID  = big.NewInt(220_007)
+	XLM1ChainID  = big.NewInt(220_008)
+	BCH1ChainID  = big.NewInt(220_009)
+	PAXG1ChainID = big.NewInt(220_010)
+	ICP1ChainID  = big.NewInt(220_011)
+	XIDR1ChainID = big.NewInt(220_012)
+	XSGD1ChainID = big.NewInt(220_013)
+	ETC1ChainID  = big.NewInt(220_014)
+	R1000ChainID = big.NewInt(220_015)
+	R10ChainID   = big.NewInt(220_016)
+
+	PrimaryChainsIDs = []*big.Int{
+		JUNEChainID,
+		ETH1ChainID,
+		MBTC1ChainID,
+		DOGE1ChainID,
+		TUSD1ChainID,
+		DAI1ChainID,
+		LTC1ChainID,
+		XLM1ChainID,
+		BCH1ChainID,
+		PAXG1ChainID,
+		ICP1ChainID,
+		XIDR1ChainID,
+		XSGD1ChainID,
+		ETC1ChainID,
+		R1000ChainID,
+		R10ChainID,
+	}
+
 	errNonGenesisForkByHeight = errors.New("coreth only supports forking by height at the genesis block")
 )
 
@@ -109,6 +145,408 @@ var (
 	// AvalancheLocalChainConfig is the configuration for the Avalanche Local Network
 	AvalancheLocalChainConfig = &ChainConfig{
 		ChainID:                         AvalancheLocalChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+
+	// Socotra network chains configs
+	SocotraJUNEChainConfig = &ChainConfig{
+		ChainID:                         JUNEChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraETH1ChainConfig = &ChainConfig{
+		ChainID:                         ETH1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraMBTC1ChainConfig = &ChainConfig{
+		ChainID:                         MBTC1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraDOGE1ChainConfig = &ChainConfig{
+		ChainID:                         DOGE1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraTUSD1ChainConfig = &ChainConfig{
+		ChainID:                         TUSD1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraDAI1ChainConfig = &ChainConfig{
+		ChainID:                         DAI1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraLTC1ChainConfig = &ChainConfig{
+		ChainID:                         LTC1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraXLM1ChainConfig = &ChainConfig{
+		ChainID:                         XLM1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraBCH1ChainConfig = &ChainConfig{
+		ChainID:                         BCH1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraPAXG1ChainConfig = &ChainConfig{
+		ChainID:                         PAXG1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraICP1ChainConfig = &ChainConfig{
+		ChainID:                         ICP1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraXIDR1ChainConfig = &ChainConfig{
+		ChainID:                         XIDR1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraXSGD1ChainConfig = &ChainConfig{
+		ChainID:                         XSGD1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraETC1ChainConfig = &ChainConfig{
+		ChainID:                         ETC1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraR1000ChainConfig = &ChainConfig{
+		ChainID:                         R1000ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraR10ChainConfig = &ChainConfig{
+		ChainID:                         R10ChainID,
 		HomesteadBlock:                  big.NewInt(0),
 		DAOForkBlock:                    big.NewInt(0),
 		DAOForkSupport:                  true,
@@ -365,6 +803,54 @@ func (c *ChainConfig) IsCortina(blockTimestamp *big.Int) bool {
 // with a timestamp after the DUpgrade upgrade time.
 func (c *ChainConfig) IsDUpgrade(blockTimestamp *big.Int) bool {
 	return utils.IsForked(c.DUpgradeBlockTimestamp, blockTimestamp)
+}
+
+func (c *ChainConfig) IsBelgradePrimaryChain() bool {
+	for _, id := range PrimaryChainsIDs {
+		if id.Cmp(c.ChainID) == 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *ChainConfig) GetInitialBaseFee() *big.Int {
+	switch {
+	case c.ChainID.Cmp(JUNEChainID) == 0:
+		return big.NewInt(JUNEChainMinBaseFee)
+	case c.ChainID.Cmp(ETH1ChainID) == 0:
+		return big.NewInt(ETH1ChainMinBaseFee)
+	case c.ChainID.Cmp(MBTC1ChainID) == 0:
+		return big.NewInt(MBTC1ChainMinBaseFee)
+	case c.ChainID.Cmp(DOGE1ChainID) == 0:
+		return big.NewInt(DOGE1ChainMinBaseFee)
+	case c.ChainID.Cmp(TUSD1ChainID) == 0:
+		return big.NewInt(TUSD1ChainMinBaseFee)
+	case c.ChainID.Cmp(DAI1ChainID) == 0:
+		return big.NewInt(DAI1ChainMinBaseFee)
+	case c.ChainID.Cmp(LTC1ChainID) == 0:
+		return big.NewInt(LTC1ChainMinBaseFee)
+	case c.ChainID.Cmp(XLM1ChainID) == 0:
+		return big.NewInt(XLM1ChainMinBaseFee)
+	case c.ChainID.Cmp(BCH1ChainID) == 0:
+		return big.NewInt(BCH1ChainMinBaseFee)
+	case c.ChainID.Cmp(PAXG1ChainID) == 0:
+		return big.NewInt(PAXG1ChainMinBaseFee)
+	case c.ChainID.Cmp(ICP1ChainID) == 0:
+		return big.NewInt(ICP1ChainMinBaseFee)
+	case c.ChainID.Cmp(XIDR1ChainID) == 0:
+		return big.NewInt(XIDR1ChainMinBaseFee)
+	case c.ChainID.Cmp(XSGD1ChainID) == 0:
+		return big.NewInt(XSGD1ChainMinBaseFee)
+	case c.ChainID.Cmp(ETC1ChainID) == 0:
+		return big.NewInt(ETC1ChainMinBaseFee)
+	case c.ChainID.Cmp(R1000ChainID) == 0:
+		return big.NewInt(R1000ChainMinBaseFee)
+	case c.ChainID.Cmp(R10ChainID) == 0:
+		return big.NewInt(R10ChainMinBaseFee)
+	default:
+		return big.NewInt(ApricotPhase3InitialBaseFee)
+	}
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported

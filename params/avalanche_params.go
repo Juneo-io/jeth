@@ -21,6 +21,23 @@ const (
 	ApricotPhase1GasLimit uint64 = 8_000_000
 	CortinaGasLimit       uint64 = 15_000_000
 
+	JUNEChainMinBaseFee  int64 = 48_000_000_000
+	ETH1ChainMinBaseFee  int64 = 1_000_000_000
+	MBTC1ChainMinBaseFee int64 = 18_000_000_000
+	DOGE1ChainMinBaseFee int64 = 5952_000_000_000
+	TUSD1ChainMinBaseFee int64 = 476_000_000_000
+	DAI1ChainMinBaseFee  int64 = 476_000_000_000
+	LTC1ChainMinBaseFee  int64 = 11_000_000_000
+	XLM1ChainMinBaseFee  int64 = 4762_000_000_000
+	BCH1ChainMinBaseFee  int64 = 4_000_000_000
+	PAXG1ChainMinBaseFee int64 = 1_000_000_000
+	ICP1ChainMinBaseFee  int64 = 78_000_000_000
+	XIDR1ChainMinBaseFee int64 = 7_002_801_000_000_000
+	XSGD1ChainMinBaseFee int64 = 627_000_000_000
+	ETC1ChainMinBaseFee  int64 = 24_000_000_000
+	R1000ChainMinBaseFee int64 = 476_000_000_000
+	R10ChainMinBaseFee   int64 = 476_000_000_000
+
 	ApricotPhase3ExtraDataSize            uint64 = 80
 	ApricotPhase3MinBaseFee               int64  = 75_000_000_000
 	ApricotPhase3MaxBaseFee               int64  = 225_000_000_000

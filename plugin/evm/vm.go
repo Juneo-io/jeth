@@ -386,6 +386,38 @@ func (vm *VM) Initialize(
 	var extDataHashes map[common.Hash]common.Hash
 	// Set the chain config for mainnet/fuji chain IDs
 	switch {
+	case g.Config.ChainID.Cmp(params.JUNEChainID) == 0:
+		g.Config = params.SocotraJUNEChainConfig
+	case g.Config.ChainID.Cmp(params.ETH1ChainID) == 0:
+		g.Config = params.SocotraETH1ChainConfig
+	case g.Config.ChainID.Cmp(params.MBTC1ChainID) == 0:
+		g.Config = params.SocotraMBTC1ChainConfig
+	case g.Config.ChainID.Cmp(params.DOGE1ChainID) == 0:
+		g.Config = params.SocotraDOGE1ChainConfig
+	case g.Config.ChainID.Cmp(params.TUSD1ChainID) == 0:
+		g.Config = params.SocotraTUSD1ChainConfig
+	case g.Config.ChainID.Cmp(params.DAI1ChainID) == 0:
+		g.Config = params.SocotraDAI1ChainConfig
+	case g.Config.ChainID.Cmp(params.LTC1ChainID) == 0:
+		g.Config = params.SocotraLTC1ChainConfig
+	case g.Config.ChainID.Cmp(params.XLM1ChainID) == 0:
+		g.Config = params.SocotraXLM1ChainConfig
+	case g.Config.ChainID.Cmp(params.BCH1ChainID) == 0:
+		g.Config = params.SocotraBCH1ChainConfig
+	case g.Config.ChainID.Cmp(params.PAXG1ChainID) == 0:
+		g.Config = params.SocotraPAXG1ChainConfig
+	case g.Config.ChainID.Cmp(params.ICP1ChainID) == 0:
+		g.Config = params.SocotraICP1ChainConfig
+	case g.Config.ChainID.Cmp(params.XIDR1ChainID) == 0:
+		g.Config = params.SocotraXIDR1ChainConfig
+	case g.Config.ChainID.Cmp(params.XSGD1ChainID) == 0:
+		g.Config = params.SocotraXSGD1ChainConfig
+	case g.Config.ChainID.Cmp(params.ETC1ChainID) == 0:
+		g.Config = params.SocotraETC1ChainConfig
+	case g.Config.ChainID.Cmp(params.R1000ChainID) == 0:
+		g.Config = params.SocotraR1000ChainConfig
+	case g.Config.ChainID.Cmp(params.R10ChainID) == 0:
+		g.Config = params.SocotraR10ChainConfig
 	case g.Config.ChainID.Cmp(params.AvalancheMainnetChainID) == 0:
 		g.Config = params.AvalancheMainnetChainConfig
 		extDataHashes = mainnetExtDataHashes
