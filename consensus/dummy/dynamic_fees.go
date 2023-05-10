@@ -20,6 +20,22 @@ var (
 	ApricotPhase3MaxBaseFee = big.NewInt(params.ApricotPhase3MaxBaseFee)
 	ApricotPhase4MinBaseFee = big.NewInt(params.ApricotPhase4MinBaseFee)
 	ApricotPhase4MaxBaseFee = big.NewInt(params.ApricotPhase4MaxBaseFee)
+	JUNEChainMinBaseFee     = big.NewInt(params.JUNEChainMinBaseFee)
+	ETH1ChainMinBaseFee     = big.NewInt(params.ETH1ChainMinBaseFee)
+	MBTC1ChainMinBaseFee    = big.NewInt(params.MBTC1ChainMinBaseFee)
+	DOGE1ChainMinBaseFee    = big.NewInt(params.DOGE1ChainMinBaseFee)
+	TUSD1ChainMinBaseFee    = big.NewInt(params.TUSD1ChainMinBaseFee)
+	DAI1ChainMinBaseFee     = big.NewInt(params.DAI1ChainMinBaseFee)
+	LTC1ChainMinBaseFee     = big.NewInt(params.LTC1ChainMinBaseFee)
+	XLM1ChainMinBaseFee     = big.NewInt(params.XLM1ChainMinBaseFee)
+	BCH1ChainMinBaseFee     = big.NewInt(params.BCH1ChainMinBaseFee)
+	PAXG1ChainMinBaseFee    = big.NewInt(params.PAXG1ChainMinBaseFee)
+	ICP1ChainMinBaseFee     = big.NewInt(params.ICP1ChainMinBaseFee)
+	XIDR1ChainMinBaseFee    = big.NewInt(params.XIDR1ChainMinBaseFee)
+	XSGD1ChainMinBaseFee    = big.NewInt(params.XSGD1ChainMinBaseFee)
+	ETC1ChainMinBaseFee     = big.NewInt(params.ETC1ChainMinBaseFee)
+	R1000ChainMinBaseFee    = big.NewInt(params.R1000ChainMinBaseFee)
+	R10ChainMinBaseFee      = big.NewInt(params.R10ChainMinBaseFee)
 
 	ApricotPhase4BaseFeeChangeDenominator = new(big.Int).SetUint64(params.ApricotPhase4BaseFeeChangeDenominator)
 	ApricotPhase5BaseFeeChangeDenominator = new(big.Int).SetUint64(params.ApricotPhase5BaseFeeChangeDenominator)
@@ -48,7 +64,7 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	)
 	if !isApricotPhase3 || parent.Number.Cmp(common.Big0) == 0 {
 		initialSlice := make([]byte, params.ApricotPhase3ExtraDataSize)
-		initialBaseFee := big.NewInt(params.ApricotPhase3InitialBaseFee)
+		initialBaseFee := config.GetInitialBaseFee()
 		return initialSlice, initialBaseFee, nil
 	}
 	if uint64(len(parent.Extra)) != params.ApricotPhase3ExtraDataSize {
@@ -176,7 +192,42 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	// Ensure that the base fee does not increase/decrease outside of the bounds
 	switch {
 	case isApricotPhase5:
-		baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, nil)
+		switch {
+		case config.ChainID.Cmp(params.JUNEChainID) == 0:
+			baseFee = selectBigWithinBounds(JUNEChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.ETH1ChainID) == 0:
+			baseFee = selectBigWithinBounds(ETH1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.MBTC1ChainID) == 0:
+			baseFee = selectBigWithinBounds(MBTC1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.DOGE1ChainID) == 0:
+			baseFee = selectBigWithinBounds(DOGE1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.TUSD1ChainID) == 0:
+			baseFee = selectBigWithinBounds(TUSD1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.DAI1ChainID) == 0:
+			baseFee = selectBigWithinBounds(DAI1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.LTC1ChainID) == 0:
+			baseFee = selectBigWithinBounds(LTC1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.XLM1ChainID) == 0:
+			baseFee = selectBigWithinBounds(XLM1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.BCH1ChainID) == 0:
+			baseFee = selectBigWithinBounds(BCH1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.PAXG1ChainID) == 0:
+			baseFee = selectBigWithinBounds(PAXG1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.ICP1ChainID) == 0:
+			baseFee = selectBigWithinBounds(ICP1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.XIDR1ChainID) == 0:
+			baseFee = selectBigWithinBounds(XIDR1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.XSGD1ChainID) == 0:
+			baseFee = selectBigWithinBounds(XSGD1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.ETC1ChainID) == 0:
+			baseFee = selectBigWithinBounds(ETC1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.R1000ChainID) == 0:
+			baseFee = selectBigWithinBounds(R1000ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.R10ChainID) == 0:
+			baseFee = selectBigWithinBounds(R10ChainMinBaseFee, baseFee, nil)
+		default:
+			baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, nil)
+		}
 	case isApricotPhase4:
 		baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, ApricotPhase4MaxBaseFee)
 	default:

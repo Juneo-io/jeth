@@ -53,7 +53,42 @@ func (gpu *gasPriceUpdater) start() {
 		return
 	}
 	// Updates to the minimum gas price as of ApricotPhase4 if it's already in effect or starts a goroutine to enable it at the correct time
-	gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.ApricotPhase4MinBaseFee))
+	switch {
+	case gpu.chainConfig.ChainID.Cmp(params.JUNEChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.JUNEChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.ETH1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.ETH1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.MBTC1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.MBTC1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.DOGE1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.DOGE1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.TUSD1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.TUSD1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.DAI1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.DAI1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.LTC1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.LTC1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.XLM1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.XLM1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.BCH1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.BCH1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.PAXG1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.PAXG1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.ICP1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.ICP1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.XIDR1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.XIDR1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.XSGD1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.XSGD1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.ETC1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.ETC1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.R1000ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.R1000ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.R10ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.R10ChainMinBaseFee))
+	default:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.ApricotPhase4MinBaseFee))
+	}
 }
 
 // handleUpdate handles calling update(price) at the appropriate time based on

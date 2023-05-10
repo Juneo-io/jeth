@@ -1702,7 +1702,7 @@ func (vm *VM) estimateBaseFee(ctx context.Context) (*big.Int, error) {
 		return nil, err
 	}
 	if baseFee == nil {
-		baseFee = initialBaseFee
+		baseFee = vm.chainConfig.GetInitialBaseFee()
 	} else {
 		// give some breathing room
 		baseFee.Mul(baseFee, big.NewInt(11))

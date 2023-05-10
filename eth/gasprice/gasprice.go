@@ -194,7 +194,7 @@ func NewOracle(backend OracleBackend, config Config) (*Oracle, error) {
 	return &Oracle{
 		backend:             backend,
 		lastPrice:           minPrice,
-		lastBaseFee:         DefaultMinBaseFee,
+		lastBaseFee:         backend.ChainConfig().GetInitialBaseFee(),
 		minPrice:            minPrice,
 		maxPrice:            maxPrice,
 		checkBlocks:         blocks,

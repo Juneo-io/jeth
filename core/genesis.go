@@ -287,7 +287,7 @@ func (g *Genesis) ToBlock(db ethdb.Database) *types.Block {
 		if g.BaseFee != nil {
 			head.BaseFee = g.BaseFee
 		} else {
-			head.BaseFee = big.NewInt(params.ApricotPhase3InitialBaseFee)
+			head.BaseFee = g.Config.GetInitialBaseFee()
 		}
 	}
 	statedb.Commit(false, false)
