@@ -129,7 +129,7 @@ const (
 
 // Define the API endpoints for the VM
 const (
-	avaxEndpoint   = "/avax"
+	avaxEndpoint   = "/june"
 	adminEndpoint  = "/admin"
 	ethRPCEndpoint = "/rpc"
 	ethWSEndpoint  = "/ws"
@@ -1176,11 +1176,11 @@ func (vm *VM) CreateHandlers(context.Context) (map[string]*commonEng.HTTPHandler
 		return nil, fmt.Errorf("failed to get primary alias for chain due to %w", err)
 	}
 	apis := make(map[string]*commonEng.HTTPHandler)
-	avaxAPI, err := newHandler("avax", &AvaxAPI{vm})
+	avaxAPI, err := newHandler("june", &AvaxAPI{vm})
 	if err != nil {
 		return nil, fmt.Errorf("failed to register service for AVAX API due to %w", err)
 	}
-	enabledAPIs = append(enabledAPIs, "avax")
+	enabledAPIs = append(enabledAPIs, "june")
 	apis[avaxEndpoint] = avaxAPI
 
 	if vm.config.CorethAdminAPIEnabled {
