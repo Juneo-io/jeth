@@ -154,9 +154,9 @@ var PrecompiledContractsBanff = map[common.Address]precompile.StatefulPrecompile
 	common.BytesToAddress([]byte{7}): newWrappedPrecompiledContract(&bn256ScalarMulIstanbul{}),
 	common.BytesToAddress([]byte{8}): newWrappedPrecompiledContract(&bn256PairingIstanbul{}),
 	common.BytesToAddress([]byte{9}): newWrappedPrecompiledContract(&blake2F{}),
-	genesisContractAddr:              &deprecatedContract{},
-	NativeAssetBalanceAddr:           &deprecatedContract{},
-	NativeAssetCallAddr:              &deprecatedContract{},
+	// genesisContractAddr:              &deprecatedContract{},
+	NativeAssetBalanceAddr: &nativeAssetBalance{gasCost: params.AssetBalanceApricot},
+	NativeAssetCallAddr:    &nativeAssetCall{gasCost: params.AssetCallApricot},
 }
 
 var (
