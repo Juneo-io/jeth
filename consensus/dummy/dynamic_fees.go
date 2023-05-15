@@ -25,7 +25,9 @@ var (
 	MBTC1ChainMinBaseFee    = big.NewInt(params.MBTC1ChainMinBaseFee)
 	DOGE1ChainMinBaseFee    = big.NewInt(params.DOGE1ChainMinBaseFee)
 	TUSD1ChainMinBaseFee    = big.NewInt(params.TUSD1ChainMinBaseFee)
+	USDT1ChainMinBaseFee    = big.NewInt(params.USDT1ChainMinBaseFee)
 	DAI1ChainMinBaseFee     = big.NewInt(params.DAI1ChainMinBaseFee)
+	EUROC1ChainMinBaseFee   = big.NewInt(params.EUROC1ChainMinBaseFee)
 	LTC1ChainMinBaseFee     = big.NewInt(params.LTC1ChainMinBaseFee)
 	XLM1ChainMinBaseFee     = big.NewInt(params.XLM1ChainMinBaseFee)
 	BCH1ChainMinBaseFee     = big.NewInt(params.BCH1ChainMinBaseFee)
@@ -203,8 +205,12 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 			baseFee = selectBigWithinBounds(DOGE1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.TUSD1ChainID) == 0:
 			baseFee = selectBigWithinBounds(TUSD1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.USDT1ChainID) == 0:
+			baseFee = selectBigWithinBounds(USDT1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.DAI1ChainID) == 0:
 			baseFee = selectBigWithinBounds(DAI1ChainMinBaseFee, baseFee, nil)
+		case config.ChainID.Cmp(params.EUROC1ChainID) == 0:
+			baseFee = selectBigWithinBounds(EUROC1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.LTC1ChainID) == 0:
 			baseFee = selectBigWithinBounds(LTC1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.XLM1ChainID) == 0:

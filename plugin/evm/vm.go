@@ -396,8 +396,12 @@ func (vm *VM) Initialize(
 		g.Config = params.SocotraDOGE1ChainConfig
 	case g.Config.ChainID.Cmp(params.TUSD1ChainID) == 0:
 		g.Config = params.SocotraTUSD1ChainConfig
+	case g.Config.ChainID.Cmp(params.USDT1ChainID) == 0:
+		g.Config = params.SocotraUSDT1ChainConfig
 	case g.Config.ChainID.Cmp(params.DAI1ChainID) == 0:
 		g.Config = params.SocotraDAI1ChainConfig
+	case g.Config.ChainID.Cmp(params.EUROC1ChainID) == 0:
+		g.Config = params.SocotraEUROC1ChainConfig
 	case g.Config.ChainID.Cmp(params.LTC1ChainID) == 0:
 		g.Config = params.SocotraLTC1ChainConfig
 	case g.Config.ChainID.Cmp(params.XLM1ChainID) == 0:

@@ -46,22 +46,24 @@ var (
 	// AvalancheLocalChainID ...
 	AvalancheLocalChainID = big.NewInt(43112)
 
-	JUNEChainID  = big.NewInt(220_001)
-	ETH1ChainID  = big.NewInt(220_002)
-	MBTC1ChainID = big.NewInt(220_003)
-	DOGE1ChainID = big.NewInt(220_004)
-	TUSD1ChainID = big.NewInt(220_005)
-	DAI1ChainID  = big.NewInt(220_006)
-	LTC1ChainID  = big.NewInt(220_007)
-	XLM1ChainID  = big.NewInt(220_008)
-	BCH1ChainID  = big.NewInt(220_009)
-	PAXG1ChainID = big.NewInt(220_010)
-	ICP1ChainID  = big.NewInt(220_011)
-	XIDR1ChainID = big.NewInt(220_012)
-	XSGD1ChainID = big.NewInt(220_013)
-	ETC1ChainID  = big.NewInt(220_014)
-	R1000ChainID = big.NewInt(220_015)
-	R10ChainID   = big.NewInt(220_016)
+	JUNEChainID   = big.NewInt(220_001)
+	ETH1ChainID   = big.NewInt(220_002)
+	MBTC1ChainID  = big.NewInt(220_003)
+	DOGE1ChainID  = big.NewInt(220_004)
+	TUSD1ChainID  = big.NewInt(220_005)
+	USDT1ChainID  = big.NewInt(220_006)
+	DAI1ChainID   = big.NewInt(220_007)
+	EUROC1ChainID = big.NewInt(220_008)
+	LTC1ChainID   = big.NewInt(220_009)
+	XLM1ChainID   = big.NewInt(220_010)
+	BCH1ChainID   = big.NewInt(220_011)
+	PAXG1ChainID  = big.NewInt(220_012)
+	ICP1ChainID   = big.NewInt(220_013)
+	XIDR1ChainID  = big.NewInt(220_014)
+	XSGD1ChainID  = big.NewInt(220_015)
+	ETC1ChainID   = big.NewInt(220_016)
+	R1000ChainID  = big.NewInt(220_017)
+	R10ChainID    = big.NewInt(220_018)
 
 	PrimaryChainsIDs = []*big.Int{
 		JUNEChainID,
@@ -69,7 +71,9 @@ var (
 		MBTC1ChainID,
 		DOGE1ChainID,
 		TUSD1ChainID,
+		USDT1ChainID,
 		DAI1ChainID,
+		EUROC1ChainID,
 		LTC1ChainID,
 		XLM1ChainID,
 		BCH1ChainID,
@@ -295,8 +299,58 @@ var (
 		BanffBlockTimestamp:             big.NewInt(0),
 		CortinaBlockTimestamp:           big.NewInt(0),
 	}
+	SocotraUSDT1ChainConfig = &ChainConfig{
+		ChainID:                         USDT1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
 	SocotraDAI1ChainConfig = &ChainConfig{
 		ChainID:                         DAI1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP150Hash:                      common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     big.NewInt(0),
+		ApricotPhase2BlockTimestamp:     big.NewInt(0),
+		ApricotPhase3BlockTimestamp:     big.NewInt(0),
+		ApricotPhase4BlockTimestamp:     big.NewInt(0),
+		ApricotPhase5BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePre6BlockTimestamp:  big.NewInt(0),
+		ApricotPhase6BlockTimestamp:     big.NewInt(0),
+		ApricotPhasePost6BlockTimestamp: big.NewInt(0),
+		BanffBlockTimestamp:             big.NewInt(0),
+		CortinaBlockTimestamp:           big.NewInt(0),
+	}
+	SocotraEUROC1ChainConfig = &ChainConfig{
+		ChainID:                         EUROC1ChainID,
 		HomesteadBlock:                  big.NewInt(0),
 		DAOForkBlock:                    big.NewInt(0),
 		DAOForkSupport:                  true,
@@ -826,8 +880,12 @@ func (c *ChainConfig) GetInitialBaseFee() *big.Int {
 		return big.NewInt(DOGE1ChainMinBaseFee)
 	case c.ChainID.Cmp(TUSD1ChainID) == 0:
 		return big.NewInt(TUSD1ChainMinBaseFee)
+	case c.ChainID.Cmp(USDT1ChainID) == 0:
+		return big.NewInt(USDT1ChainMinBaseFee)
 	case c.ChainID.Cmp(DAI1ChainID) == 0:
 		return big.NewInt(DAI1ChainMinBaseFee)
+	case c.ChainID.Cmp(EUROC1ChainID) == 0:
+		return big.NewInt(EUROC1ChainMinBaseFee)
 	case c.ChainID.Cmp(LTC1ChainID) == 0:
 		return big.NewInt(LTC1ChainMinBaseFee)
 	case c.ChainID.Cmp(XLM1ChainID) == 0:
