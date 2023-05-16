@@ -350,7 +350,7 @@ func (vm *VM) Initialize(
 	}
 	vm.logger = corethLogger
 
-	log.Info("Initializing Coreth VM", "Version", Version, "Config", vm.config)
+	log.Info("Initializing JEth VM", "Version", Version, "Config", vm.config)
 
 	if len(fxs) > 0 {
 		return errUnsupportedFXs
