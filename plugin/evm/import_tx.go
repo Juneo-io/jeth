@@ -29,8 +29,8 @@ import (
 var (
 	_                           UnsignedAtomicTx       = &UnsignedImportTx{}
 	_                           secp256k1fx.UnsignedTx = &UnsignedImportTx{}
-	errImportNonAVAXInputBanff                         = errors.New("import input cannot contain non-AVAX in Banff")
-	errImportNonAVAXOutputBanff                        = errors.New("import output cannot contain non-AVAX in Banff")
+	errImportNonAVAXInputBanff                         = errors.New("import input cannot contain non-native asset in Banff")
+	errImportNonAVAXOutputBanff                        = errors.New("import output cannot contain non-native asset in Banff")
 )
 
 // UnsignedImportTx is an unsigned ImportTx
@@ -92,8 +92,13 @@ func (utx *UnsignedImportTx) Verify(
 		if err := out.Verify(); err != nil {
 			return fmt.Errorf("EVM Output failed verification: %w", err)
 		}
-		if rules.IsBanff && out.AssetID != ctx.AVAXAssetID {
-			return errImportNonAVAXOutputBanff
+		if rules.IsBanff && out.AssetID != ctx.ChainAssetID {
+			if ctx.ChainID != ctx.CChainID {
+				return errImportNonAVAXOutputBanff
+			}
+			if !params.IsPrimaryAssetID(out.AssetID.String()) {
+				return errImportNonAVAXOutputBanff
+			}
 		}
 	}
 
@@ -101,8 +106,13 @@ func (utx *UnsignedImportTx) Verify(
 		if err := in.Verify(); err != nil {
 			return fmt.Errorf("atomic input failed verification: %w", err)
 		}
-		if rules.IsBanff && in.AssetID() != ctx.AVAXAssetID {
-			return errImportNonAVAXInputBanff
+		if rules.IsBanff && in.AssetID() != ctx.ChainAssetID {
+			if ctx.ChainID != ctx.CChainID {
+				return errImportNonAVAXInputBanff
+			}
+			if !params.IsPrimaryAssetID(in.AssetID().String()) {
+				return errImportNonAVAXInputBanff
+			}
 		}
 	}
 	if !utils.IsSortedAndUniqueSortable(utx.ImportedInputs) {
@@ -198,11 +208,11 @@ func (utx *UnsignedImportTx) SemanticVerify(
 		if err != nil {
 			return err
 		}
-		fc.Produce(vm.ctx.AVAXAssetID, txFee)
+		fc.Produce(vm.ctx.ChainAssetID, txFee)
 
 	// Apply fees to import transactions as of Apricot Phase 2
 	case rules.IsApricotPhase2:
-		fc.Produce(vm.ctx.AVAXAssetID, params.AvalancheAtomicTxFee)
+		fc.Produce(vm.ctx.ChainAssetID, params.AvalancheAtomicTxFee)
 	}
 	for _, out := range utx.Outs {
 		fc.Produce(out.AssetID, out.Amount)
@@ -328,7 +338,7 @@ func (vm *VM) newImportTxWithUTXOs(
 		signers = append(signers, utxoSigners)
 	}
 	avax.SortTransferableInputsWithSigners(importedInputs, signers)
-	importedAVAXAmount := importedAmount[vm.ctx.AVAXAssetID]
+	importedAVAXAmount := importedAmount[vm.ctx.ChainAssetID]
 
 	outs := make([]EVMOutput, 0, len(importedAmount))
 	// This will create unique outputs (in the context of sorting)
@@ -336,7 +346,7 @@ func (vm *VM) newImportTxWithUTXOs(
 	for assetID, amount := range importedAmount {
 		// Skip the AVAX amount since it is included separately to account for
 		// the fee
-		if assetID == vm.ctx.AVAXAssetID || amount == 0 {
+		if assetID == vm.ctx.ChainAssetID || amount == 0 {
 			continue
 		}
 		outs = append(outs, EVMOutput{
@@ -397,7 +407,7 @@ func (vm *VM) newImportTxWithUTXOs(
 		outs = append(outs, EVMOutput{
 			Address: to,
 			Amount:  importedAVAXAmount - txFeeWithChange,
-			AssetID: vm.ctx.AVAXAssetID,
+			AssetID: vm.ctx.ChainAssetID,
 		})
 	}
 
@@ -429,8 +439,8 @@ func (vm *VM) newImportTxWithUTXOs(
 // accounts accordingly with the imported EVMOutputs
 func (utx *UnsignedImportTx) EVMStateTransfer(ctx *snow.Context, state *state.StateDB) error {
 	for _, to := range utx.Outs {
-		if to.AssetID == ctx.AVAXAssetID {
-			log.Debug("crosschain", "src", utx.SourceChain, "addr", to.Address, "amount", to.Amount, "assetID", "AVAX")
+		if to.AssetID == ctx.ChainAssetID {
+			log.Debug("crosschain", "src", utx.SourceChain, "addr", to.Address, "amount", to.Amount, "assetID", "JUNE")
 			// If the asset is AVAX, convert the input amount in nAVAX to gWei by
 			// multiplying by the x2c rate.
 			amount := new(big.Int).Mul(

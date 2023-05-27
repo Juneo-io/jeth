@@ -30,8 +30,8 @@ import (
 var (
 	_                           UnsignedAtomicTx       = &UnsignedExportTx{}
 	_                           secp256k1fx.UnsignedTx = &UnsignedExportTx{}
-	errExportNonAVAXInputBanff                         = errors.New("export input cannot contain non-AVAX in Banff")
-	errExportNonAVAXOutputBanff                        = errors.New("export output cannot contain non-AVAX in Banff")
+	errExportNonAVAXInputBanff                         = errors.New("export input cannot contain non-native asset in Banff")
+	errExportNonAVAXOutputBanff                        = errors.New("export output cannot contain non-native asset in Banff")
 )
 
 // UnsignedExportTx is an unsigned ExportTx
@@ -97,8 +97,13 @@ func (utx *UnsignedExportTx) Verify(
 		if err := in.Verify(); err != nil {
 			return err
 		}
-		if rules.IsBanff && in.AssetID != ctx.AVAXAssetID {
-			return errExportNonAVAXInputBanff
+		if rules.IsBanff && in.AssetID != ctx.ChainAssetID {
+			if ctx.ChainID != ctx.CChainID {
+				return errExportNonAVAXInputBanff
+			}
+			if !params.IsPrimaryAssetID(in.AssetID.String()) {
+				return errExportNonAVAXInputBanff
+			}
 		}
 	}
 
@@ -110,8 +115,13 @@ func (utx *UnsignedExportTx) Verify(
 		if assetID != ctx.AVAXAssetID && utx.DestinationChain == constants.PlatformChainID {
 			return errWrongChainID
 		}
-		if rules.IsBanff && assetID != ctx.AVAXAssetID {
-			return errExportNonAVAXOutputBanff
+		if rules.IsBanff && assetID != ctx.ChainAssetID {
+			if ctx.ChainID != ctx.CChainID {
+				return errImportNonAVAXOutputBanff
+			}
+			if !params.IsPrimaryAssetID(assetID.String()) {
+				return errExportNonAVAXOutputBanff
+			}
 		}
 	}
 	if !avax.IsSortedTransferableOutputs(utx.ExportedOutputs, Codec) {

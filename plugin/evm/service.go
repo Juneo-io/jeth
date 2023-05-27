@@ -74,7 +74,7 @@ type AvaxAPI struct{ vm *VM }
 func (service *AvaxAPI) parseAssetID(assetID string) (ids.ID, error) {
 	if assetID == "" {
 		return ids.ID{}, fmt.Errorf("assetID is required")
-	} else if assetID == "AVAX" {
+	} else if assetID == "JUNE" {
 		return service.vm.ctx.AVAXAssetID, nil
 	} else {
 		return ids.FromString(assetID)
@@ -253,7 +253,7 @@ type ExportAVAXArgs struct {
 func (service *AvaxAPI) ExportAVAX(_ *http.Request, args *ExportAVAXArgs, response *api.JSONTxID) error {
 	return service.Export(nil, &ExportArgs{
 		ExportAVAXArgs: *args,
-		AssetID:        service.vm.ctx.AVAXAssetID.String(),
+		AssetID:        service.vm.ctx.ChainAssetID.String(),
 	}, response)
 }
 

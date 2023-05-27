@@ -525,7 +525,7 @@ func (vm *VM) Initialize(
 	vm.codec = Codec
 
 	// TODO: read size from settings
-	vm.mempool = NewMempool(chainCtx.AVAXAssetID, defaultMempoolSize)
+	vm.mempool = NewMempool(chainCtx.ChainAssetID, defaultMempoolSize)
 
 	if err := vm.initializeMetrics(); err != nil {
 		return err
@@ -761,7 +761,7 @@ func (vm *VM) preBatchOnFinalizeAndAssemble(header *types.Header, state *state.S
 		}
 		var contribution, gasUsed *big.Int
 		if rules.IsApricotPhase4 {
-			contribution, gasUsed, err = tx.BlockFeeContribution(rules.IsApricotPhase5, vm.ctx.AVAXAssetID, header.BaseFee)
+			contribution, gasUsed, err = tx.BlockFeeContribution(rules.IsApricotPhase5, vm.ctx.ChainAssetID, header.BaseFee)
 			if err != nil {
 				return nil, nil, nil, err
 			}
@@ -809,7 +809,7 @@ func (vm *VM) postBatchOnFinalizeAndAssemble(header *types.Header, state *state.
 		// Note: we do not need to check if we are in at least ApricotPhase4 here because
 		// we assume that this function will only be called when the block is in at least
 		// ApricotPhase5.
-		txContribution, txGasUsed, err = tx.BlockFeeContribution(true, vm.ctx.AVAXAssetID, header.BaseFee)
+		txContribution, txGasUsed, err = tx.BlockFeeContribution(true, vm.ctx.ChainAssetID, header.BaseFee)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -923,7 +923,7 @@ func (vm *VM) onExtraStateChange(block *types.Block, state *state.StateDB) (*big
 		}
 		// If ApricotPhase4 is enabled, calculate the block fee contribution
 		if rules.IsApricotPhase4 {
-			contribution, gasUsed, err := tx.BlockFeeContribution(rules.IsApricotPhase5, vm.ctx.AVAXAssetID, block.BaseFee())
+			contribution, gasUsed, err := tx.BlockFeeContribution(rules.IsApricotPhase5, vm.ctx.ChainAssetID, block.BaseFee())
 			if err != nil {
 				return nil, nil, err
 			}
@@ -1522,7 +1522,7 @@ func (vm *VM) GetSpendableFunds(
 		}
 		addr := GetEthAddress(key)
 		var balance uint64
-		if assetID == vm.ctx.AVAXAssetID {
+		if assetID == vm.ctx.ChainAssetID {
 			// If the asset is AVAX, we divide by the x2cRate to convert back to the correct
 			// denomination of AVAX that can be exported.
 			balance = new(big.Int).Div(state.GetBalance(addr), x2cRate).Uint64()
@@ -1642,7 +1642,7 @@ func (vm *VM) GetSpendableAVAXWithFee(
 		inputs = append(inputs, EVMInput{
 			Address: addr,
 			Amount:  inputAmount,
-			AssetID: vm.ctx.AVAXAssetID,
+			AssetID: vm.ctx.ChainAssetID,
 			Nonce:   nonce,
 		})
 		signers = append(signers, []*secp256k1.PrivateKey{key})
