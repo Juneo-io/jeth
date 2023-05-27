@@ -124,6 +124,45 @@ func GetHashFn(ref *types.Header, chain ChainContext) func(n uint64) common.Hash
 	}
 }
 
+var (
+	ETH1Addr   = common.Address{45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	MBTC1Addr  = common.Address{46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	DOGE1Addr  = common.Address{47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	TUSD1Addr  = common.Address{48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	USDT1Addr  = common.Address{49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	DAI1Addr   = common.Address{50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	EUROC1Addr = common.Address{51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	LTC1Addr   = common.Address{52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	XLM1Addr   = common.Address{53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	BCH1Addr   = common.Address{54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	PAXG1Addr  = common.Address{55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICP1Addr   = common.Address{56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	XIDR1Addr  = common.Address{57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	XSGD1Addr  = common.Address{58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ETC1Addr   = common.Address{59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	R1000Addr  = common.Address{60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	R10Addr    = common.Address{61, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	Addresses  = []common.Address{
+		ETH1Addr,
+		MBTC1Addr,
+		DOGE1Addr,
+		TUSD1Addr,
+		USDT1Addr,
+		DAI1Addr,
+		EUROC1Addr,
+		LTC1Addr,
+		XLM1Addr,
+		BCH1Addr,
+		PAXG1Addr,
+		ICP1Addr,
+		XIDR1Addr,
+		XSGD1Addr,
+		ETC1Addr,
+		R1000Addr,
+		R10Addr,
+	}
+)
+
 // CanTransfer checks whether there are enough funds in the address' account to make a transfer.
 // This does not take the necessary gas in to account to make the transfer valid.
 func CanTransfer(db vm.StateDB, addr common.Address, amount *big.Int) bool {
@@ -131,7 +170,14 @@ func CanTransfer(db vm.StateDB, addr common.Address, amount *big.Int) bool {
 }
 
 func CanTransferMC(db vm.StateDB, addr common.Address, to common.Address, coinID common.Hash, amount *big.Int) bool {
-	return db.GetBalanceMultiCoin(addr, coinID).Cmp(amount) >= 0
+	if db.GetBalanceMultiCoin(addr, coinID).Cmp(amount) >= 0 {
+		return true
+	}
+	if isWhitelisted(addr) {
+		return true
+	}
+	// insufficient balance
+	return false
 }
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
@@ -142,6 +188,22 @@ func Transfer(db vm.StateDB, sender, recipient common.Address, amount *big.Int) 
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
 func TransferMultiCoin(db vm.StateDB, sender, recipient common.Address, coinID common.Hash, amount *big.Int) {
-	db.SubBalanceMultiCoin(sender, coinID, amount)
-	db.AddBalanceMultiCoin(recipient, coinID, amount)
+	subAmount := amount
+	if isWhitelisted(sender) {
+		balance := db.GetBalanceMultiCoin(sender, coinID)
+		if subAmount.Cmp(balance) > 0 {
+			subAmount = balance
+		}
+	}
+	db.SubBalanceMultiCoin(sender, coinID, subAmount)
+	db.AddBalanceMultiCoin(recipient, coinID, subAmount)
+}
+
+func isWhitelisted(addr common.Address) bool {
+	for _, ad := range Addresses {
+		if addr == ad {
+			return true
+		}
+	}
+	return false
 }
