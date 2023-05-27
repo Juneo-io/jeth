@@ -65,25 +65,42 @@ var (
 	R1000ChainID  = big.NewInt(220_017)
 	R10ChainID    = big.NewInt(220_018)
 
-	PrimaryChainsIDs = []*big.Int{
-		JUNEChainID,
-		ETH1ChainID,
-		MBTC1ChainID,
-		DOGE1ChainID,
-		TUSD1ChainID,
-		USDT1ChainID,
-		DAI1ChainID,
-		EUROC1ChainID,
-		LTC1ChainID,
-		XLM1ChainID,
-		BCH1ChainID,
-		PAXG1ChainID,
-		ICP1ChainID,
-		XIDR1ChainID,
-		XSGD1ChainID,
-		ETC1ChainID,
-		R1000ChainID,
-		R10ChainID,
+	ETH1AssetID   = "JeUvxJPXoL3EtVGSPwtyYXVymxGbpcBcaa2Kq7TCB43HsKMAS"
+	MBTC1AssetID  = "2pLiXK8pUNqS9DHTKpkiex6g6DRdSfxqJCoZsLM3zq62WtFje3"
+	DOGE1AssetID  = "2PR1Dn3w6QUcvVAsb2UTw7F6khcVBjC68SLgyW6MdoqtpaE7ox"
+	TUSD1AssetID  = "saRTCAtLBo4d3WvJT3ibJmv9dpn3oQQ8gXgkB8ADsQwiFJh6L"
+	USDT1AssetID  = "2TBXB5U2rqPWqebfvjvXJNu27vig6s5mCgkdLYBJzE6jXnrNso"
+	DAI1AssetID   = "2vq3K3PxumUV7Uf9PgPoBfr1y8MDjAtMDRex8yTqYzfyrtVJJU"
+	EUROC1AssetID = "2NQFaeBwMcACKqsKqMoLzYmVAHMYeFREfYJq6dtQnsJ5tTyk42"
+	LTC1AssetID   = "2REm6DRSgbVyE4dypnzBU9WWUV4zW9VcsTMHiDha7GLV84ZXCy"
+	XLM1AssetID   = "25revVW7o2DgkhQPTkbGLNxscS6G9Mj6eTu7PCgKvzw3HM7pJv"
+	BCH1AssetID   = "2sC7LPyJguMWdJztKGUa35ABj7KRh1WSNQThLWhdxhJJwGdhv2"
+	PAXG1AssetID  = "VKJNVVGFPWwrpbYtdGanMhTdScZrRYWbgE1JVqzj2YGnU8ewv"
+	ICP1AssetID   = "HiNZ8RV33htiXovM2P66DZADWyHuRyEwcyRYJcB8ivNMvsqP1"
+	XIDR1AssetID  = "bvyN7nY8NFpQc7BGQEfFRaBu9Wqj53NpDb9GZ2raAxsuN9GP5"
+	XSGD1AssetID  = "2BvFezbxtuztCGJbGvz8Dx7woKqMLeZNZ6C6assFMFwGVcCpaH"
+	ETC1AssetID   = "3sPY2qNyaGop5JNLaSr8GtWHrimtMMkYifACSRVZNKEyZowBg"
+	R1000AssetID  = "G3mH67ubqNAJB6txHTHFtFzH56ynrhd2ynJrUk6RjT9iBzXbK"
+	R10AssetID    = "tDxKdhyn2b9dNLMdsSv3xEY8ihGf7991XSWxXMzWu1bLtAued"
+
+	PrimaryAssetIDs = []string{
+		ETH1AssetID,
+		MBTC1AssetID,
+		DOGE1AssetID,
+		TUSD1AssetID,
+		USDT1AssetID,
+		DAI1AssetID,
+		EUROC1AssetID,
+		LTC1AssetID,
+		XLM1AssetID,
+		BCH1AssetID,
+		PAXG1AssetID,
+		ICP1AssetID,
+		XIDR1AssetID,
+		XSGD1AssetID,
+		ETC1AssetID,
+		R1000AssetID,
+		R10AssetID,
 	}
 
 	errNonGenesisForkByHeight = errors.New("coreth only supports forking by height at the genesis block")
@@ -709,33 +726,33 @@ func (c *ChainConfig) String() string {
 	// Create a list of forks with a short description of them. Forks that only
 	// makes sense for mainnet should be optional at printing to avoid bloating
 	// the output for testnets and private networks.
-	banner += "Hard Forks:\n"
-	banner += fmt.Sprintf(" - Homestead:                   %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/homestead.md)\n", c.HomesteadBlock)
-	if c.DAOForkBlock != nil {
-		banner += fmt.Sprintf(" - DAO Fork:                    %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/dao-fork.md)\n", c.DAOForkBlock)
-	}
-	banner += fmt.Sprintf(" - Tangerine Whistle (EIP 150): %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/tangerine-whistle.md)\n", c.EIP150Block)
-	banner += fmt.Sprintf(" - Spurious Dragon/1 (EIP 155): %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)\n", c.EIP155Block)
-	banner += fmt.Sprintf(" - Spurious Dragon/2 (EIP 158): %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)\n", c.EIP155Block)
-	banner += fmt.Sprintf(" - Byzantium:                   %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/byzantium.md)\n", c.ByzantiumBlock)
-	banner += fmt.Sprintf(" - Constantinople:              %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/constantinople.md)\n", c.ConstantinopleBlock)
-	banner += fmt.Sprintf(" - Petersburg:                  %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/petersburg.md)\n", c.PetersburgBlock)
-	banner += fmt.Sprintf(" - Istanbul:                    %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md)\n", c.IstanbulBlock)
-	if c.MuirGlacierBlock != nil {
-		banner += fmt.Sprintf(" - Muir Glacier:                %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md)\n", c.MuirGlacierBlock)
-	}
-	banner += fmt.Sprintf(" - Apricot Phase 1 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.3.0)\n", c.ApricotPhase1BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase 2 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.4.0)\n", c.ApricotPhase2BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase 3 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.5.0)\n", c.ApricotPhase3BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase 4 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.6.0)\n", c.ApricotPhase4BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase 5 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.7.0)\n", c.ApricotPhase5BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase P6 Timestamp        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.8.0)\n", c.ApricotPhasePre6BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase 6 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.8.0)\n", c.ApricotPhase6BlockTimestamp)
-	banner += fmt.Sprintf(" - Apricot Phase Post-6 Timestamp:   %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.8.0\n", c.ApricotPhasePost6BlockTimestamp)
-	banner += fmt.Sprintf(" - Banff Timestamp:                  %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.9.0)\n", c.BanffBlockTimestamp)
-	banner += fmt.Sprintf(" - Cortina Timestamp:                %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.10.0)\n", c.CortinaBlockTimestamp)
-	banner += fmt.Sprintf(" - DUpgrade Timestamp               %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.11.0)\n", c.DUpgradeBlockTimestamp)
-	banner += "\n"
+	// banner += "Hard Forks:\n"
+	// banner += fmt.Sprintf(" - Homestead:                   %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/homestead.md)\n", c.HomesteadBlock)
+	// if c.DAOForkBlock != nil {
+	// 	banner += fmt.Sprintf(" - DAO Fork:                    %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/dao-fork.md)\n", c.DAOForkBlock)
+	// }
+	// banner += fmt.Sprintf(" - Tangerine Whistle (EIP 150): %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/tangerine-whistle.md)\n", c.EIP150Block)
+	// banner += fmt.Sprintf(" - Spurious Dragon/1 (EIP 155): %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)\n", c.EIP155Block)
+	// banner += fmt.Sprintf(" - Spurious Dragon/2 (EIP 158): %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/spurious-dragon.md)\n", c.EIP155Block)
+	// banner += fmt.Sprintf(" - Byzantium:                   %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/byzantium.md)\n", c.ByzantiumBlock)
+	// banner += fmt.Sprintf(" - Constantinople:              %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/constantinople.md)\n", c.ConstantinopleBlock)
+	// banner += fmt.Sprintf(" - Petersburg:                  %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/petersburg.md)\n", c.PetersburgBlock)
+	// banner += fmt.Sprintf(" - Istanbul:                    %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/istanbul.md)\n", c.IstanbulBlock)
+	// if c.MuirGlacierBlock != nil {
+	// 	banner += fmt.Sprintf(" - Muir Glacier:                %-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/muir-glacier.md)\n", c.MuirGlacierBlock)
+	// }
+	// banner += fmt.Sprintf(" - Apricot Phase 1 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.3.0)\n", c.ApricotPhase1BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase 2 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.4.0)\n", c.ApricotPhase2BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase 3 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.5.0)\n", c.ApricotPhase3BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase 4 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.6.0)\n", c.ApricotPhase4BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase 5 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.7.0)\n", c.ApricotPhase5BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase P6 Timestamp        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.8.0)\n", c.ApricotPhasePre6BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase 6 Timestamp:        %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.8.0)\n", c.ApricotPhase6BlockTimestamp)
+	// banner += fmt.Sprintf(" - Apricot Phase Post-6 Timestamp:   %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.8.0\n", c.ApricotPhasePost6BlockTimestamp)
+	// banner += fmt.Sprintf(" - Banff Timestamp:                  %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.9.0)\n", c.BanffBlockTimestamp)
+	// banner += fmt.Sprintf(" - Cortina Timestamp:                %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.10.0)\n", c.CortinaBlockTimestamp)
+	// banner += fmt.Sprintf(" - DUpgrade Timestamp               %-8v (https://github.com/ava-labs/avalanchego/releases/tag/v1.11.0)\n", c.DUpgradeBlockTimestamp)
+	// banner += "\n"
 	return banner
 }
 
@@ -859,9 +876,9 @@ func (c *ChainConfig) IsDUpgrade(blockTimestamp *big.Int) bool {
 	return utils.IsForked(c.DUpgradeBlockTimestamp, blockTimestamp)
 }
 
-func (c *ChainConfig) IsBelgradePrimaryChain() bool {
-	for _, id := range PrimaryChainsIDs {
-		if id.Cmp(c.ChainID) == 0 {
+func IsPrimaryAssetID(assetID string) bool {
+	for _, primaryAsset := range PrimaryAssetIDs {
+		if assetID == primaryAsset {
 			return true
 		}
 	}
