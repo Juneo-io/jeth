@@ -188,15 +188,19 @@ func Transfer(db vm.StateDB, sender, recipient common.Address, amount *big.Int) 
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
 func TransferMultiCoin(db vm.StateDB, sender, recipient common.Address, coinID common.Hash, amount *big.Int) {
-	subAmount := amount
 	if isWhitelisted(sender) {
 		balance := db.GetBalanceMultiCoin(sender, coinID)
-		if subAmount.Cmp(balance) > 0 {
-			subAmount = balance
+		if amount.Cmp(balance) > 0 {
+			if balance.Cmp(big.NewInt(0)) > 0 {
+				db.SubBalanceMultiCoin(sender, coinID, balance)
+			}
+		} else {
+			db.SubBalanceMultiCoin(sender, coinID, amount)
 		}
+	} else {
+		db.SubBalanceMultiCoin(sender, coinID, amount)
 	}
-	db.SubBalanceMultiCoin(sender, coinID, subAmount)
-	db.AddBalanceMultiCoin(recipient, coinID, subAmount)
+	db.AddBalanceMultiCoin(recipient, coinID, amount)
 }
 
 func isWhitelisted(addr common.Address) bool {
