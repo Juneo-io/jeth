@@ -207,10 +207,10 @@ func (utx *UnsignedExportTx) SemanticVerify(
 		if err != nil {
 			return err
 		}
-		fc.Produce(vm.ctx.AVAXAssetID, txFee)
+		fc.Produce(vm.ctx.ChainAssetID, txFee)
 	// Apply fees to export transactions before Apricot Phase 3
 	default:
-		fc.Produce(vm.ctx.AVAXAssetID, params.AvalancheAtomicTxFee)
+		fc.Produce(vm.ctx.ChainAssetID, params.AvalancheAtomicTxFee)
 	}
 	for _, out := range utx.ExportedOutputs {
 		fc.Produce(out.AssetID(), out.Output().Amount())
@@ -314,7 +314,7 @@ func (vm *VM) newExportTx(
 	)
 
 	// consume non-AVAX
-	if assetID != vm.ctx.AVAXAssetID {
+	if assetID != vm.ctx.ChainAssetID {
 		ins, signers, err = vm.GetSpendableFunds(keys, assetID, amount)
 		if err != nil {
 			return nil, fmt.Errorf("couldn't generate tx inputs/signers: %w", err)
@@ -351,7 +351,7 @@ func (vm *VM) newExportTx(
 		if err != nil {
 			return nil, errOverflowExport
 		}
-		avaxIns, avaxSigners, err = vm.GetSpendableFunds(keys, vm.ctx.AVAXAssetID, newAvaxNeeded)
+		avaxIns, avaxSigners, err = vm.GetSpendableFunds(keys, vm.ctx.ChainAssetID, newAvaxNeeded)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("couldn't generate tx inputs/signers: %w", err)
@@ -381,7 +381,7 @@ func (vm *VM) newExportTx(
 func (utx *UnsignedExportTx) EVMStateTransfer(ctx *snow.Context, state *state.StateDB) error {
 	addrs := map[[20]byte]uint64{}
 	for _, from := range utx.Ins {
-		if from.AssetID == ctx.AVAXAssetID {
+		if from.AssetID == ctx.ChainAssetID {
 			log.Debug("crosschain", "dest", utx.DestinationChain, "addr", from.Address, "amount", from.Amount, "assetID", "AVAX")
 			// We multiply the input amount by x2cRate to convert AVAX back to the appropriate
 			// denomination before export.
