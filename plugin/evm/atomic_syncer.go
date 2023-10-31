@@ -50,7 +50,7 @@ func addZeroes(height uint64) []byte {
 	return packer.Bytes
 }
 
-func newAtomicSyncer(client syncclient.LeafClient, atomicBackend *atomicBackend, targetRoot common.Hash, targetHeight uint64) (*atomicSyncer, error) {
+func newAtomicSyncer(client syncclient.LeafClient, atomicBackend *atomicBackend, targetRoot common.Hash, targetHeight uint64, requestSize uint16) (*atomicSyncer, error) {
 	atomicTrie := atomicBackend.AtomicTrie()
 	lastCommittedRoot, lastCommit := atomicTrie.LastCommitted()
 	trie, err := atomicTrie.OpenTrie(lastCommittedRoot)
@@ -69,7 +69,7 @@ func newAtomicSyncer(client syncclient.LeafClient, atomicBackend *atomicBackend,
 	tasks := make(chan syncclient.LeafSyncTask, 1)
 	tasks <- &atomicSyncerLeafTask{atomicSyncer: atomicSyncer}
 	close(tasks)
-	atomicSyncer.syncer = syncclient.NewCallbackLeafSyncer(client, tasks)
+	atomicSyncer.syncer = syncclient.NewCallbackLeafSyncer(client, tasks, requestSize)
 	return atomicSyncer, nil
 }
 
@@ -92,10 +92,7 @@ func (s *atomicSyncer) onLeafs(keys [][]byte, values [][]byte) error {
 		if height > lastHeight {
 			// If this key belongs to a new height, we commit
 			// the trie at the previous height before adding this key.
-			root, nodes, err := s.trie.Commit(false)
-			if err != nil {
-				return err
-			}
+			root, nodes := s.trie.Commit(false)
 			if err := s.atomicTrie.InsertTrie(nodes, root); err != nil {
 				return err
 			}
@@ -115,7 +112,7 @@ func (s *atomicSyncer) onLeafs(keys [][]byte, values [][]byte) error {
 			lastHeight = height
 		}
 
-		if err := s.trie.TryUpdate(key, values[i]); err != nil {
+		if err := s.trie.Update(key, values[i]); err != nil {
 			return err
 		}
 	}
@@ -126,10 +123,7 @@ func (s *atomicSyncer) onLeafs(keys [][]byte, values [][]byte) error {
 // commit the trie to disk and perform the final checks that we synced the target root correctly.
 func (s *atomicSyncer) onFinish() error {
 	// commit the trie on finish
-	root, nodes, err := s.trie.Commit(false)
-	if err != nil {
-		return err
-	}
+	root, nodes := s.trie.Commit(false)
 	if err := s.atomicTrie.InsertTrie(nodes, root); err != nil {
 		return err
 	}

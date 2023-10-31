@@ -31,7 +31,8 @@ jobs:
           token: ${{ secrets.AVALANCHE_PAT }}
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.20"
+          go-version: '~1.20.8'
+          check-latest: true
       - name: change avalanchego dep
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
@@ -41,9 +42,9 @@ jobs:
       - run: ./scripts/lint_allowed_geth_imports.sh
         shell: bash
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.51
+          version: v1.54
           working-directory: .
           args: --timeout 3m
   test:
@@ -51,7 +52,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        go: ['1.20']
         os: [macos-11.0, ubuntu-20.04, windows-latest]
     steps:
     - uses: actions/checkout@v3
@@ -65,7 +65,8 @@ jobs:
         token: ${{ secrets.AVALANCHE_PAT }}
     - uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.go }}
+        go-version: '~1.20.8'
+        check-latest: true
     - name: change avalanchego dep
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: |
@@ -84,7 +85,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        go: ['1.20']
         os: [ubuntu-20.04]
     steps:
     - uses: actions/checkout@v3
@@ -98,7 +98,8 @@ jobs:
         token: ${{ secrets.AVALANCHE_PAT }}
     - uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.go }}
+        go-version: '~1.20.8'
+        check-latest: true
     - name: change avalanchego dep
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: |
@@ -110,12 +111,11 @@ jobs:
       shell: bash
     - run: ./scripts/build_test.sh -race
       shell: bash
-  e2e:
-    name: Golang E2E Tests v${{ matrix.go }} (${{ matrix.os }})
+  avalanchego_e2e:
+    name: AvalancheGo E2E Tests v${{ matrix.go }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        go: [ '1.20' ]
         os: [ ubuntu-20.04 ]
     steps:
     - uses: actions/checkout@v3
@@ -129,21 +129,8 @@ jobs:
         token: ${{ secrets.AVALANCHE_PAT }}
     - uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.go }}
-    - name: change avalanchego dep
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: |
-        go mod edit -replace github.com/ava-labs/avalanchego=./avalanchego
-        go mod tidy
-    - name: prepare avalanchego directory for docker copy
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      # mv avalanchego/ to nested dir avalanchego/avalanchego/
-      # required because docker instruction "COPY dir ." copies dir/* to .
-      run: mkdir avalanchego_tmp && mv avalanchego avalanchego_tmp && mv avalanchego_tmp avalanchego
-    - run: .github/workflows/run_e2e_tests.sh --parallelism 1 --client-id $KURTOSIS_CLIENT_ID --client-secret $KURTOSIS_CLIENT_SECRET
+        go-version: '~1.20.8'
+        check-latest: true
+    - name: Run e2e tests
+      run: E2E_SERIAL=1 ./scripts/tests.e2e.sh
       shell: bash
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-        KURTOSIS_CLIENT_ID: ${{ secrets.KURTOSIS_CLIENT_ID }}
-        KURTOSIS_CLIENT_SECRET: ${{ secrets.KURTOSIS_CLIENT_SECRET }}

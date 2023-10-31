@@ -62,6 +62,7 @@ func testSync(t *testing.T, test syncTest) {
 		BatchSize:                1000, // Use a lower batch size in order to get test coverage of batches being written early.
 		NumCodeFetchingWorkers:   DefaultNumCodeFetchingWorkers,
 		MaxOutstandingCodeHashes: DefaultMaxOutstandingCodeHashes,
+		RequestSize:              1024,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -436,7 +437,7 @@ func TestResyncNewRootAfterDeletes(t *testing.T) {
 		"delete intermediate storage nodes": {
 			deleteBetweenSyncs: func(t *testing.T, root common.Hash, clientDB ethdb.Database) {
 				clientTrieDB := trie.NewDatabase(clientDB)
-				tr, err := trie.New(common.Hash{}, root, clientTrieDB)
+				tr, err := trie.New(trie.TrieID(root), clientTrieDB)
 				if err != nil {
 					t.Fatal(err)
 				}

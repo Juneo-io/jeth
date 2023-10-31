@@ -57,7 +57,7 @@ type AtomicBackend interface {
 
 	// Syncer creates and returns a new Syncer object that can be used to sync the
 	// state of the atomic trie from peers
-	Syncer(client syncclient.LeafClient, targetRoot common.Hash, targetHeight uint64) (Syncer, error)
+	Syncer(client syncclient.LeafClient, targetRoot common.Hash, targetHeight uint64, requestSize uint16) (Syncer, error)
 
 	// SetLastAccepted is used after state-sync to reset the last accepted block.
 	SetLastAccepted(lastAcceptedHash common.Hash)
@@ -168,10 +168,7 @@ func (a *atomicBackend) initialize(lastAcceptedHeight uint64) error {
 		if err := a.atomicTrie.UpdateTrie(tr, height, combinedOps); err != nil {
 			return err
 		}
-		root, nodes, err := tr.Commit(false)
-		if err != nil {
-			return err
-		}
+		root, nodes := tr.Commit(false)
 		if err := a.atomicTrie.InsertTrie(nodes, root); err != nil {
 			return err
 		}
@@ -325,8 +322,8 @@ func (a *atomicBackend) MarkApplyToSharedMemoryCursor(previousLastAcceptedHeight
 
 // Syncer creates and returns a new Syncer object that can be used to sync the
 // state of the atomic trie from peers
-func (a *atomicBackend) Syncer(client syncclient.LeafClient, targetRoot common.Hash, targetHeight uint64) (Syncer, error) {
-	return newAtomicSyncer(client, a, targetRoot, targetHeight)
+func (a *atomicBackend) Syncer(client syncclient.LeafClient, targetRoot common.Hash, targetHeight uint64, requestSize uint16) (Syncer, error) {
+	return newAtomicSyncer(client, a, targetRoot, targetHeight, requestSize)
 }
 
 func (a *atomicBackend) GetVerifiedAtomicState(blockHash common.Hash) (AtomicState, error) {
@@ -390,10 +387,7 @@ func (a *atomicBackend) InsertTxs(blockHash common.Hash, blockHeight uint64, par
 	}
 
 	// get the new root and pin the atomic trie changes in memory.
-	root, nodes, err := tr.Commit(false)
-	if err != nil {
-		return common.Hash{}, err
-	}
+	root, nodes := tr.Commit(false)
 	if err := a.atomicTrie.InsertTrie(nodes, root); err != nil {
 		return common.Hash{}, err
 	}

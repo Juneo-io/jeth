@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -116,7 +115,7 @@ type Block struct {
 
 // newBlock returns a new Block wrapping the ethBlock type and implementing the snowman.Block interface
 func (vm *VM) newBlock(ethBlock *types.Block) (*Block, error) {
-	isApricotPhase5 := vm.chainConfig.IsApricotPhase5(new(big.Int).SetUint64(ethBlock.Time()))
+	isApricotPhase5 := vm.chainConfig.IsApricotPhase5(ethBlock.Time())
 	atomicTxs, err := ExtractAtomicTxs(ethBlock.ExtData(), isApricotPhase5, vm.codec)
 	if err != nil {
 		return nil, err
@@ -176,7 +175,7 @@ func (b *Block) Reject(context.Context) error {
 	log.Debug(fmt.Sprintf("Rejecting block %s (%s) at height %d", b.ID().Hex(), b.ID(), b.Height()))
 	for _, tx := range b.atomicTxs {
 		b.vm.mempool.RemoveTx(tx)
-		if err := b.vm.issueTx(tx, false /* set local to false when re-issuing */); err != nil {
+		if err := b.vm.mempool.AddTx(tx); err != nil {
 			log.Debug("Failed to re-issue transaction in rejected block", "txID", tx.ID(), "err", err)
 		}
 	}
@@ -222,7 +221,7 @@ func (b *Block) syntacticVerify() error {
 	}
 
 	header := b.ethBlock.Header()
-	rules := b.vm.chainConfig.AvalancheRules(header.Number, new(big.Int).SetUint64(header.Time))
+	rules := b.vm.chainConfig.AvalancheRules(header.Number, header.Time)
 	return b.vm.syntacticBlockValidator.SyntacticVerify(b, rules)
 }
 
