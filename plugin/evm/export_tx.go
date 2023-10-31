@@ -97,7 +97,7 @@ func (utx *UnsignedExportTx) Verify(
 		if err := in.Verify(); err != nil {
 			return err
 		}
-		if rules.IsBanff && in.AssetID != ctx.ChainAssetID {
+		if rules.IsBanff && in.AssetID != ctx.ChainAssetID && in.AssetID != ctx.AVAXAssetID {
 			if ctx.ChainID != ctx.CChainID {
 				return errExportNonAVAXInputBanff
 			}
@@ -115,7 +115,7 @@ func (utx *UnsignedExportTx) Verify(
 		if assetID != ctx.AVAXAssetID && utx.DestinationChain == constants.PlatformChainID {
 			return errWrongChainID
 		}
-		if rules.IsBanff && assetID != ctx.ChainAssetID {
+		if rules.IsBanff && assetID != ctx.ChainAssetID && assetID != ctx.AVAXAssetID {
 			if ctx.ChainID != ctx.CChainID {
 				return errImportNonAVAXOutputBanff
 			}

@@ -92,7 +92,7 @@ func (utx *UnsignedImportTx) Verify(
 		if err := out.Verify(); err != nil {
 			return fmt.Errorf("EVM Output failed verification: %w", err)
 		}
-		if rules.IsBanff && out.AssetID != ctx.ChainAssetID {
+		if rules.IsBanff && out.AssetID != ctx.ChainAssetID && out.AssetID != ctx.AVAXAssetID {
 			if ctx.ChainID != ctx.CChainID {
 				return errImportNonAVAXOutputBanff
 			}
@@ -106,7 +106,7 @@ func (utx *UnsignedImportTx) Verify(
 		if err := in.Verify(); err != nil {
 			return fmt.Errorf("atomic input failed verification: %w", err)
 		}
-		if rules.IsBanff && in.AssetID() != ctx.ChainAssetID {
+		if rules.IsBanff && in.AssetID() != ctx.ChainAssetID && in.AssetID() != ctx.AVAXAssetID {
 			if ctx.ChainID != ctx.CChainID {
 				return errImportNonAVAXInputBanff
 			}
