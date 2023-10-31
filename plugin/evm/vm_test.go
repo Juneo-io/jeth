@@ -154,8 +154,8 @@ func NewContext() *snow.Context {
 	_ = aliaser.Alias(testXChainID, "X")
 	_ = aliaser.Alias(testXChainID, testXChainID.String())
 	ctx.ValidatorState = &validators.TestState{
-		GetSupernetIDF: func(_ context.Context, chainID ids.ID) (ids.ID, error) {
-			supernetID, ok := map[ids.ID]ids.ID{
+		GetSubnetIDF: func(_ context.Context, chainID ids.ID) (ids.ID, error) {
+			subnetID, ok := map[ids.ID]ids.ID{
 				constants.PlatformChainID: constants.PrimaryNetworkID,
 				testXChainID:              constants.PrimaryNetworkID,
 				testCChainID:              constants.PrimaryNetworkID,
@@ -163,7 +163,7 @@ func NewContext() *snow.Context {
 			if !ok {
 				return ids.Empty, errors.New("unknown chain")
 			}
-			return supernetID, nil
+			return subnetID, nil
 		},
 	}
 	return ctx

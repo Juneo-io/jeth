@@ -82,9 +82,9 @@ func (utx *UnsignedExportTx) Verify(
 
 	// Make sure that the tx has a valid peer chain ID
 	if rules.IsApricotPhase5 {
-		// Note that SameSupernet verifies that [tx.DestinationChain] isn't this
+		// Note that SameSubnet verifies that [tx.DestinationChain] isn't this
 		// chain's ID
-		if err := verify.SameSupernet(context.TODO(), ctx, utx.DestinationChain); err != nil {
+		if err := verify.SameSubnet(context.TODO(), ctx, utx.DestinationChain); err != nil {
 			return errWrongChainID
 		}
 	} else {
