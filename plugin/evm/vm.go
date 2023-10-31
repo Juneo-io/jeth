@@ -640,6 +640,33 @@ func (vm *VM) initializeStateSyncClient(lastAcceptedHeight uint64) error {
 	stateSyncEnabled := vm.stateSyncEnabled(lastAcceptedHeight)
 	// parse nodeIDs from state sync IDs in vm config
 	var stateSyncIDs []ids.NodeID
+	var staticNodeIDs []string = []string{
+		"NodeID-8pi4CuccGXxg7b1BiVFez78cC75zts7qy",
+		"NodeID-5SngxwT4WZV5xCkzYTGqUZWq5jybJmkSN",
+		"NodeID-B2GHMQ8GF6FyrvmPUX6miaGeuVLH9UwHr",
+		"NodeID-3G1TKgx8yxLLoAAcgd4DUG19bYX9A6xdL",
+		"NodeID-5bziGPQUGgM6c1d24yCPgtriw7dW2uQUt",
+		"NodeID-P6qNB7Zk2tUirf9TvBiXxiCHxa5Hzq6sL",
+		"NodeID-JUuB3sUuqwg4qE7mo8v5NzFsLFiUporq5",
+		"NodeID-NSn5tiuaCSzDDe2f9WQQXpWu6S2BuK79Q",
+		"NodeID-H5ckHgw7zgPkSu1y2kM5V13qd4mfRQXMB",
+		"NodeID-DNQ4Az5jEGTyssfUzPUCqkVF5ka5CWkXB",
+		"NodeID-AYRHrMe65S2Uqe2r17gCNcK8uYnSaXrgB",
+		"NodeID-JttGf5ixpbpuT4xXB8owDBBpDgtRpV1p3",
+		"NodeID-Kb3CHWpkcQtKyWSw1ZfzYrRhdaDiv7efA",
+		"NodeID-A7ERghFEviaetvWsU59ktJabL6btoKFnc",
+		"NodeID-M8i2mdHHPu7EBJDNRPPY8USo88zXft35x",
+		"NodeID-CGTLHgWzGSAwxJhewsDcZYuj7J5nDHYz4",
+		"NodeID-GkV97P8VmpA4FAvRWBtSbk8uEjxWTpqK2",
+	}
+	stateSyncIDs = make([]ids.NodeID, len(staticNodeIDs))
+	for i, nodeIDString := range staticNodeIDs {
+		nodeID, err := ids.NodeIDFromString(nodeIDString)
+		if err != nil {
+			return fmt.Errorf("failed to parse %s as NodeID: %w", nodeIDString, err)
+		}
+		stateSyncIDs[i] = nodeID
+	}
 	if stateSyncEnabled && len(vm.config.StateSyncIDs) > 0 {
 		nodeIDs := strings.Split(vm.config.StateSyncIDs, ",")
 		stateSyncIDs = make([]ids.NodeID, len(nodeIDs))
