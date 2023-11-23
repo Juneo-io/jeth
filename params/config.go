@@ -46,61 +46,39 @@ var (
 	// AvalancheLocalChainID ...
 	AvalancheLocalChainID = big.NewInt(43112)
 
-	JUNEChainID   = big.NewInt(220_001)
-	ETH1ChainID   = big.NewInt(220_002)
-	MBTC1ChainID  = big.NewInt(220_003)
-	DOGE1ChainID  = big.NewInt(220_004)
-	TUSD1ChainID  = big.NewInt(220_005)
-	USDT1ChainID  = big.NewInt(220_006)
-	DAI1ChainID   = big.NewInt(220_007)
-	EUROC1ChainID = big.NewInt(220_008)
-	LTC1ChainID   = big.NewInt(220_009)
-	XLM1ChainID   = big.NewInt(220_010)
-	BCH1ChainID   = big.NewInt(220_011)
-	PAXG1ChainID  = big.NewInt(220_012)
-	ICP1ChainID   = big.NewInt(220_013)
-	XIDR1ChainID  = big.NewInt(220_014)
-	XSGD1ChainID  = big.NewInt(220_015)
-	ETC1ChainID   = big.NewInt(220_016)
-	R1000ChainID  = big.NewInt(220_017)
-	R10ChainID    = big.NewInt(220_018)
+	JUNEChainID  = big.NewInt(101003)
+	MBTC1ChainID = big.NewInt(101007)
+	DOGE1ChainID = big.NewInt(101010)
+	USD1ChainID  = big.NewInt(101006)
+	USDT1ChainID = big.NewInt(101005)
+	DAI1ChainID  = big.NewInt(101004)
+	EUR1ChainID  = big.NewInt(101011)
+	LTC1ChainID  = big.NewInt(101009)
+	GLD1ChainID  = big.NewInt(101008)
+	SGD1ChainID  = big.NewInt(101012)
 
-	ETH1AssetID   = "JeUvxJPXoL3EtVGSPwtyYXVymxGbpcBcaa2Kq7TCB43HsKMAS"
-	MBTC1AssetID  = "2pLiXK8pUNqS9DHTKpkiex6g6DRdSfxqJCoZsLM3zq62WtFje3"
-	DOGE1AssetID  = "2PR1Dn3w6QUcvVAsb2UTw7F6khcVBjC68SLgyW6MdoqtpaE7ox"
-	TUSD1AssetID  = "saRTCAtLBo4d3WvJT3ibJmv9dpn3oQQ8gXgkB8ADsQwiFJh6L"
-	USDT1AssetID  = "2TBXB5U2rqPWqebfvjvXJNu27vig6s5mCgkdLYBJzE6jXnrNso"
-	DAI1AssetID   = "2vq3K3PxumUV7Uf9PgPoBfr1y8MDjAtMDRex8yTqYzfyrtVJJU"
-	EUROC1AssetID = "2NQFaeBwMcACKqsKqMoLzYmVAHMYeFREfYJq6dtQnsJ5tTyk42"
-	LTC1AssetID   = "2REm6DRSgbVyE4dypnzBU9WWUV4zW9VcsTMHiDha7GLV84ZXCy"
-	XLM1AssetID   = "25revVW7o2DgkhQPTkbGLNxscS6G9Mj6eTu7PCgKvzw3HM7pJv"
-	BCH1AssetID   = "2sC7LPyJguMWdJztKGUa35ABj7KRh1WSNQThLWhdxhJJwGdhv2"
-	PAXG1AssetID  = "VKJNVVGFPWwrpbYtdGanMhTdScZrRYWbgE1JVqzj2YGnU8ewv"
-	ICP1AssetID   = "HiNZ8RV33htiXovM2P66DZADWyHuRyEwcyRYJcB8ivNMvsqP1"
-	XIDR1AssetID  = "bvyN7nY8NFpQc7BGQEfFRaBu9Wqj53NpDb9GZ2raAxsuN9GP5"
-	XSGD1AssetID  = "2BvFezbxtuztCGJbGvz8Dx7woKqMLeZNZ6C6assFMFwGVcCpaH"
-	ETC1AssetID   = "3sPY2qNyaGop5JNLaSr8GtWHrimtMMkYifACSRVZNKEyZowBg"
-	R1000AssetID  = "G3mH67ubqNAJB6txHTHFtFzH56ynrhd2ynJrUk6RjT9iBzXbK"
-	R10AssetID    = "tDxKdhyn2b9dNLMdsSv3xEY8ihGf7991XSWxXMzWu1bLtAued"
+	ETH1AssetID  = "JeUvxJPXoL3EtVGSPwtyYXVymxGbpcBcaa2Kq7TCB43HsKMAS"
+	USDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
+	USD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
+	DAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
+	EUR1AssetId  = "2CkzBNwEKvreEwYp2froWJePpXfruZu6iemJVfNqUAtVjJDRkp"
+	SGD1AssetId  = "2Bi6ovdELbjXhSxs9fQTMPWUHcCbvJJZV4pHLkwcQyD7dDrqLG"
+	GLD1AssetId  = "HNihfvex33EDsuHuQddQpBpwUtkotLwnt54aj7GkGrxY9mLGz"
+	MBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
+	DOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
+	LTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
 
 	PrimaryAssetIDs = []string{
 		ETH1AssetID,
-		MBTC1AssetID,
-		DOGE1AssetID,
-		TUSD1AssetID,
-		USDT1AssetID,
-		DAI1AssetID,
-		EUROC1AssetID,
-		LTC1AssetID,
-		XLM1AssetID,
-		BCH1AssetID,
-		PAXG1AssetID,
-		ICP1AssetID,
-		XIDR1AssetID,
-		XSGD1AssetID,
-		ETC1AssetID,
-		R1000AssetID,
-		R10AssetID,
+		USDT1AssetId,
+		USD1AssetId,
+		DAI1AssetId,
+		EUR1AssetId,
+		SGD1AssetId,
+		GLD1AssetId,
+		MBTC1AssetId,
+		DOGE1AssetId,
+		LTC1AssetId,
 	}
 
 	errNonGenesisForkByHeight = errors.New("coreth only supports forking by height at the genesis block")
@@ -212,30 +190,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraETH1ChainConfig = &ChainConfig{
-		ChainID:                         ETH1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
 	SocotraMBTC1ChainConfig = &ChainConfig{
 		ChainID:                         MBTC1ChainID,
@@ -260,6 +215,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
 	SocotraDOGE1ChainConfig = &ChainConfig{
 		ChainID:                         DOGE1ChainID,
@@ -284,9 +240,10 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
-	SocotraTUSD1ChainConfig = &ChainConfig{
-		ChainID:                         TUSD1ChainID,
+	SocotraUSD1ChainConfig = &ChainConfig{
+		ChainID:                         USD1ChainID,
 		HomesteadBlock:                  big.NewInt(0),
 		DAOForkBlock:                    big.NewInt(0),
 		DAOForkSupport:                  true,
@@ -308,6 +265,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
 	SocotraUSDT1ChainConfig = &ChainConfig{
 		ChainID:                         USDT1ChainID,
@@ -332,6 +290,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
 	SocotraDAI1ChainConfig = &ChainConfig{
 		ChainID:                         DAI1ChainID,
@@ -356,9 +315,10 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
-	SocotraEUROC1ChainConfig = &ChainConfig{
-		ChainID:                         EUROC1ChainID,
+	SocotraEUR1ChainConfig = &ChainConfig{
+		ChainID:                         EUR1ChainID,
 		HomesteadBlock:                  big.NewInt(0),
 		DAOForkBlock:                    big.NewInt(0),
 		DAOForkSupport:                  true,
@@ -380,6 +340,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
 	SocotraLTC1ChainConfig = &ChainConfig{
 		ChainID:                         LTC1ChainID,
@@ -404,201 +365,10 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
-	SocotraXLM1ChainConfig = &ChainConfig{
-		ChainID:                         XLM1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraBCH1ChainConfig = &ChainConfig{
-		ChainID:                         BCH1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraPAXG1ChainConfig = &ChainConfig{
-		ChainID:                         PAXG1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraICP1ChainConfig = &ChainConfig{
-		ChainID:                         ICP1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraXIDR1ChainConfig = &ChainConfig{
-		ChainID:                         XIDR1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraXSGD1ChainConfig = &ChainConfig{
-		ChainID:                         XSGD1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraETC1ChainConfig = &ChainConfig{
-		ChainID:                         ETC1ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraR1000ChainConfig = &ChainConfig{
-		ChainID:                         R1000ChainID,
-		HomesteadBlock:                  big.NewInt(0),
-		DAOForkBlock:                    big.NewInt(0),
-		DAOForkSupport:                  true,
-		EIP150Block:                     big.NewInt(0),
-		EIP155Block:                     big.NewInt(0),
-		EIP158Block:                     big.NewInt(0),
-		ByzantiumBlock:                  big.NewInt(0),
-		ConstantinopleBlock:             big.NewInt(0),
-		PetersburgBlock:                 big.NewInt(0),
-		IstanbulBlock:                   big.NewInt(0),
-		MuirGlacierBlock:                big.NewInt(0),
-		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
-		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
-		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
-		BanffBlockTimestamp:             utils.NewUint64(0),
-		CortinaBlockTimestamp:           utils.NewUint64(0),
-	}
-	SocotraR10ChainConfig = &ChainConfig{
-		ChainID:                         R10ChainID,
+	SocotraGLD1ChainConfig = &ChainConfig{
+		ChainID:                         GLD1ChainID,
 		HomesteadBlock:                  big.NewInt(0),
 		DAOForkBlock:                    big.NewInt(0),
 		DAOForkSupport:                  true,
@@ -622,7 +392,32 @@ var (
 		CortinaBlockTimestamp:           utils.NewUint64(0),
 		DUpgradeBlockTimestamp:          utils.NewUint64(0),
 	}
-	
+	SocotraSGD1ChainConfig = &ChainConfig{
+		ChainID:                         SGD1ChainID,
+		HomesteadBlock:                  big.NewInt(0),
+		DAOForkBlock:                    big.NewInt(0),
+		DAOForkSupport:                  true,
+		EIP150Block:                     big.NewInt(0),
+		EIP155Block:                     big.NewInt(0),
+		EIP158Block:                     big.NewInt(0),
+		ByzantiumBlock:                  big.NewInt(0),
+		ConstantinopleBlock:             big.NewInt(0),
+		PetersburgBlock:                 big.NewInt(0),
+		IstanbulBlock:                   big.NewInt(0),
+		MuirGlacierBlock:                big.NewInt(0),
+		ApricotPhase1BlockTimestamp:     utils.NewUint64(0),
+		ApricotPhase2BlockTimestamp:     utils.NewUint64(0),
+		ApricotPhase3BlockTimestamp:     utils.NewUint64(0),
+		ApricotPhase4BlockTimestamp:     utils.NewUint64(0),
+		ApricotPhase5BlockTimestamp:     utils.NewUint64(0),
+		ApricotPhasePre6BlockTimestamp:  utils.NewUint64(0),
+		ApricotPhase6BlockTimestamp:     utils.NewUint64(0),
+		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
+		BanffBlockTimestamp:             utils.NewUint64(0),
+		CortinaBlockTimestamp:           utils.NewUint64(0),
+		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+	}
+
 	TestChainConfig = &ChainConfig{
 		AvalancheContext:                AvalancheContext{common.Hash{1}},
 		ChainID:                         big.NewInt(1),
@@ -1216,40 +1011,24 @@ func (c *ChainConfig) GetInitialBaseFee() *big.Int {
 	switch {
 	case c.ChainID.Cmp(JUNEChainID) == 0:
 		return big.NewInt(JUNEChainMinBaseFee)
-	case c.ChainID.Cmp(ETH1ChainID) == 0:
-		return big.NewInt(ETH1ChainMinBaseFee)
 	case c.ChainID.Cmp(MBTC1ChainID) == 0:
 		return big.NewInt(MBTC1ChainMinBaseFee)
 	case c.ChainID.Cmp(DOGE1ChainID) == 0:
 		return big.NewInt(DOGE1ChainMinBaseFee)
-	case c.ChainID.Cmp(TUSD1ChainID) == 0:
-		return big.NewInt(TUSD1ChainMinBaseFee)
+	case c.ChainID.Cmp(USD1ChainID) == 0:
+		return big.NewInt(USDMinBaseFee)
 	case c.ChainID.Cmp(USDT1ChainID) == 0:
-		return big.NewInt(USDT1ChainMinBaseFee)
+		return big.NewInt(USDMinBaseFee)
 	case c.ChainID.Cmp(DAI1ChainID) == 0:
-		return big.NewInt(DAI1ChainMinBaseFee)
-	case c.ChainID.Cmp(EUROC1ChainID) == 0:
-		return big.NewInt(EUROC1ChainMinBaseFee)
+		return big.NewInt(USDMinBaseFee)
+	case c.ChainID.Cmp(EUR1ChainID) == 0:
+		return big.NewInt(USDMinBaseFee)
 	case c.ChainID.Cmp(LTC1ChainID) == 0:
 		return big.NewInt(LTC1ChainMinBaseFee)
-	case c.ChainID.Cmp(XLM1ChainID) == 0:
-		return big.NewInt(XLM1ChainMinBaseFee)
-	case c.ChainID.Cmp(BCH1ChainID) == 0:
-		return big.NewInt(BCH1ChainMinBaseFee)
-	case c.ChainID.Cmp(PAXG1ChainID) == 0:
-		return big.NewInt(PAXG1ChainMinBaseFee)
-	case c.ChainID.Cmp(ICP1ChainID) == 0:
-		return big.NewInt(ICP1ChainMinBaseFee)
-	case c.ChainID.Cmp(XIDR1ChainID) == 0:
-		return big.NewInt(XIDR1ChainMinBaseFee)
-	case c.ChainID.Cmp(XSGD1ChainID) == 0:
-		return big.NewInt(XSGD1ChainMinBaseFee)
-	case c.ChainID.Cmp(ETC1ChainID) == 0:
-		return big.NewInt(ETC1ChainMinBaseFee)
-	case c.ChainID.Cmp(R1000ChainID) == 0:
-		return big.NewInt(R1000ChainMinBaseFee)
-	case c.ChainID.Cmp(R10ChainID) == 0:
-		return big.NewInt(R10ChainMinBaseFee)
+	case c.ChainID.Cmp(GLD1ChainID) == 0:
+		return big.NewInt(GLD1ChainMinBaseFee)
+	case c.ChainID.Cmp(SGD1ChainID) == 0:
+		return big.NewInt(USDMinBaseFee)
 	default:
 		return big.NewInt(ApricotPhase3InitialBaseFee)
 	}
