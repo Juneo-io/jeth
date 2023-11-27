@@ -1022,13 +1022,13 @@ func (c *ChainConfig) GetInitialBaseFee() *big.Int {
 	case c.ChainID.Cmp(DAI1ChainID) == 0:
 		return big.NewInt(USDMinBaseFee)
 	case c.ChainID.Cmp(EUR1ChainID) == 0:
-		return big.NewInt(USDMinBaseFee)
+		return big.NewInt(EUR1ChainMinBaseFee)
 	case c.ChainID.Cmp(LTC1ChainID) == 0:
 		return big.NewInt(LTC1ChainMinBaseFee)
 	case c.ChainID.Cmp(GLD1ChainID) == 0:
 		return big.NewInt(GLD1ChainMinBaseFee)
 	case c.ChainID.Cmp(SGD1ChainID) == 0:
-		return big.NewInt(USDMinBaseFee)
+		return big.NewInt(SGD1ChainMinBaseFee)
 	default:
 		return big.NewInt(ApricotPhase3InitialBaseFee)
 	}

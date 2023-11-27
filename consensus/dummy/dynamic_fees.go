@@ -26,6 +26,8 @@ var (
 	USDMinBaseFee           = big.NewInt(params.USDMinBaseFee)
 	LTC1ChainMinBaseFee     = big.NewInt(params.LTC1ChainMinBaseFee)
 	GLD1ChainMinBaseFee     = big.NewInt(params.GLD1ChainMinBaseFee)
+	EUR1ChainMinBaseFee     = big.NewInt(params.EUR1ChainMinBaseFee)
+	SGD1ChainMinBaseFee     = big.NewInt(params.SGD1ChainMinBaseFee)
 
 	ApricotPhase4BaseFeeChangeDenominator = new(big.Int).SetUint64(params.ApricotPhase4BaseFeeChangeDenominator)
 	ApricotPhase5BaseFeeChangeDenominator = new(big.Int).SetUint64(params.ApricotPhase5BaseFeeChangeDenominator)
@@ -195,13 +197,13 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 		case config.ChainID.Cmp(params.DAI1ChainID) == 0:
 			baseFee = selectBigWithinBounds(USDMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.EUR1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDMinBaseFee, baseFee, nil)
+			baseFee = selectBigWithinBounds(EUR1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.LTC1ChainID) == 0:
 			baseFee = selectBigWithinBounds(LTC1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.GLD1ChainID) == 0:
 			baseFee = selectBigWithinBounds(GLD1ChainMinBaseFee, baseFee, nil)
 		case config.ChainID.Cmp(params.SGD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDMinBaseFee, baseFee, nil)
+			baseFee = selectBigWithinBounds(SGD1ChainMinBaseFee, baseFee, nil)
 		default:
 			baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, nil)
 		}
