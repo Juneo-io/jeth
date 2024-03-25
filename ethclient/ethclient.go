@@ -73,6 +73,7 @@ type Client interface {
 	BlockByHash(context.Context, common.Hash) (*types.Block, error)
 	BlockByNumber(context.Context, *big.Int) (*types.Block, error)
 	BlockNumber(context.Context) (uint64, error)
+	BlockReceipts(context.Context, rpc.BlockNumberOrHash) ([]*types.Receipt, error)
 	HeaderByHash(context.Context, common.Hash) (*types.Header, error)
 	HeaderByNumber(context.Context, *big.Int) (*types.Header, error)
 	TransactionByHash(context.Context, common.Hash) (tx *types.Transaction, isPending bool, err error)
@@ -175,6 +176,16 @@ func (ec *client) BlockNumber(ctx context.Context) (uint64, error) {
 	return uint64(result), err
 }
 
+// BlockReceipts returns the receipts of a given block number or hash.
+func (ec *client) BlockReceipts(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) ([]*types.Receipt, error) {
+	var r []*types.Receipt
+	err := ec.c.CallContext(ctx, &r, "eth_getBlockReceipts", blockNrOrHash.String())
+	if err == nil && r == nil {
+		return nil, interfaces.NotFound
+	}
+	return r, err
+}
+
 type rpcBlock struct {
 	Hash           common.Hash      `json:"hash"`
 	Transactions   []rpcTransaction `json:"transactions"`
@@ -249,7 +260,7 @@ func (ec *client) getBlock(ctx context.Context, method string, args ...interface
 		}
 		txs[i] = tx.tx
 	}
-	return types.NewBlockWithHeader(head).WithBody(txs, uncles, body.Version, (*[]byte)(body.BlockExtraData)), nil
+	return types.NewBlockWithHeader(head).WithBody(txs, uncles).WithExtData(body.Version, (*[]byte)(body.BlockExtraData)), nil
 }
 
 // HeaderByHash returns the block header with the given hash.
@@ -403,7 +414,7 @@ func (ec *client) SubscribeNewAcceptedTransactions(ctx context.Context, ch chan<
 	return sub, nil
 }
 
-// SubscribeNewAcceptedTransactions subscribes to notifications about the accepted transaction hashes on the given channel.
+// SubscribeNewPendingTransactions subscribes to notifications about the pending transaction hashes on the given channel.
 func (ec *client) SubscribeNewPendingTransactions(ctx context.Context, ch chan<- *common.Hash) (interfaces.Subscription, error) {
 	sub, err := ec.c.EthSubscribe(ctx, ch, "newPendingTransactions")
 	if err != nil {
@@ -668,12 +679,6 @@ func (ec *client) SendTransaction(ctx context.Context, tx *types.Transaction) er
 }
 
 func ToBlockNumArg(number *big.Int) string {
-	// The Ethereum implementation uses a different mapping from
-	// negative numbers to special strings (latest, pending) then is
-	// used on its server side. See rpc/types.go for the comparison.
-	// In Coreth, latest, pending, and accepted are all treated the same
-	// therefore, if [number] is nil or a negative number in [-4, -1]
-	// we want the latest accepted block
 	if number == nil {
 		return "latest"
 	}

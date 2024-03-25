@@ -196,7 +196,9 @@ type Config struct {
 // DefaultConfig contains the default configurations for the transaction
 // pool.
 var DefaultConfig = Config{
-	Journal:   "transactions.rlp",
+	// If we re-enable txpool journaling, we should also add the saved local
+	// transactions to the p2p gossip on startup.
+	Journal:   "",
 	Rejournal: time.Hour,
 
 	PriceLimit: 1,
@@ -207,7 +209,7 @@ var DefaultConfig = Config{
 	AccountQueue: 64,
 	GlobalQueue:  1024,
 
-	Lifetime: 3 * time.Hour,
+	Lifetime: 10 * time.Minute,
 }
 
 // sanitize checks the provided user configurations and changes anything that's
@@ -269,10 +271,10 @@ type TxPool struct {
 	signer      types.Signer
 	mu          sync.RWMutex
 
-	istanbul atomic.Bool // Fork indicator whether we are in the istanbul stage.
-	eip2718  atomic.Bool // Fork indicator whether we are using EIP-2718 type transactions.
-	eip1559  atomic.Bool // Fork indicator whether we are using EIP-1559 type transactions.
-	eip3860  atomic.Bool // Fork indicator whether EIP-3860 is activated. (activated in Shanghai Upgrade in Ethereum)
+	rules   atomic.Pointer[params.Rules] // Rules for the currentHead
+	eip2718 atomic.Bool                  // Fork indicator whether we are using EIP-2718 type transactions.
+	eip1559 atomic.Bool                  // Fork indicator whether we are using EIP-1559 type transactions.
+	eip3860 atomic.Bool                  // Fork indicator whether EIP-3860 is activated. (activated in Shanghai Upgrade in Ethereum)
 
 	currentHead *types.Header
 	// [currentState] is the state of the blockchain head. It is reset whenever
@@ -597,8 +599,17 @@ func (pool *TxPool) ContentFrom(addr common.Address) (types.Transactions, types.
 // transactions and only return those whose **effective** tip is large enough in
 // the next pending execution environment.
 func (pool *TxPool) Pending(enforceTips bool) map[common.Address]types.Transactions {
+	return pool.PendingWithBaseFee(enforceTips, nil)
+}
+
+// If baseFee is nil, then pool.priced.urgent.baseFee is used.
+func (pool *TxPool) PendingWithBaseFee(enforceTips bool, baseFee *big.Int) map[common.Address]types.Transactions {
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
+
+	if baseFee == nil {
+		baseFee = pool.priced.urgent.baseFee
+	}
 
 	pending := make(map[common.Address]types.Transactions, len(pool.pending))
 	for addr, list := range pool.pending {
@@ -607,7 +618,7 @@ func (pool *TxPool) Pending(enforceTips bool) map[common.Address]types.Transacti
 		// If the miner requests tip enforcement, cap the lists now
 		if enforceTips && !pool.locals.contains(addr) {
 			for i, tx := range txs {
-				if tx.EffectiveGasTipIntCmp(pool.gasPrice, pool.priced.urgent.baseFee) < 0 {
+				if tx.EffectiveGasTipIntCmp(pool.gasPrice, baseFee) < 0 {
 					txs = txs[:i]
 					break
 				}
@@ -621,8 +632,12 @@ func (pool *TxPool) Pending(enforceTips bool) map[common.Address]types.Transacti
 }
 
 // PendingSize returns the number of pending txs in the tx pool.
-func (pool *TxPool) PendingSize() int {
-	pending := pool.Pending(true)
+//
+// The enforceTips parameter can be used to do an extra filtering on the pending
+// transactions and only return those whose **effective** tip is large enough in
+// the next pending execution environment.
+func (pool *TxPool) PendingSize(enforceTips bool) int {
+	pending := pool.Pending(enforceTips)
 	count := 0
 	for _, txs := range pending {
 		count += len(txs)
@@ -764,7 +779,7 @@ func (pool *TxPool) validateTxBasics(tx *types.Transaction, local bool) error {
 		return fmt.Errorf("%w: address %s have gas tip cap (%d) < pool gas tip cap (%d)", ErrUnderpriced, from.Hex(), tx.GasTipCap(), pool.gasPrice)
 	}
 	// Ensure the transaction has more gas than the basic tx fee.
-	intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.To() == nil, true, pool.istanbul.Load(), pool.eip3860.Load())
+	intrGas, err := core.IntrinsicGas(tx.Data(), tx.AccessList(), tx.To() == nil, *pool.rules.Load())
 	if err != nil {
 		return err
 	}
@@ -1186,6 +1201,8 @@ func (pool *TxPool) HasLocal(hash common.Hash) bool {
 	return pool.all.GetLocal(hash) != nil
 }
 
+// RemoveTx removes a single transaction from the queue, moving all subsequent
+// transactions back to the future queue.
 func (pool *TxPool) RemoveTx(hash common.Hash) {
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
@@ -1520,10 +1537,12 @@ func (pool *TxPool) reset(oldHead, newHead *types.Header) {
 
 	// Update all fork indicator by next pending block number.
 	next := new(big.Int).Add(newHead.Number, big.NewInt(1))
-	pool.istanbul.Store(pool.chainconfig.IsIstanbul(next))
-	pool.eip2718.Store(pool.chainconfig.IsApricotPhase2(newHead.Time))
-	pool.eip1559.Store(pool.chainconfig.IsApricotPhase3(newHead.Time))
-	pool.eip3860.Store(pool.chainconfig.IsDUpgrade(newHead.Time))
+	rules := pool.chainconfig.AvalancheRules(next, newHead.Time)
+
+	pool.rules.Store(&rules)
+	pool.eip2718.Store(rules.IsApricotPhase2)
+	pool.eip1559.Store(rules.IsApricotPhase3)
+	pool.eip3860.Store(rules.IsDurango)
 }
 
 // promoteExecutables moves transactions that have become processable from the

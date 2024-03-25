@@ -8,8 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
-
-	"golang.org/x/exp/slices"
+	"slices"
 
 	"github.com/ava-labs/coreth/core/state"
 	"github.com/ava-labs/coreth/params"
@@ -126,9 +125,7 @@ func (utx *UnsignedImportTx) Verify(
 			return errOutputsNotSortedUnique
 		}
 	} else if rules.IsApricotPhase1 {
-		if !slices.IsSortedFunc(utx.Outs, func(i, j EVMOutput) bool {
-			return i.Less(j)
-		}) {
+		if !slices.IsSortedFunc(utx.Outs, EVMOutput.Compare) {
 			return errOutputsNotSorted
 		}
 	}

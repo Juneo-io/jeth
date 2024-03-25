@@ -12,6 +12,7 @@ import (
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/network/p2p/gossip"
 	"github.com/ava-labs/avalanchego/snow"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/ava-labs/coreth/metrics"
 	"github.com/ethereum/go-ethereum/log"
@@ -21,7 +22,12 @@ const (
 	discardedTxsCacheSize = 50
 )
 
-var errNoGasUsed = errors.New("no gas used")
+var (
+	errTxAlreadyKnown = errors.New("tx already known")
+	errNoGasUsed      = errors.New("no gas used")
+
+	_ gossip.Set[*GossipAtomicTx] = (*Mempool)(nil)
+)
 
 // mempoolMetrics defines the metrics for the atomic mempool
 type mempoolMetrics struct {
@@ -31,19 +37,16 @@ type mempoolMetrics struct {
 
 	addedTxs     metrics.Counter // Count of all transactions added to the mempool
 	discardedTxs metrics.Counter // Count of all discarded transactions
-
-	newTxsReturned metrics.Counter // Count of transactions returned from GetNewTxs
 }
 
 // newMempoolMetrics constructs metrics for the atomic mempool
 func newMempoolMetrics() *mempoolMetrics {
 	return &mempoolMetrics{
-		pendingTxs:     metrics.GetOrRegisterGauge("atomic_mempool_pending_txs", nil),
-		currentTxs:     metrics.GetOrRegisterGauge("atomic_mempool_current_txs", nil),
-		issuedTxs:      metrics.GetOrRegisterGauge("atomic_mempool_issued_txs", nil),
-		addedTxs:       metrics.GetOrRegisterCounter("atomic_mempool_added_txs", nil),
-		discardedTxs:   metrics.GetOrRegisterCounter("atomic_mempool_discarded_txs", nil),
-		newTxsReturned: metrics.GetOrRegisterCounter("atomic_mempool_new_txs_returned", nil),
+		pendingTxs:   metrics.GetOrRegisterGauge("atomic_mempool_pending_txs", nil),
+		currentTxs:   metrics.GetOrRegisterGauge("atomic_mempool_current_txs", nil),
+		issuedTxs:    metrics.GetOrRegisterGauge("atomic_mempool_issued_txs", nil),
+		addedTxs:     metrics.GetOrRegisterCounter("atomic_mempool_added_txs", nil),
+		discardedTxs: metrics.GetOrRegisterCounter("atomic_mempool_discarded_txs", nil),
 	}
 }
 
@@ -64,8 +67,6 @@ type Mempool struct {
 	// Pending is a channel of length one, which the mempool ensures has an item on
 	// it as long as there is an unissued transaction remaining in [txs]
 	Pending chan struct{}
-	// newTxs is an array of [Tx] that are ready to be gossiped.
-	newTxs []*Tx
 	// txHeap is a sorted record of all txs in the mempool by [gasPrice]
 	// NOTE: [txHeap] ONLY contains pending txs
 	txHeap *txHeap
@@ -80,8 +81,8 @@ type Mempool struct {
 }
 
 // NewMempool returns a Mempool with [maxSize]
-func NewMempool(ctx *snow.Context, maxSize int, verify func(tx *Tx) error) (*Mempool, error) {
-	bloom, err := gossip.NewBloomFilter(txGossipBloomMaxItems, txGossipBloomFalsePositiveRate)
+func NewMempool(ctx *snow.Context, registerer prometheus.Registerer, maxSize int, verify func(tx *Tx) error) (*Mempool, error) {
+	bloom, err := gossip.NewBloomFilter(registerer, "atomic_mempool_bloom_filter", txGossipBloomMinTargetElements, txGossipBloomTargetFalsePositiveRate, txGossipBloomResetFalsePositiveRate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize bloom filter: %w", err)
 	}
@@ -142,16 +143,37 @@ func (m *Mempool) Add(tx *GossipAtomicTx) error {
 	m.ctx.Lock.RLock()
 	defer m.ctx.Lock.RUnlock()
 
-	return m.AddTx(tx.Tx)
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	err := m.addTx(tx.Tx, false)
+	if errors.Is(err, errTxAlreadyKnown) {
+		return err
+	}
+
+	if err != nil {
+		txID := tx.Tx.ID()
+		m.discardedTxs.Put(txID, tx.Tx)
+		log.Debug("failed to issue remote tx to mempool",
+			"txID", txID,
+			"err", err,
+		)
+	}
+
+	return err
 }
 
-// Add attempts to add [tx] to the mempool and returns an error if
-// it could not be addeed to the mempool.
+// AddTx attempts to add [tx] to the mempool and returns an error if
+// it could not be added to the mempool.
 func (m *Mempool) AddTx(tx *Tx) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
 	err := m.addTx(tx, false)
+	if errors.Is(err, errTxAlreadyKnown) {
+		return nil
+	}
+
 	if err != nil {
 		// unlike local txs, invalid remote txs are recorded as discarded
 		// so that they won't be requested again
@@ -169,7 +191,12 @@ func (m *Mempool) AddLocalTx(tx *Tx) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	return m.addTx(tx, false)
+	err := m.addTx(tx, false)
+	if errors.Is(err, errTxAlreadyKnown) {
+		return nil
+	}
+
+	return err
 }
 
 // forceAddTx forcibly adds a *Tx to the mempool and bypasses all verification.
@@ -177,7 +204,12 @@ func (m *Mempool) ForceAddTx(tx *Tx) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	return m.addTx(tx, true)
+	err := m.addTx(tx, true)
+	if errors.Is(err, errTxAlreadyKnown) {
+		return nil
+	}
+
+	return nil
 }
 
 // checkConflictTx checks for any transactions in the mempool that spend the same input UTXOs as [tx].
@@ -219,13 +251,13 @@ func (m *Mempool) addTx(tx *Tx, force bool) error {
 	// If [txID] has already been issued or is in the currentTxs map
 	// there's no need to add it.
 	if _, exists := m.issuedTxs[txID]; exists {
-		return nil
+		return fmt.Errorf("%w: tx %s was issued previously", errTxAlreadyKnown, tx.ID())
 	}
 	if _, exists := m.currentTxs[txID]; exists {
-		return nil
+		return fmt.Errorf("%w: tx %s is being built into a block", errTxAlreadyKnown, tx.ID())
 	}
 	if _, exists := m.txHeap.Get(txID); exists {
-		return nil
+		return fmt.Errorf("%w: tx %s is pending", errTxAlreadyKnown, tx.ID())
 	}
 	if !force && m.verify != nil {
 		if err := m.verify(tx); err != nil {
@@ -304,7 +336,7 @@ func (m *Mempool) addTx(tx *Tx, force bool) error {
 	}
 
 	m.bloom.Add(&GossipAtomicTx{Tx: tx})
-	reset, err := gossip.ResetBloomFilterIfNeeded(m.bloom, txGossipMaxFalsePositiveRate)
+	reset, err := gossip.ResetBloomFilterIfNeeded(m.bloom, m.length()*txGossipBloomChurnMultiplier)
 	if err != nil {
 		return err
 	}
@@ -322,7 +354,6 @@ func (m *Mempool) addTx(tx *Tx, force bool) error {
 	// been set to something other than [dontBuild], this will be ignored and won't be
 	// reset until the engine calls BuildBlock. This case is handled in IssueCurrentTx
 	// and CancelCurrentTx.
-	m.newTxs = append(m.newTxs, tx)
 	m.addPending()
 
 	return nil
@@ -339,14 +370,11 @@ func (m *Mempool) Iterate(f func(tx *GossipAtomicTx) bool) {
 	}
 }
 
-func (m *Mempool) GetFilter() ([]byte, []byte, error) {
+func (m *Mempool) GetFilter() ([]byte, []byte) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
 
-	bloom, err := m.bloom.Bloom.MarshalBinary()
-	salt := m.bloom.Salt
-
-	return bloom, salt[:], err
+	return m.bloom.Marshal()
 }
 
 // NextTx returns a transaction to be issued from the mempool.
@@ -398,6 +426,14 @@ func (m *Mempool) GetTx(txID ids.ID) (*Tx, bool, bool) {
 	}
 
 	return nil, false, false
+}
+
+// Has returns true if the mempool contains [txID] or it was issued.
+func (m *Mempool) Has(txID ids.ID) bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.has(txID)
 }
 
 // IssueCurrentTx marks [currentTx] as issued if there is one
@@ -559,15 +595,4 @@ func (m *Mempool) addPending() {
 	case m.Pending <- struct{}{}:
 	default:
 	}
-}
-
-// GetNewTxs returns the array of [newTxs] and replaces it with an empty array.
-func (m *Mempool) GetNewTxs() []*Tx {
-	m.lock.Lock()
-	defer m.lock.Unlock()
-
-	cpy := m.newTxs
-	m.newTxs = nil
-	m.metrics.newTxsReturned.Inc(int64(len(cpy))) // Increment the number of newTxs
-	return cpy
 }

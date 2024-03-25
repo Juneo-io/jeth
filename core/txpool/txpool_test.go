@@ -55,16 +55,13 @@ import (
 var (
 	// testTxPoolConfig is a transaction pool configuration without stateful disk
 	// sideeffects used during testing.
-	testTxPoolConfig Config
+	testTxPoolConfig = DefaultConfig
 
 	// eip1559Config is a chain config with EIP-1559 enabled at block 0.
 	eip1559Config *params.ChainConfig
 )
 
 func init() {
-	testTxPoolConfig = DefaultConfig
-	testTxPoolConfig.Journal = ""
-
 	cpy := *params.TestChainConfig
 	eip1559Config = &cpy
 	eip1559Config.ApricotPhase2BlockTimestamp = utils.NewUint64(0)
@@ -104,7 +101,7 @@ func (bc *testBlockChain) CurrentBlock() *types.Header {
 }
 
 func (bc *testBlockChain) GetBlock(hash common.Hash, number uint64) *types.Block {
-	return types.NewBlock(bc.CurrentBlock(), nil, nil, nil, trie.NewStackTrie(nil), nil, true)
+	return types.NewBlock(bc.CurrentBlock(), nil, nil, nil, trie.NewStackTrie(nil))
 }
 
 func (bc *testBlockChain) StateAt(common.Hash) (*state.StateDB, error) {

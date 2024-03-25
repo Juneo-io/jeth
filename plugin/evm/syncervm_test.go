@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ava-labs/avalanchego/chains/atomic"
-	"github.com/ava-labs/avalanchego/database/manager"
+	"github.com/ava-labs/avalanchego/database"
 	"github.com/ava-labs/avalanchego/database/prefixdb"
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/snow"
@@ -27,22 +27,22 @@ import (
 	"github.com/ava-labs/avalanchego/utils/set"
 	"github.com/ava-labs/avalanchego/utils/units"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rlp"
-
 	"github.com/ava-labs/coreth/accounts/keystore"
 	"github.com/ava-labs/coreth/consensus/dummy"
 	"github.com/ava-labs/coreth/constants"
 	"github.com/ava-labs/coreth/core"
 	"github.com/ava-labs/coreth/core/rawdb"
 	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/ethdb"
 	"github.com/ava-labs/coreth/metrics"
 	"github.com/ava-labs/coreth/params"
+	"github.com/ava-labs/coreth/predicate"
 	statesyncclient "github.com/ava-labs/coreth/sync/client"
 	"github.com/ava-labs/coreth/sync/statesync"
 	"github.com/ava-labs/coreth/trie"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethdb"
+	"github.com/ethereum/go-ethereum/log"
+	"github.com/ethereum/go-ethereum/rlp"
 )
 
 func TestSkipStateSync(t *testing.T) {
@@ -90,7 +90,7 @@ func TestStateSyncToggleEnabledToDisabled(t *testing.T) {
 			reqCount++
 			// Fail all requests after number 50 to interrupt the sync
 			if reqCount > 50 {
-				if err := syncerVM.AppRequestFailed(context.Background(), nodeID, requestID); err != nil {
+				if err := syncerVM.AppRequestFailed(context.Background(), nodeID, requestID, commonEng.ErrTimeout); err != nil {
 					panic(err)
 				}
 				cancel := syncerVM.StateSyncClient.(*stateSyncerClient).cancel
@@ -116,7 +116,7 @@ func TestStateSyncToggleEnabledToDisabled(t *testing.T) {
 
 	syncDisabledVM := &VM{}
 	appSender := &commonEng.SenderTest{T: t}
-	appSender.SendAppGossipF = func(context.Context, []byte) error { return nil }
+	appSender.SendAppGossipF = func(context.Context, []byte, int, int, int) error { return nil }
 	appSender.SendAppRequestF = func(ctx context.Context, nodeSet set.Set[ids.NodeID], requestID uint32, request []byte) error {
 		nodeID, hasItem := nodeSet.Pop()
 		if !hasItem {
@@ -130,7 +130,7 @@ func TestStateSyncToggleEnabledToDisabled(t *testing.T) {
 	if err := syncDisabledVM.Initialize(
 		context.Background(),
 		vmSetup.syncerVM.ctx,
-		vmSetup.syncerDBManager,
+		vmSetup.syncerDB,
 		[]byte(genesisJSONLatest),
 		nil,
 		[]byte(stateSyncDisabledConfigJSON),
@@ -193,7 +193,7 @@ func TestStateSyncToggleEnabledToDisabled(t *testing.T) {
 	if err := syncReEnabledVM.Initialize(
 		context.Background(),
 		vmSetup.syncerVM.ctx,
-		vmSetup.syncerDBManager,
+		vmSetup.syncerDB,
 		[]byte(genesisJSONLatest),
 		nil,
 		[]byte(configJSON),
@@ -282,6 +282,11 @@ func createSyncServerAndClientVMs(t *testing.T, test syncTest) *syncVMSetup {
 		err                error
 	)
 	generateAndAcceptBlocks(t, serverVM, parentsToGet, func(i int, gen *core.BlockGen) {
+		b, err := predicate.NewResults().Bytes()
+		if err != nil {
+			t.Fatal(err)
+		}
+		gen.AppendExtra(b)
 		switch i {
 		case 0:
 			// spend the UTXOs from shared memory
@@ -342,7 +347,7 @@ func createSyncServerAndClientVMs(t *testing.T, test syncTest) *syncVMSetup {
 
 	// initialise [syncerVM] with blank genesis state
 	stateSyncEnabledJSON := fmt.Sprintf(`{"state-sync-enabled":true, "state-sync-min-blocks": %d}`, test.stateSyncMinBlocks)
-	syncerEngineChan, syncerVM, syncerDBManager, syncerAtomicMemory, syncerAppSender := GenesisVMWithUTXOs(
+	syncerEngineChan, syncerVM, syncerDB, syncerAtomicMemory, syncerAppSender := GenesisVMWithUTXOs(
 		t, false, "", stateSyncEnabledJSON, "", alloc,
 	)
 	shutdownOnceSyncerVM := &shutdownOnceVM{VM: syncerVM}
@@ -395,7 +400,7 @@ func createSyncServerAndClientVMs(t *testing.T, test syncTest) *syncVMSetup {
 		},
 		fundedAccounts:       accounts,
 		syncerVM:             syncerVM,
-		syncerDBManager:      syncerDBManager,
+		syncerDB:             syncerDB,
 		syncerEngineChan:     syncerEngineChan,
 		syncerAtomicMemory:   syncerAtomicMemory,
 		shutdownOnceSyncerVM: shutdownOnceSyncerVM,
@@ -412,7 +417,7 @@ type syncVMSetup struct {
 	fundedAccounts    map[*keystore.Key]*types.StateAccount
 
 	syncerVM             *VM
-	syncerDBManager      manager.Manager
+	syncerDB             database.Database
 	syncerEngineChan     <-chan commonEng.Message
 	syncerAtomicMemory   *atomic.Memory
 	shutdownOnceSyncerVM *shutdownOnceVM
@@ -489,12 +494,17 @@ func testSyncerVM(t *testing.T, vmSetup *syncVMSetup, test syncTest) {
 
 	blocksToBuild := 10
 	txsPerBlock := 10
-	toAddress := testEthAddrs[2] // arbitrary choice
+	toAddress := testEthAddrs[1] // arbitrary choice
 	generateAndAcceptBlocks(t, syncerVM, blocksToBuild, func(_ int, gen *core.BlockGen) {
+		b, err := predicate.NewResults().Bytes()
+		if err != nil {
+			t.Fatal(err)
+		}
+		gen.AppendExtra(b)
 		i := 0
 		for k := range fundedAccounts {
 			tx := types.NewTransaction(gen.TxNonce(k.Address), toAddress, big.NewInt(1), 21000, initialBaseFee, nil)
-			signedTx, err := types.SignTx(tx, types.NewEIP155Signer(serverVM.chainID), k.PrivateKey)
+			signedTx, err := types.SignTx(tx, types.NewEIP155Signer(serverVM.chainConfig.ChainID), k.PrivateKey)
 			require.NoError(err)
 			gen.AddTx(signedTx)
 			i++
@@ -517,10 +527,15 @@ func testSyncerVM(t *testing.T, vmSetup *syncVMSetup, test syncTest) {
 
 	// Generate blocks after we have entered normal consensus as well
 	generateAndAcceptBlocks(t, syncerVM, blocksToBuild, func(_ int, gen *core.BlockGen) {
+		b, err := predicate.NewResults().Bytes()
+		if err != nil {
+			t.Fatal(err)
+		}
+		gen.AppendExtra(b)
 		i := 0
 		for k := range fundedAccounts {
 			tx := types.NewTransaction(gen.TxNonce(k.Address), toAddress, big.NewInt(1), 21000, initialBaseFee, nil)
-			signedTx, err := types.SignTx(tx, types.NewEIP155Signer(serverVM.chainID), k.PrivateKey)
+			signedTx, err := types.SignTx(tx, types.NewEIP155Signer(serverVM.chainConfig.ChainID), k.PrivateKey)
 			require.NoError(err)
 			gen.AddTx(signedTx)
 			i++
@@ -540,7 +555,7 @@ func patchBlock(blk *types.Block, root common.Hash, db ethdb.Database) *types.Bl
 	header := blk.Header()
 	header.Root = root
 	receipts := rawdb.ReadRawReceipts(db, blk.Hash(), blk.NumberU64())
-	newBlk := types.NewBlock(
+	newBlk := types.NewBlockWithExtData(
 		header, blk.Transactions(), blk.Uncles(), receipts, trie.NewStackTrie(nil), blk.ExtData(), true,
 	)
 	rawdb.WriteBlock(db, newBlk)
@@ -575,7 +590,7 @@ func generateAndAcceptBlocks(t *testing.T, vm *VM, numBlocks int, gen func(int, 
 	_, _, err := core.GenerateChain(
 		vm.chainConfig,
 		vm.blockChain.LastAcceptedBlock(),
-		dummy.NewDummyEngine(vm.createConsensusCallbacks()),
+		dummy.NewFakerWithCallbacks(vm.createConsensusCallbacks()),
 		vm.chaindb,
 		numBlocks,
 		10,
