@@ -122,7 +122,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraMBTC1ChainConfig = &ChainConfig{
 		ChainID:                         MBTC1ChainID,
@@ -147,7 +147,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraDOGE1ChainConfig = &ChainConfig{
 		ChainID:                         DOGE1ChainID,
@@ -172,7 +172,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraUSD1ChainConfig = &ChainConfig{
 		ChainID:                         USD1ChainID,
@@ -197,7 +197,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraUSDT1ChainConfig = &ChainConfig{
 		ChainID:                         USDT1ChainID,
@@ -222,7 +222,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraDAI1ChainConfig = &ChainConfig{
 		ChainID:                         DAI1ChainID,
@@ -247,7 +247,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraEUR1ChainConfig = &ChainConfig{
 		ChainID:                         EUR1ChainID,
@@ -272,7 +272,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraLTC1ChainConfig = &ChainConfig{
 		ChainID:                         LTC1ChainID,
@@ -297,7 +297,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraGLD1ChainConfig = &ChainConfig{
 		ChainID:                         GLD1ChainID,
@@ -322,7 +322,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 	SocotraSGD1ChainConfig = &ChainConfig{
 		ChainID:                         SGD1ChainID,
@@ -347,7 +347,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
-		DUpgradeBlockTimestamp:          utils.NewUint64(0),
+		DurangoBlockTimestamp:           utils.NewUint64(0),
 	}
 
 	TestChainConfig = &ChainConfig{
