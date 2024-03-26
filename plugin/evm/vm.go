@@ -453,25 +453,35 @@ func (vm *VM) Initialize(
 	// Set the chain config for mainnet/fuji chain IDs
 	switch {
 	case g.Config.ChainID.Cmp(params.JUNEChainID) == 0:
-		g.Config = params.SocotraJUNEChainConfig
+		config := *params.SocotraJUNEChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.MBTC1ChainID) == 0:
-		g.Config = params.SocotraMBTC1ChainConfig
+		config := *params.SocotraMBTC1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.DOGE1ChainID) == 0:
-		g.Config = params.SocotraDOGE1ChainConfig
+		config := *params.SocotraDOGE1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.USD1ChainID) == 0:
-		g.Config = params.SocotraUSD1ChainConfig
+		config := *params.SocotraUSD1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.USDT1ChainID) == 0:
-		g.Config = params.SocotraUSDT1ChainConfig
+		config := *params.SocotraUSDT1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.DAI1ChainID) == 0:
-		g.Config = params.SocotraDAI1ChainConfig
+		config := *params.SocotraDAI1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.EUR1ChainID) == 0:
-		g.Config = params.SocotraEUR1ChainConfig
+		config := *params.SocotraEUR1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.LTC1ChainID) == 0:
-		g.Config = params.SocotraLTC1ChainConfig
+		config := *params.SocotraLTC1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.GLD1ChainID) == 0:
-		g.Config = params.SocotraGLD1ChainConfig
+		config := *params.SocotraGLD1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.SGD1ChainID) == 0:
-		g.Config = params.SocotraSGD1ChainConfig
+		config := *params.SocotraSGD1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.AvalancheMainnetChainID) == 0:
 		config := *params.AvalancheMainnetChainConfig
 		g.Config = &config
