@@ -482,6 +482,12 @@ func (vm *VM) Initialize(
 	case g.Config.ChainID.Cmp(params.SGD1ChainID) == 0:
 		config := *params.SocotraSGD1ChainConfig
 		g.Config = &config
+	case g.Config.ChainID.Cmp(params.BCH1ChainID) == 0:
+		config := *params.SocotraBCH1ChainConfig
+		g.Config = &config
+	case g.Config.ChainID.Cmp(params.LINK1ChainID) == 0:
+		config := *params.SocotraLINK1ChainConfig
+		g.Config = &config
 	case g.Config.ChainID.Cmp(params.AvalancheMainnetChainID) == 0:
 		config := *params.AvalancheMainnetChainConfig
 		g.Config = &config

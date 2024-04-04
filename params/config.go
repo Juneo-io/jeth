@@ -60,6 +60,8 @@ var (
 	LTC1ChainID  = big.NewInt(101009)
 	GLD1ChainID  = big.NewInt(101008)
 	SGD1ChainID  = big.NewInt(101012)
+	BCH1ChainID  = big.NewInt(101013)
+	LINK1ChainID = big.NewInt(101014)
 
 	ETH1AssetID  = "JeUvxJPXoL3EtVGSPwtyYXVymxGbpcBcaa2Kq7TCB43HsKMAS"
 	USDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
@@ -71,6 +73,8 @@ var (
 	MBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
 	DOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
 	LTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
+	BCH1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
+	LINK1AssetId = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
 
 	PrimaryAssetIDs = []string{
 		ETH1AssetID,
@@ -83,6 +87,8 @@ var (
 		MBTC1AssetId,
 		DOGE1AssetId,
 		LTC1AssetId,
+		BCH1AssetId,
+		LINK1AssetId,
 	}
 
 	errNonGenesisForkByHeight = errors.New("coreth only supports forking by height at the genesis block")
@@ -109,6 +115,8 @@ var (
 	SocotraLTC1ChainConfig  = getChainConfig(constants.TestnetID, LTC1ChainID)
 	SocotraGLD1ChainConfig  = getChainConfig(constants.TestnetID, GLD1ChainID)
 	SocotraSGD1ChainConfig  = getChainConfig(constants.TestnetID, SGD1ChainID)
+	SocotraBCH1ChainConfig  = getChainConfig(constants.TestnetID, BCH1ChainID)
+	SocotraLINK1ChainConfig = getChainConfig(constants.TestnetID, LINK1ChainID)
 
 	TestChainConfig = &ChainConfig{
 		AvalancheContext:                AvalancheContext{utils.TestSnowContext()},
@@ -768,6 +776,10 @@ func (c *ChainConfig) GetInitialBaseFee() *big.Int {
 		return big.NewInt(GLD1ChainMinBaseFee)
 	case c.ChainID.Cmp(SGD1ChainID) == 0:
 		return big.NewInt(SGD1ChainMinBaseFee)
+	case c.ChainID.Cmp(BCH1ChainID) == 0:
+		return big.NewInt(BCH1ChainMinBaseFee)
+	case c.ChainID.Cmp(LINK1ChainID) == 0:
+		return big.NewInt(LINK1ChainMinBaseFee)
 	default:
 		return big.NewInt(ApricotPhase3InitialBaseFee)
 	}

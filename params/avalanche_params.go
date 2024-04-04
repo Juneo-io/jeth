@@ -27,6 +27,8 @@ const (
 	LTC1ChainMinBaseFee  int64 = 54_000_000_000
 	DOGE1ChainMinBaseFee int64 = 6477_000_000_000
 	SGD1ChainMinBaseFee  int64 = 635_000_000_000
+	BCH1ChainMinBaseFee  int64 = 1_000_000_000
+	LINK1ChainMinBaseFee int64 = 26_000_000_000
 	EUR1ChainMinBaseFee  int64 = 433_000_000_000
 	USDMinBaseFee        int64 = 476_000_000_000
 

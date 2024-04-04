@@ -75,6 +75,10 @@ func (gpu *gasPriceUpdater) start() {
 		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.GLD1ChainMinBaseFee))
 	case gpu.chainConfig.ChainID.Cmp(params.SGD1ChainID) == 0:
 		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.SGD1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.BCH1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.BCH1ChainMinBaseFee))
+	case gpu.chainConfig.ChainID.Cmp(params.LINK1ChainID) == 0:
+		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.LINK1ChainMinBaseFee))
 	default:
 		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.ApricotPhase4MinBaseFee))
 	}
