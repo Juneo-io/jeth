@@ -6,7 +6,7 @@ package evm
 import (
 	"container/heap"
 
-	"github.com/ava-labs/avalanchego/ids"
+	"github.com/Juneo-io/juneogo/ids"
 )
 
 // txEntry is used to track the [gasPrice] transactions pay to be included in

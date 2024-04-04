@@ -29,7 +29,7 @@ package txpool
 import (
 	"sync"
 
-	"github.com/ava-labs/coreth/core/state"
+	"github.com/Juneo-io/jeth/core/state"
 	"github.com/ethereum/go-ethereum/common"
 )
 

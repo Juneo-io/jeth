@@ -33,7 +33,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ava-labs/coreth/core/types"
+	"github.com/Juneo-io/jeth/core/types"
 )
 
 type blockAndState struct {

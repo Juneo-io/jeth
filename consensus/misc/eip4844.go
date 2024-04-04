@@ -19,7 +19,7 @@ package misc
 import (
 	"math/big"
 
-	"github.com/ava-labs/coreth/params"
+	"github.com/Juneo-io/jeth/params"
 )
 
 var (

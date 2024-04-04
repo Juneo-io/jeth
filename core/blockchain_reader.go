@@ -27,14 +27,14 @@
 package core
 
 import (
-	"github.com/ava-labs/coreth/consensus"
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/core/state"
-	"github.com/ava-labs/coreth/core/state/snapshot"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/core/vm"
-	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/coreth/trie"
+	"github.com/Juneo-io/jeth/consensus"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/core/state"
+	"github.com/Juneo-io/jeth/core/state/snapshot"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/jeth/trie"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
 )

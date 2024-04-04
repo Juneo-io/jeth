@@ -11,30 +11,30 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/avalanchego/chains/atomic"
-	"github.com/ava-labs/avalanchego/database/memdb"
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/network/p2p"
-	"github.com/ava-labs/avalanchego/network/p2p/gossip"
-	"github.com/ava-labs/avalanchego/proto/pb/sdk"
-	"github.com/ava-labs/avalanchego/snow"
-	"github.com/ava-labs/avalanchego/snow/engine/common"
-	"github.com/ava-labs/avalanchego/snow/validators"
-	agoUtils "github.com/ava-labs/avalanchego/utils"
-	"github.com/ava-labs/avalanchego/utils/crypto/secp256k1"
-	"github.com/ava-labs/avalanchego/utils/logging"
-	"github.com/ava-labs/avalanchego/utils/set"
+	"github.com/Juneo-io/juneogo/chains/atomic"
+	"github.com/Juneo-io/juneogo/database/memdb"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/juneogo/network/p2p"
+	"github.com/Juneo-io/juneogo/network/p2p/gossip"
+	"github.com/Juneo-io/juneogo/proto/pb/sdk"
+	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/snow/engine/common"
+	"github.com/Juneo-io/juneogo/snow/validators"
+	agoUtils "github.com/Juneo-io/juneogo/utils"
+	"github.com/Juneo-io/juneogo/utils/crypto/secp256k1"
+	"github.com/Juneo-io/juneogo/utils/logging"
+	"github.com/Juneo-io/juneogo/utils/set"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ava-labs/avalanchego/vms/components/avax"
-	"github.com/ava-labs/avalanchego/vms/secp256k1fx"
+	"github.com/Juneo-io/juneogo/vms/components/avax"
+	"github.com/Juneo-io/juneogo/vms/secp256k1fx"
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/coreth/utils"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/jeth/utils"
 )
 
 func TestEthTxGossip(t *testing.T) {
@@ -164,7 +164,7 @@ func TestAtomicTxGossip(t *testing.T) {
 	snowCtx.AVAXAssetID = ids.GenerateTestID()
 	snowCtx.XChainID = ids.GenerateTestID()
 	validatorState := &validators.TestState{
-		GetSubnetIDF: func(context.Context, ids.ID) (ids.ID, error) {
+		GetSupernetIDF: func(context.Context, ids.ID) (ids.ID, error) {
 			return ids.Empty, nil
 		},
 	}
@@ -422,7 +422,7 @@ func TestAtomicTxPushGossipOutbound(t *testing.T) {
 	snowCtx.AVAXAssetID = ids.GenerateTestID()
 	snowCtx.XChainID = ids.GenerateTestID()
 	validatorState := &validators.TestState{
-		GetSubnetIDF: func(context.Context, ids.ID) (ids.ID, error) {
+		GetSupernetIDF: func(context.Context, ids.ID) (ids.ID, error) {
 			return ids.Empty, nil
 		},
 	}
@@ -500,7 +500,7 @@ func TestAtomicTxPushGossipInbound(t *testing.T) {
 	snowCtx.AVAXAssetID = ids.GenerateTestID()
 	snowCtx.XChainID = ids.GenerateTestID()
 	validatorState := &validators.TestState{
-		GetSubnetIDF: func(context.Context, ids.ID) (ids.ID, error) {
+		GetSupernetIDF: func(context.Context, ids.ID) (ids.ID, error) {
 			return ids.Empty, nil
 		},
 	}

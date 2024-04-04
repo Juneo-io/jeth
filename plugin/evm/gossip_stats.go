@@ -3,7 +3,7 @@
 
 package evm
 
-import "github.com/ava-labs/coreth/metrics"
+import "github.com/Juneo-io/jeth/metrics"
 
 var _ GossipStats = &gossipStats{}
 

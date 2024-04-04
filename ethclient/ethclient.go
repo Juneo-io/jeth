@@ -34,11 +34,11 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/coreth/accounts/abi/bind"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/interfaces"
-	"github.com/ava-labs/coreth/rpc"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/jeth/accounts/abi/bind"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/interfaces"
+	"github.com/Juneo-io/jeth/rpc"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )

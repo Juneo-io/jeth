@@ -9,16 +9,16 @@ import (
 
 	"github.com/ethereum/go-ethereum/log"
 
-	"github.com/ava-labs/avalanchego/utils/crypto/bls"
-	"github.com/ava-labs/avalanchego/utils/set"
-	avalancheWarp "github.com/ava-labs/avalanchego/vms/platformvm/warp"
-	"github.com/ava-labs/coreth/precompile/contracts/warp"
+	"github.com/Juneo-io/juneogo/utils/crypto/bls"
+	"github.com/Juneo-io/juneogo/utils/set"
+	avalancheWarp "github.com/Juneo-io/juneogo/vms/platformvm/warp"
+	"github.com/Juneo-io/jeth/precompile/contracts/warp"
 )
 
 type AggregateSignatureResult struct {
 	// Weight of validators included in the aggregate signature.
 	SignatureWeight uint64
-	// Total weight of all validators in the subnet.
+	// Total weight of all validators in the supernet.
 	TotalWeight uint64
 	// The message with the aggregate signature.
 	Message *avalancheWarp.Message

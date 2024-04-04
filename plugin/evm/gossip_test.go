@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/network/p2p/gossip"
-	"github.com/ava-labs/avalanchego/snow"
-	"github.com/ava-labs/avalanchego/utils/crypto/secp256k1"
-	"github.com/ava-labs/avalanchego/vms/components/verify"
-	"github.com/ava-labs/coreth/consensus/dummy"
-	"github.com/ava-labs/coreth/core"
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/core/txpool"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/core/vm"
-	"github.com/ava-labs/coreth/params"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/juneogo/network/p2p/gossip"
+	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/utils/crypto/secp256k1"
+	"github.com/Juneo-io/juneogo/vms/components/verify"
+	"github.com/Juneo-io/jeth/consensus/dummy"
+	"github.com/Juneo-io/jeth/core"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/core/txpool"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/Juneo-io/jeth/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/prometheus/client_golang/prometheus"
@@ -174,7 +174,7 @@ func TestGossipSubscribe(t *testing.T) {
 	// Notify mempool about txs
 	errs := txPool.AddRemotesSync(ethTxs)
 	for _, err := range errs {
-		require.NoError(err, "failed adding subnet-evm tx to remote mempool")
+		require.NoError(err, "failed adding supernet-evm tx to remote mempool")
 	}
 
 	require.Eventually(

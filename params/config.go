@@ -32,12 +32,12 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ava-labs/avalanchego/snow"
-	"github.com/ava-labs/avalanchego/utils/constants"
-	"github.com/ava-labs/avalanchego/version"
-	"github.com/ava-labs/coreth/precompile/modules"
-	"github.com/ava-labs/coreth/precompile/precompileconfig"
-	"github.com/ava-labs/coreth/utils"
+	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/utils/constants"
+	"github.com/Juneo-io/juneogo/version"
+	"github.com/Juneo-io/jeth/precompile/modules"
+	"github.com/Juneo-io/jeth/precompile/precompileconfig"
+	"github.com/Juneo-io/jeth/utils"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -570,7 +570,7 @@ type ChainConfig struct {
 	CortinaBlockTimestamp *uint64 `json:"cortinaBlockTimestamp,omitempty"`
 	// Durango activates the Shanghai Execution Spec Upgrade from Ethereum (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md#included-eips)
 	// and Avalanche Warp Messaging. (nil = no fork, 0 = already activated)
-	// Note: EIP-4895 is excluded since withdrawals are not relevant to the Avalanche C-Chain or Subnets running the EVM.
+	// Note: EIP-4895 is excluded since withdrawals are not relevant to the Avalanche C-Chain or Supernets running the EVM.
 	DurangoBlockTimestamp *uint64 `json:"durangoBlockTimestamp,omitempty"`
 	// Cancun activates the Cancun upgrade from Ethereum. (nil = no fork, 0 = already activated)
 	CancunTime *uint64 `json:"cancunTime,omitempty"`

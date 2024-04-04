@@ -19,7 +19,7 @@ package types
 import (
 	"math/big"
 
-	"github.com/ava-labs/coreth/params"
+	"github.com/Juneo-io/jeth/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/holiman/uint256"
 )

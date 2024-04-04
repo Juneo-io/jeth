@@ -8,12 +8,12 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/ava-labs/coreth/params"
+	"github.com/Juneo-io/jeth/params"
 
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/plugin/evm/message"
-	"github.com/ava-labs/coreth/sync/handlers/stats"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/plugin/evm/message"
+	"github.com/Juneo-io/jeth/sync/handlers/stats"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethdb/memorydb"

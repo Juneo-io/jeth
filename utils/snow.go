@@ -4,11 +4,11 @@
 package utils
 
 import (
-	"github.com/ava-labs/avalanchego/api/metrics"
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/snow"
-	"github.com/ava-labs/avalanchego/utils/crypto/bls"
-	"github.com/ava-labs/avalanchego/utils/logging"
+	"github.com/Juneo-io/juneogo/api/metrics"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/utils/crypto/bls"
+	"github.com/Juneo-io/juneogo/utils/logging"
 )
 
 func TestSnowContext() *snow.Context {
@@ -19,7 +19,7 @@ func TestSnowContext() *snow.Context {
 	pk := bls.PublicFromSecretKey(sk)
 	return &snow.Context{
 		NetworkID:    0,
-		SubnetID:     ids.Empty,
+		SupernetID:     ids.Empty,
 		ChainID:      ids.Empty,
 		NodeID:       ids.EmptyNodeID,
 		PublicKey:    pk,

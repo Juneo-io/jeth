@@ -17,49 +17,49 @@ import (
 	"sync"
 	"time"
 
-	avalanchegoMetrics "github.com/ava-labs/avalanchego/api/metrics"
-	"github.com/ava-labs/avalanchego/network/p2p"
-	"github.com/ava-labs/avalanchego/network/p2p/gossip"
-	avalanchegoConstants "github.com/ava-labs/avalanchego/utils/constants"
+	avalanchegoMetrics "github.com/Juneo-io/juneogo/api/metrics"
+	"github.com/Juneo-io/juneogo/network/p2p"
+	"github.com/Juneo-io/juneogo/network/p2p/gossip"
+	avalanchegoConstants "github.com/Juneo-io/juneogo/utils/constants"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/ava-labs/coreth/consensus/dummy"
-	"github.com/ava-labs/coreth/constants"
-	"github.com/ava-labs/coreth/core"
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/core/state"
-	"github.com/ava-labs/coreth/core/txpool"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/eth"
-	"github.com/ava-labs/coreth/eth/ethconfig"
-	"github.com/ava-labs/coreth/metrics"
-	corethPrometheus "github.com/ava-labs/coreth/metrics/prometheus"
-	"github.com/ava-labs/coreth/miner"
-	"github.com/ava-labs/coreth/node"
-	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/coreth/peer"
-	"github.com/ava-labs/coreth/plugin/evm/message"
+	"github.com/Juneo-io/jeth/consensus/dummy"
+	"github.com/Juneo-io/jeth/constants"
+	"github.com/Juneo-io/jeth/core"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/core/state"
+	"github.com/Juneo-io/jeth/core/txpool"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/eth"
+	"github.com/Juneo-io/jeth/eth/ethconfig"
+	"github.com/Juneo-io/jeth/metrics"
+	corethPrometheus "github.com/Juneo-io/jeth/metrics/prometheus"
+	"github.com/Juneo-io/jeth/miner"
+	"github.com/Juneo-io/jeth/node"
+	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/jeth/peer"
+	"github.com/Juneo-io/jeth/plugin/evm/message"
 
-	warpPrecompile "github.com/ava-labs/coreth/precompile/contracts/warp"
-	"github.com/ava-labs/coreth/rpc"
-	statesyncclient "github.com/ava-labs/coreth/sync/client"
-	"github.com/ava-labs/coreth/sync/client/stats"
-	"github.com/ava-labs/coreth/trie"
-	"github.com/ava-labs/coreth/utils"
-	"github.com/ava-labs/coreth/warp"
-	warpValidators "github.com/ava-labs/coreth/warp/validators"
+	warpPrecompile "github.com/Juneo-io/jeth/precompile/contracts/warp"
+	"github.com/Juneo-io/jeth/rpc"
+	statesyncclient "github.com/Juneo-io/jeth/sync/client"
+	"github.com/Juneo-io/jeth/sync/client/stats"
+	"github.com/Juneo-io/jeth/trie"
+	"github.com/Juneo-io/jeth/utils"
+	"github.com/Juneo-io/jeth/warp"
+	warpValidators "github.com/Juneo-io/jeth/warp/validators"
 
 	// Force-load tracer engine to trigger registration
 	//
 	// We must import this package (not referenced elsewhere) so that the native "callTracer"
 	// is added to a map of client-accessible tracers. In geth, this is done
 	// inside of cmd/geth.
-	_ "github.com/ava-labs/coreth/eth/tracers/js"
-	_ "github.com/ava-labs/coreth/eth/tracers/native"
+	_ "github.com/Juneo-io/jeth/eth/tracers/js"
+	_ "github.com/Juneo-io/jeth/eth/tracers/native"
 
-	"github.com/ava-labs/coreth/precompile/precompileconfig"
+	"github.com/Juneo-io/jeth/precompile/precompileconfig"
 	// Force-load precompiles to trigger registration
-	_ "github.com/ava-labs/coreth/precompile/registry"
+	_ "github.com/Juneo-io/jeth/precompile/registry"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethdb"
@@ -68,34 +68,34 @@ import (
 
 	avalancheRPC "github.com/gorilla/rpc/v2"
 
-	"github.com/ava-labs/avalanchego/cache"
-	"github.com/ava-labs/avalanchego/codec"
-	"github.com/ava-labs/avalanchego/codec/linearcodec"
-	"github.com/ava-labs/avalanchego/database"
-	"github.com/ava-labs/avalanchego/database/prefixdb"
-	"github.com/ava-labs/avalanchego/database/versiondb"
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/snow"
-	"github.com/ava-labs/avalanchego/snow/choices"
-	"github.com/ava-labs/avalanchego/snow/consensus/snowman"
-	"github.com/ava-labs/avalanchego/snow/engine/snowman/block"
-	"github.com/ava-labs/avalanchego/utils/crypto/secp256k1"
-	"github.com/ava-labs/avalanchego/utils/formatting/address"
-	"github.com/ava-labs/avalanchego/utils/logging"
-	"github.com/ava-labs/avalanchego/utils/math"
-	"github.com/ava-labs/avalanchego/utils/perms"
-	"github.com/ava-labs/avalanchego/utils/profiler"
-	"github.com/ava-labs/avalanchego/utils/set"
-	"github.com/ava-labs/avalanchego/utils/timer/mockable"
-	"github.com/ava-labs/avalanchego/utils/units"
-	"github.com/ava-labs/avalanchego/vms/components/avax"
-	"github.com/ava-labs/avalanchego/vms/components/chain"
-	"github.com/ava-labs/avalanchego/vms/secp256k1fx"
+	"github.com/Juneo-io/juneogo/cache"
+	"github.com/Juneo-io/juneogo/codec"
+	"github.com/Juneo-io/juneogo/codec/linearcodec"
+	"github.com/Juneo-io/juneogo/database"
+	"github.com/Juneo-io/juneogo/database/prefixdb"
+	"github.com/Juneo-io/juneogo/database/versiondb"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/snow/choices"
+	"github.com/Juneo-io/juneogo/snow/consensus/snowman"
+	"github.com/Juneo-io/juneogo/snow/engine/snowman/block"
+	"github.com/Juneo-io/juneogo/utils/crypto/secp256k1"
+	"github.com/Juneo-io/juneogo/utils/formatting/address"
+	"github.com/Juneo-io/juneogo/utils/logging"
+	"github.com/Juneo-io/juneogo/utils/math"
+	"github.com/Juneo-io/juneogo/utils/perms"
+	"github.com/Juneo-io/juneogo/utils/profiler"
+	"github.com/Juneo-io/juneogo/utils/set"
+	"github.com/Juneo-io/juneogo/utils/timer/mockable"
+	"github.com/Juneo-io/juneogo/utils/units"
+	"github.com/Juneo-io/juneogo/vms/components/avax"
+	"github.com/Juneo-io/juneogo/vms/components/chain"
+	"github.com/Juneo-io/juneogo/vms/secp256k1fx"
 
-	commonEng "github.com/ava-labs/avalanchego/snow/engine/common"
+	commonEng "github.com/Juneo-io/juneogo/snow/engine/common"
 
-	avalancheUtils "github.com/ava-labs/avalanchego/utils"
-	avalancheJSON "github.com/ava-labs/avalanchego/utils/json"
+	avalancheUtils "github.com/Juneo-io/juneogo/utils"
+	avalancheJSON "github.com/Juneo-io/juneogo/utils/json"
 )
 
 var (
@@ -623,7 +623,7 @@ func (vm *VM) Initialize(
 	if err != nil {
 		return fmt.Errorf("failed to initialize p2p network: %w", err)
 	}
-	vm.validators = p2p.NewValidators(p2pNetwork.Peers, vm.ctx.Log, vm.ctx.SubnetID, vm.ctx.ValidatorState, maxValidatorSetStaleness)
+	vm.validators = p2p.NewValidators(p2pNetwork.Peers, vm.ctx.Log, vm.ctx.SupernetID, vm.ctx.ValidatorState, maxValidatorSetStaleness)
 	vm.networkCodec = message.Codec
 	vm.Network = peer.NewNetwork(p2pNetwork, appSender, vm.networkCodec, message.CrossChainCodec, chainCtx.NodeID, vm.config.MaxOutboundActiveRequests, vm.config.MaxOutboundActiveCrossChainRequests)
 	vm.client = peer.NewNetworkClient(vm.Network)
@@ -1509,7 +1509,7 @@ func (vm *VM) CreateHandlers(context.Context) (map[string]http.Handler, error) {
 
 	if vm.config.WarpAPIEnabled {
 		validatorsState := warpValidators.NewState(vm.ctx)
-		if err := handler.RegisterName("warp", warp.NewAPI(vm.ctx.NetworkID, vm.ctx.SubnetID, vm.ctx.ChainID, validatorsState, vm.warpBackend, vm.client)); err != nil {
+		if err := handler.RegisterName("warp", warp.NewAPI(vm.ctx.NetworkID, vm.ctx.SupernetID, vm.ctx.ChainID, validatorsState, vm.warpBackend, vm.client)); err != nil {
 			return nil, err
 		}
 		enabledAPIs = append(enabledAPIs, "warp")

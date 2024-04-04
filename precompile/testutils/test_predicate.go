@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/coreth/precompile/precompileconfig"
+	"github.com/Juneo-io/jeth/precompile/precompileconfig"
 	"github.com/stretchr/testify/require"
 )
 

@@ -21,9 +21,9 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/ava-labs/coreth/trie/triedb/hashdb"
-	"github.com/ava-labs/coreth/trie/trienode"
-	"github.com/ava-labs/coreth/utils"
+	"github.com/Juneo-io/jeth/trie/triedb/hashdb"
+	"github.com/Juneo-io/jeth/trie/trienode"
+	"github.com/Juneo-io/jeth/utils"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/log"

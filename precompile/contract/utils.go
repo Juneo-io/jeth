@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ava-labs/coreth/accounts/abi"
-	"github.com/ava-labs/coreth/vmerrs"
+	"github.com/Juneo-io/jeth/accounts/abi"
+	"github.com/Juneo-io/jeth/vmerrs"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
