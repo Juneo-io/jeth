@@ -32,12 +32,12 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/Juneo-io/juneogo/snow"
-	"github.com/Juneo-io/juneogo/utils/constants"
-	"github.com/Juneo-io/juneogo/version"
 	"github.com/Juneo-io/jeth/precompile/modules"
 	"github.com/Juneo-io/jeth/precompile/precompileconfig"
 	"github.com/Juneo-io/jeth/utils"
+	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/utils/constants"
+	"github.com/Juneo-io/juneogo/version"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -73,8 +73,8 @@ var (
 	MBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
 	DOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
 	LTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
-	BCH1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
-	LINK1AssetId = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
+	BCH1AssetId  = "2RBX4TiRmUxU1FsmNmEgdEGcFtgPr9NTGqnm5f33mK8adciKsA"
+	LINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
 
 	PrimaryAssetIDs = []string{
 		ETH1AssetID,

@@ -1,5 +1,4 @@
-module github.com/ava-labs/coreth
-
+module github.com/Juneo-io/jeth
 go 1.21
 
 require (
