@@ -2076,5 +2076,7 @@ func (vm *VM) stateSyncEnabled(lastAcceptedHeight uint64) bool {
 	}
 
 	// enable state sync by default if the chain is empty.
-	return lastAcceptedHeight == 0
+	// return lastAcceptedHeight == 0
+	// disable it by default for the start of the network
+	return false
 }
