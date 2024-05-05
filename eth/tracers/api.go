@@ -1090,6 +1090,10 @@ func overrideConfig(original *params.ChainConfig, override *params.ChainConfig) 
 		copy.DurangoBlockTimestamp = timestamp
 		canon = false
 	}
+	if timestamp := override.FeeUpdate1BlockTimestamp; timestamp != nil {
+		copy.FeeUpdate1BlockTimestamp = timestamp
+		canon = false
+	}
 	if timestamp := override.CancunTime; timestamp != nil {
 		copy.CancunTime = timestamp
 		canon = false

@@ -143,6 +143,7 @@ var (
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
 		DurangoBlockTimestamp:           utils.NewUint64(0),
+		FeeUpdate1BlockTimestamp:        utils.NewUint64(0),
 	}
 
 	TestLaunchConfig = &ChainConfig{
@@ -170,6 +171,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhase1Config = &ChainConfig{
@@ -197,6 +199,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhase2Config = &ChainConfig{
@@ -224,6 +227,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhase3Config = &ChainConfig{
@@ -251,6 +255,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhase4Config = &ChainConfig{
@@ -278,6 +283,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhase5Config = &ChainConfig{
@@ -305,6 +311,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhasePre6Config = &ChainConfig{
@@ -332,6 +339,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhase6Config = &ChainConfig{
@@ -359,6 +367,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestApricotPhasePost6Config = &ChainConfig{
@@ -386,6 +395,7 @@ var (
 		BanffBlockTimestamp:             nil,
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestBanffChainConfig = &ChainConfig{
@@ -413,6 +423,7 @@ var (
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           nil,
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestCortinaChainConfig = &ChainConfig{
@@ -440,6 +451,7 @@ var (
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
 		DurangoBlockTimestamp:           nil,
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestDurangoChainConfig = &ChainConfig{
@@ -466,6 +478,7 @@ var (
 		ApricotPhasePost6BlockTimestamp: utils.NewUint64(0),
 		BanffBlockTimestamp:             utils.NewUint64(0),
 		CortinaBlockTimestamp:           utils.NewUint64(0),
+		FeeUpdate1BlockTimestamp:        nil,
 	}
 
 	TestRules = TestChainConfig.AvalancheRules(new(big.Int), 0)
@@ -496,6 +509,7 @@ func getChainConfig(networkID uint32, chainID *big.Int) *ChainConfig {
 		BanffBlockTimestamp:             getUpgradeTime(networkID, version.BanffTimes),
 		CortinaBlockTimestamp:           getUpgradeTime(networkID, version.CortinaTimes),
 		DurangoBlockTimestamp:           getUpgradeTime(networkID, version.DurangoTimes),
+		FeeUpdate1BlockTimestamp:        getUpgradeTime(networkID, version.FeeUpdate1Times),
 	}
 }
 
@@ -571,7 +585,8 @@ type ChainConfig struct {
 	// Durango activates the Shanghai Execution Spec Upgrade from Ethereum (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md#included-eips)
 	// and Avalanche Warp Messaging. (nil = no fork, 0 = already activated)
 	// Note: EIP-4895 is excluded since withdrawals are not relevant to the Avalanche C-Chain or Supernets running the EVM.
-	DurangoBlockTimestamp *uint64 `json:"durangoBlockTimestamp,omitempty"`
+	DurangoBlockTimestamp    *uint64 `json:"durangoBlockTimestamp,omitempty"`
+	FeeUpdate1BlockTimestamp *uint64 `json:"feeUpdate0BlockTimestamp,omitempty"`
 	// Cancun activates the Cancun upgrade from Ethereum. (nil = no fork, 0 = already activated)
 	CancunTime *uint64 `json:"cancunTime,omitempty"`
 
@@ -739,6 +754,12 @@ func (c *ChainConfig) IsDurango(time uint64) bool {
 	return utils.IsTimestampForked(c.DurangoBlockTimestamp, time)
 }
 
+// IsFeeUpdate1 returns whether [time] represents a block
+// with a timestamp after the Fee Update 1 upgrade time.
+func (c *ChainConfig) IsFeeUpdate1(time uint64) bool {
+	return utils.IsTimestampForked(c.FeeUpdate1BlockTimestamp, time)
+}
+
 // IsCancun returns whether [time] represents a block
 // with a timestamp after the Cancun upgrade time.
 func (c *ChainConfig) IsCancun(time uint64) bool {
@@ -757,29 +778,29 @@ func IsPrimaryAssetID(assetID string) bool {
 func (c *ChainConfig) GetInitialBaseFee() *big.Int {
 	switch {
 	case c.ChainID.Cmp(JUNEChainID) == 0:
-		return big.NewInt(JUNEChainMinBaseFee)
+		return big.NewInt(JUNEStartMinBaseFee)
 	case c.ChainID.Cmp(MBTC1ChainID) == 0:
-		return big.NewInt(MBTC1ChainMinBaseFee)
+		return big.NewInt(MBTCStartMinBaseFee)
 	case c.ChainID.Cmp(DOGE1ChainID) == 0:
-		return big.NewInt(DOGE1ChainMinBaseFee)
+		return big.NewInt(DOGEStartMinBaseFee)
 	case c.ChainID.Cmp(USD1ChainID) == 0:
-		return big.NewInt(USDMinBaseFee)
+		return big.NewInt(USDStartMinBaseFee)
 	case c.ChainID.Cmp(USDT1ChainID) == 0:
-		return big.NewInt(USDMinBaseFee)
+		return big.NewInt(USDStartMinBaseFee)
 	case c.ChainID.Cmp(DAI1ChainID) == 0:
-		return big.NewInt(USDMinBaseFee)
+		return big.NewInt(USDStartMinBaseFee)
 	case c.ChainID.Cmp(EUR1ChainID) == 0:
-		return big.NewInt(EUR1ChainMinBaseFee)
+		return big.NewInt(EUROStartMinBaseFee)
 	case c.ChainID.Cmp(LTC1ChainID) == 0:
-		return big.NewInt(LTC1ChainMinBaseFee)
+		return big.NewInt(LTCStartMinBaseFee)
 	case c.ChainID.Cmp(GLD1ChainID) == 0:
-		return big.NewInt(GLD1ChainMinBaseFee)
+		return big.NewInt(GLDStartMinBaseFee)
 	case c.ChainID.Cmp(SGD1ChainID) == 0:
-		return big.NewInt(SGD1ChainMinBaseFee)
+		return big.NewInt(SGDStartMinBaseFee)
 	case c.ChainID.Cmp(BCH1ChainID) == 0:
-		return big.NewInt(BCH1ChainMinBaseFee)
+		return big.NewInt(BCHStartMinBaseFee)
 	case c.ChainID.Cmp(LINK1ChainID) == 0:
-		return big.NewInt(LINK1ChainMinBaseFee)
+		return big.NewInt(LINKStartMinBaseFee)
 	default:
 		return big.NewInt(ApricotPhase3InitialBaseFee)
 	}
@@ -898,6 +919,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "banffBlockTimestamp", timestamp: c.BanffBlockTimestamp},
 		{name: "cortinaBlockTimestamp", timestamp: c.CortinaBlockTimestamp},
 		{name: "durangoBlockTimestamp", timestamp: c.DurangoBlockTimestamp},
+		{name: "feeUpdate1BlockTimestamp", timestamp: c.FeeUpdate1BlockTimestamp},
 		{name: "cancunTime", timestamp: c.CancunTime},
 	} {
 		if lastFork.name != "" {
@@ -998,6 +1020,9 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, height *big.Int, time
 	}
 	if isForkTimestampIncompatible(c.DurangoBlockTimestamp, newcfg.DurangoBlockTimestamp, time) {
 		return newTimestampCompatError("Durango fork block timestamp", c.DurangoBlockTimestamp, newcfg.DurangoBlockTimestamp)
+	}
+	if isForkTimestampIncompatible(c.FeeUpdate1BlockTimestamp, newcfg.FeeUpdate1BlockTimestamp, time) {
+		return newTimestampCompatError("FeeUpdate1 fork block timestamp", c.FeeUpdate1BlockTimestamp, newcfg.FeeUpdate1BlockTimestamp)
 	}
 	if isForkTimestampIncompatible(c.CancunTime, newcfg.CancunTime, time) {
 		return newTimestampCompatError("Cancun fork block timestamp", c.CancunTime, newcfg.CancunTime)
@@ -1131,6 +1156,7 @@ type Rules struct {
 	IsBanff                                                                             bool
 	IsCortina                                                                           bool
 	IsDurango                                                                           bool
+	IsFeeUpdate1                                                                        bool
 
 	// ActivePrecompiles maps addresses to stateful precompiled contracts that are enabled
 	// for this rule set.
@@ -1187,6 +1213,7 @@ func (c *ChainConfig) AvalancheRules(blockNum *big.Int, timestamp uint64) Rules 
 	rules.IsBanff = c.IsBanff(timestamp)
 	rules.IsCortina = c.IsCortina(timestamp)
 	rules.IsDurango = c.IsDurango(timestamp)
+	rules.IsFeeUpdate1 = c.IsFeeUpdate1(timestamp)
 
 	// Initialize the stateful precompiles that should be enabled at [blockTimestamp].
 	rules.ActivePrecompiles = make(map[common.Address]precompileconfig.Config)
