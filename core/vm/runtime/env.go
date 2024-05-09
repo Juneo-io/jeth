@@ -27,8 +27,8 @@
 package runtime
 
 import (
-	"github.com/Juneo-io/jeth/core"
-	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/ava-labs/coreth/core"
+	"github.com/ava-labs/coreth/core/vm"
 )
 
 func NewEnv(cfg *Config) *vm.EVM {

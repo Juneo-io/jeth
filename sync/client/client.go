@@ -11,23 +11,23 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Juneo-io/juneogo/ids"
+	"github.com/ava-labs/avalanchego/ids"
 
-	"github.com/Juneo-io/jeth/params"
-	"github.com/Juneo-io/jeth/sync/client/stats"
+	"github.com/ava-labs/coreth/params"
+	"github.com/ava-labs/coreth/sync/client/stats"
 
-	"github.com/Juneo-io/juneogo/codec"
-	"github.com/Juneo-io/juneogo/version"
+	"github.com/ava-labs/avalanchego/codec"
+	"github.com/ava-labs/avalanchego/version"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/log"
 
-	"github.com/Juneo-io/jeth/core/rawdb"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/peer"
-	"github.com/Juneo-io/jeth/plugin/evm/message"
-	"github.com/Juneo-io/jeth/trie"
+	"github.com/ava-labs/coreth/core/rawdb"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/peer"
+	"github.com/ava-labs/coreth/plugin/evm/message"
+	"github.com/ava-labs/coreth/trie"
 	"github.com/ethereum/go-ethereum/ethdb"
 )
 

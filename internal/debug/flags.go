@@ -35,7 +35,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/Juneo-io/jeth/internal/flags"
+	"github.com/ava-labs/coreth/internal/flags"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/fjl/memsize/memsizeui"
 	"github.com/mattn/go-colorable"

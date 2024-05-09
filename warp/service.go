@@ -8,31 +8,31 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Juneo-io/juneogo/ids"
-	"github.com/Juneo-io/juneogo/vms/platformvm/warp"
-	"github.com/Juneo-io/juneogo/vms/platformvm/warp/payload"
-	"github.com/Juneo-io/jeth/peer"
-	"github.com/Juneo-io/jeth/warp/aggregator"
-	"github.com/Juneo-io/jeth/warp/validators"
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/vms/platformvm/warp"
+	"github.com/ava-labs/avalanchego/vms/platformvm/warp/payload"
+	"github.com/ava-labs/coreth/peer"
+	"github.com/ava-labs/coreth/warp/aggregator"
+	"github.com/ava-labs/coreth/warp/validators"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/log"
 )
 
-var errNoValidators = errors.New("cannot aggregate signatures from supernet with no validators")
+var errNoValidators = errors.New("cannot aggregate signatures from subnet with no validators")
 
 // API introduces snowman specific functionality to the evm
 type API struct {
 	networkID                     uint32
-	sourceSupernetID, sourceChainID ids.ID
+	sourceSubnetID, sourceChainID ids.ID
 	backend                       Backend
 	state                         *validators.State
 	client                        peer.NetworkClient
 }
 
-func NewAPI(networkID uint32, sourceSupernetID ids.ID, sourceChainID ids.ID, state *validators.State, backend Backend, client peer.NetworkClient) *API {
+func NewAPI(networkID uint32, sourceSubnetID ids.ID, sourceChainID ids.ID, state *validators.State, backend Backend, client peer.NetworkClient) *API {
 	return &API{
 		networkID:      networkID,
-		sourceSupernetID: sourceSupernetID,
+		sourceSubnetID: sourceSubnetID,
 		sourceChainID:  sourceChainID,
 		backend:        backend,
 		state:          state,
@@ -68,16 +68,16 @@ func (a *API) GetBlockSignature(ctx context.Context, blockID ids.ID) (hexutil.By
 }
 
 // GetMessageAggregateSignature fetches the aggregate signature for the requested [messageID]
-func (a *API) GetMessageAggregateSignature(ctx context.Context, messageID ids.ID, quorumNum uint64, supernetIDStr string) (signedMessageBytes hexutil.Bytes, err error) {
+func (a *API) GetMessageAggregateSignature(ctx context.Context, messageID ids.ID, quorumNum uint64, subnetIDStr string) (signedMessageBytes hexutil.Bytes, err error) {
 	unsignedMessage, err := a.backend.GetMessage(messageID)
 	if err != nil {
 		return nil, err
 	}
-	return a.aggregateSignatures(ctx, unsignedMessage, quorumNum, supernetIDStr)
+	return a.aggregateSignatures(ctx, unsignedMessage, quorumNum, subnetIDStr)
 }
 
 // GetBlockAggregateSignature fetches the aggregate signature for the requested [blockID]
-func (a *API) GetBlockAggregateSignature(ctx context.Context, blockID ids.ID, quorumNum uint64, supernetIDStr string) (signedMessageBytes hexutil.Bytes, err error) {
+func (a *API) GetBlockAggregateSignature(ctx context.Context, blockID ids.ID, quorumNum uint64, subnetIDStr string) (signedMessageBytes hexutil.Bytes, err error) {
 	blockHashPayload, err := payload.NewHash(blockID)
 	if err != nil {
 		return nil, err
@@ -87,33 +87,33 @@ func (a *API) GetBlockAggregateSignature(ctx context.Context, blockID ids.ID, qu
 		return nil, err
 	}
 
-	return a.aggregateSignatures(ctx, unsignedMessage, quorumNum, supernetIDStr)
+	return a.aggregateSignatures(ctx, unsignedMessage, quorumNum, subnetIDStr)
 }
 
-func (a *API) aggregateSignatures(ctx context.Context, unsignedMessage *warp.UnsignedMessage, quorumNum uint64, supernetIDStr string) (hexutil.Bytes, error) {
-	supernetID := a.sourceSupernetID
-	if len(supernetIDStr) > 0 {
-		sid, err := ids.FromString(supernetIDStr)
+func (a *API) aggregateSignatures(ctx context.Context, unsignedMessage *warp.UnsignedMessage, quorumNum uint64, subnetIDStr string) (hexutil.Bytes, error) {
+	subnetID := a.sourceSubnetID
+	if len(subnetIDStr) > 0 {
+		sid, err := ids.FromString(subnetIDStr)
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse supernetID: %q", supernetIDStr)
+			return nil, fmt.Errorf("failed to parse subnetID: %q", subnetIDStr)
 		}
-		supernetID = sid
+		subnetID = sid
 	}
 	pChainHeight, err := a.state.GetCurrentHeight(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	validators, totalWeight, err := warp.GetCanonicalValidatorSet(ctx, a.state, pChainHeight, supernetID)
+	validators, totalWeight, err := warp.GetCanonicalValidatorSet(ctx, a.state, pChainHeight, subnetID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get validator set: %w", err)
 	}
 	if len(validators) == 0 {
-		return nil, fmt.Errorf("%w (SupernetID: %s, Height: %d)", errNoValidators, supernetID, pChainHeight)
+		return nil, fmt.Errorf("%w (SubnetID: %s, Height: %d)", errNoValidators, subnetID, pChainHeight)
 	}
 
 	log.Debug("Fetching signature",
-		"sourceSupernetID", supernetID,
+		"sourceSubnetID", subnetID,
 		"height", pChainHeight,
 		"numValidators", len(validators),
 		"totalWeight", totalWeight,

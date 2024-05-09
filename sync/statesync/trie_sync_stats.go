@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	utils_math "github.com/Juneo-io/juneogo/utils/math"
-	"github.com/Juneo-io/jeth/metrics"
+	utils_math "github.com/ava-labs/avalanchego/utils/math"
+	"github.com/ava-labs/coreth/metrics"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )

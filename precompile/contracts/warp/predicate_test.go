@@ -9,20 +9,20 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Juneo-io/juneogo/ids"
-	"github.com/Juneo-io/juneogo/snow"
-	"github.com/Juneo-io/juneogo/snow/engine/snowman/block"
-	"github.com/Juneo-io/juneogo/snow/validators"
-	agoUtils "github.com/Juneo-io/juneogo/utils"
-	"github.com/Juneo-io/juneogo/utils/constants"
-	"github.com/Juneo-io/juneogo/utils/crypto/bls"
-	"github.com/Juneo-io/juneogo/utils/set"
-	avalancheWarp "github.com/Juneo-io/juneogo/vms/platformvm/warp"
-	"github.com/Juneo-io/juneogo/vms/platformvm/warp/payload"
-	"github.com/Juneo-io/jeth/precompile/precompileconfig"
-	"github.com/Juneo-io/jeth/precompile/testutils"
-	"github.com/Juneo-io/jeth/predicate"
-	"github.com/Juneo-io/jeth/utils"
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/snow"
+	"github.com/ava-labs/avalanchego/snow/engine/snowman/block"
+	"github.com/ava-labs/avalanchego/snow/validators"
+	agoUtils "github.com/ava-labs/avalanchego/utils"
+	"github.com/ava-labs/avalanchego/utils/constants"
+	"github.com/ava-labs/avalanchego/utils/crypto/bls"
+	"github.com/ava-labs/avalanchego/utils/set"
+	avalancheWarp "github.com/ava-labs/avalanchego/vms/platformvm/warp"
+	"github.com/ava-labs/avalanchego/vms/platformvm/warp/payload"
+	"github.com/ava-labs/coreth/precompile/precompileconfig"
+	"github.com/ava-labs/coreth/precompile/testutils"
+	"github.com/ava-labs/coreth/predicate"
+	"github.com/ava-labs/coreth/utils"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 )
@@ -35,7 +35,7 @@ var (
 	errTest        = errors.New("non-nil error")
 	networkID      = uint32(54321)
 	sourceChainID  = ids.GenerateTestID()
-	sourceSupernetID = ids.GenerateTestID()
+	sourceSubnetID = ids.GenerateTestID()
 
 	// valid unsigned warp message used throughout testing
 	unsignedMsg *avalancheWarp.UnsignedMessage
@@ -198,10 +198,10 @@ func createSnowCtx(validatorRanges []validatorRange) *snow.Context {
 
 	snowCtx := utils.TestSnowContext()
 	state := &validators.TestState{
-		GetSupernetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
-			return sourceSupernetID, nil
+		GetSubnetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
+			return sourceSubnetID, nil
 		},
-		GetValidatorSetF: func(ctx context.Context, height uint64, supernetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {
+		GetValidatorSetF: func(ctx context.Context, height uint64, subnetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {
 			return getValidatorsOutput, nil
 		},
 	}
@@ -262,17 +262,17 @@ func TestWarpMessageFromPrimaryNetwork(t *testing.T) {
 	predicateBytes := predicate.PackPredicate(warpMsg.Bytes())
 
 	snowCtx := utils.TestSnowContext()
-	snowCtx.SupernetID = ids.GenerateTestID()
+	snowCtx.SubnetID = ids.GenerateTestID()
 	snowCtx.ChainID = ids.GenerateTestID()
 	snowCtx.CChainID = cChainID
 	snowCtx.NetworkID = networkID
 	snowCtx.ValidatorState = &validators.TestState{
-		GetSupernetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
+		GetSubnetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
 			require.Equal(chainID, cChainID)
-			return constants.PrimaryNetworkID, nil // Return Primary Network SupernetID
+			return constants.PrimaryNetworkID, nil // Return Primary Network SubnetID
 		},
-		GetValidatorSetF: func(ctx context.Context, height uint64, supernetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {
-			require.Equal(snowCtx.SupernetID, supernetID)
+		GetValidatorSetF: func(ctx context.Context, height uint64, subnetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {
+			require.Equal(snowCtx.SubnetID, subnetID)
 			return getValidatorsOutput, nil
 		},
 	}
@@ -667,10 +667,10 @@ func initWarpPredicateTests() {
 		snowCtx := utils.TestSnowContext()
 		snowCtx.NetworkID = networkID
 		state := &validators.TestState{
-			GetSupernetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
-				return sourceSupernetID, nil
+			GetSubnetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
+				return sourceSubnetID, nil
 			},
-			GetValidatorSetF: func(ctx context.Context, height uint64, supernetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {
+			GetValidatorSetF: func(ctx context.Context, height uint64, subnetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {
 				return getValidatorsOutput, nil
 			},
 		}

@@ -31,8 +31,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/interfaces"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/interfaces"
 	"github.com/ethereum/go-ethereum/common"
 )
 

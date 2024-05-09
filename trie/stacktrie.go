@@ -34,7 +34,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/Juneo-io/jeth/core/types"
+	"github.com/ava-labs/coreth/core/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )

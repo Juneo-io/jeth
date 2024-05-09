@@ -28,13 +28,13 @@
 package miner
 
 import (
-	"github.com/Juneo-io/juneogo/utils/timer/mockable"
-	"github.com/Juneo-io/jeth/consensus"
-	"github.com/Juneo-io/jeth/core"
-	"github.com/Juneo-io/jeth/core/txpool"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/params"
-	"github.com/Juneo-io/jeth/precompile/precompileconfig"
+	"github.com/ava-labs/avalanchego/utils/timer/mockable"
+	"github.com/ava-labs/coreth/consensus"
+	"github.com/ava-labs/coreth/core"
+	"github.com/ava-labs/coreth/core/txpool"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/params"
+	"github.com/ava-labs/coreth/precompile/precompileconfig"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
 )

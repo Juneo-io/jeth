@@ -7,11 +7,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/Juneo-io/juneogo/codec"
-	"github.com/Juneo-io/juneogo/ids"
+	"github.com/ava-labs/avalanchego/codec"
+	"github.com/ava-labs/avalanchego/ids"
 
-	"github.com/Juneo-io/jeth/internal/ethapi"
-	"github.com/Juneo-io/jeth/rpc"
+	"github.com/ava-labs/coreth/internal/ethapi"
+	"github.com/ava-labs/coreth/rpc"
 
 	"github.com/ethereum/go-ethereum/log"
 )

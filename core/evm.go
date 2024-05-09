@@ -29,10 +29,10 @@ package core
 import (
 	"math/big"
 
-	"github.com/Juneo-io/jeth/consensus"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/core/vm"
-	"github.com/Juneo-io/jeth/predicate"
+	"github.com/ava-labs/coreth/consensus"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/core/vm"
+	"github.com/ava-labs/coreth/predicate"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	//"github.com/ethereum/go-ethereum/log"

@@ -31,9 +31,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Juneo-io/jeth/accounts"
-	"github.com/Juneo-io/jeth/accounts/external"
-	"github.com/Juneo-io/jeth/accounts/keystore"
+	"github.com/ava-labs/coreth/accounts"
+	"github.com/ava-labs/coreth/accounts/external"
+	"github.com/ava-labs/coreth/accounts/keystore"
 	"github.com/ethereum/go-ethereum/log"
 )
 

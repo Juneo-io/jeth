@@ -32,7 +32,7 @@ package core
 import (
 	"testing"
 
-	"github.com/Juneo-io/jeth/core/types"
+	"github.com/ava-labs/coreth/core/types"
 )
 
 // verifyNoGaps checks that there are no gaps after the initial set of blocks in

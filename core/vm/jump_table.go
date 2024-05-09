@@ -29,7 +29,7 @@ package vm
 import (
 	"fmt"
 
-	"github.com/Juneo-io/jeth/params"
+	"github.com/ava-labs/coreth/params"
 )
 
 type (
@@ -90,7 +90,7 @@ func validate(jt JumpTable) JumpTable {
 }
 
 // newDurangoInstructionSet returns the frontier, homestead, byzantium,
-// constantinople, istanbul, petersburg, supernet-evm, durango instructions.
+// constantinople, istanbul, petersburg, subnet-evm, durango instructions.
 func newDurangoInstructionSet() JumpTable {
 	instructionSet := newApricotPhase3InstructionSet()
 	enable3855(&instructionSet) // PUSH0 instruction

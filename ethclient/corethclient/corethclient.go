@@ -33,10 +33,10 @@ import (
 	"runtime"
 	"runtime/debug"
 
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/ethclient"
-	"github.com/Juneo-io/jeth/interfaces"
-	"github.com/Juneo-io/jeth/rpc"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/ethclient"
+	"github.com/ava-labs/coreth/interfaces"
+	"github.com/ava-labs/coreth/rpc"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )

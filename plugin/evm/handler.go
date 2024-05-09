@@ -4,14 +4,14 @@
 package evm
 
 import (
-	"github.com/Juneo-io/juneogo/ids"
+	"github.com/ava-labs/avalanchego/ids"
 
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
 
-	"github.com/Juneo-io/jeth/core/txpool"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/plugin/evm/message"
+	"github.com/ava-labs/coreth/core/txpool"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/plugin/evm/message"
 )
 
 // GossipHandler handles incoming gossip messages

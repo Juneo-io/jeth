@@ -34,11 +34,11 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Juneo-io/jeth/consensus/dummy"
-	"github.com/Juneo-io/jeth/core/rawdb"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/core/vm"
-	"github.com/Juneo-io/jeth/params"
+	"github.com/ava-labs/coreth/consensus/dummy"
+	"github.com/ava-labs/coreth/core/rawdb"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/core/vm"
+	"github.com/ava-labs/coreth/params"
 	"github.com/ethereum/go-ethereum/common"
 )
 

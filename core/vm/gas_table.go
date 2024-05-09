@@ -29,8 +29,8 @@ package vm
 import (
 	"errors"
 
-	"github.com/Juneo-io/jeth/params"
-	"github.com/Juneo-io/jeth/vmerrs"
+	"github.com/ava-labs/coreth/params"
+	"github.com/ava-labs/coreth/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 )

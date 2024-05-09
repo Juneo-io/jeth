@@ -32,8 +32,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/trie/trienode"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/trie/trienode"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )

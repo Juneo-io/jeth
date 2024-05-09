@@ -21,7 +21,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Juneo-io/jeth/params"
+	"github.com/ava-labs/coreth/params"
 )
 
 func TestCalcBlobFee(t *testing.T) {

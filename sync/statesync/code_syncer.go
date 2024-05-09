@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Juneo-io/juneogo/ids"
-	"github.com/Juneo-io/juneogo/utils/set"
-	"github.com/Juneo-io/jeth/core/rawdb"
-	"github.com/Juneo-io/jeth/plugin/evm/message"
-	statesyncclient "github.com/Juneo-io/jeth/sync/client"
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/utils/set"
+	"github.com/ava-labs/coreth/core/rawdb"
+	"github.com/ava-labs/coreth/plugin/evm/message"
+	statesyncclient "github.com/ava-labs/coreth/sync/client"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethdb"
 )

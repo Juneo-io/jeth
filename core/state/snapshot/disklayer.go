@@ -31,9 +31,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Juneo-io/jeth/core/rawdb"
-	"github.com/Juneo-io/jeth/trie"
-	"github.com/Juneo-io/jeth/utils"
+	"github.com/ava-labs/coreth/core/rawdb"
+	"github.com/ava-labs/coreth/trie"
+	"github.com/ava-labs/coreth/utils"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/rlp"

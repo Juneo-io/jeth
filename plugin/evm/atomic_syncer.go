@@ -9,14 +9,14 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/Juneo-io/juneogo/database/versiondb"
-	"github.com/Juneo-io/juneogo/utils/wrappers"
+	"github.com/ava-labs/avalanchego/database/versiondb"
+	"github.com/ava-labs/avalanchego/utils/wrappers"
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/Juneo-io/jeth/plugin/evm/message"
-	syncclient "github.com/Juneo-io/jeth/sync/client"
-	"github.com/Juneo-io/jeth/trie"
+	"github.com/ava-labs/coreth/plugin/evm/message"
+	syncclient "github.com/ava-labs/coreth/sync/client"
+	"github.com/ava-labs/coreth/trie"
 )
 
 var (

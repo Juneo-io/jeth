@@ -6,7 +6,7 @@ package params
 import (
 	"math/big"
 
-	"github.com/Juneo-io/juneogo/utils/units"
+	"github.com/ava-labs/avalanchego/utils/units"
 )
 
 // Minimum Gas Price

@@ -27,7 +27,7 @@
 package vm
 
 import (
-	"github.com/Juneo-io/jeth/vmerrs"
+	"github.com/ava-labs/coreth/vmerrs"
 	"github.com/holiman/uint256"
 )
 

@@ -7,11 +7,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Juneo-io/juneogo/ids"
-	"github.com/Juneo-io/juneogo/utils/crypto/bls"
-	avalancheWarp "github.com/Juneo-io/juneogo/vms/platformvm/warp"
-	"github.com/Juneo-io/juneogo/vms/platformvm/warp/payload"
-	"github.com/Juneo-io/jeth/warp/aggregator"
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/utils/crypto/bls"
+	avalancheWarp "github.com/ava-labs/avalanchego/vms/platformvm/warp"
+	"github.com/ava-labs/avalanchego/vms/platformvm/warp/payload"
+	"github.com/ava-labs/coreth/warp/aggregator"
 )
 
 var _ aggregator.SignatureGetter = (*apiFetcher)(nil)

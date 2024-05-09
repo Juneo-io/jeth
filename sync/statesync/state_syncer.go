@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Juneo-io/jeth/core/state/snapshot"
-	syncclient "github.com/Juneo-io/jeth/sync/client"
-	"github.com/Juneo-io/jeth/trie"
+	"github.com/ava-labs/coreth/core/state/snapshot"
+	syncclient "github.com/ava-labs/coreth/sync/client"
+	"github.com/ava-labs/coreth/trie"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"golang.org/x/sync/errgroup"

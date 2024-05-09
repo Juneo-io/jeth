@@ -34,7 +34,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Juneo-io/jeth/params"
+	"github.com/ava-labs/coreth/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/holiman/uint256"

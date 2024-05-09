@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Juneo-io/jeth/constants"
+	"github.com/ava-labs/coreth/constants"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/require"
 )

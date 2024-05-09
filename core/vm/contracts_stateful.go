@@ -4,7 +4,7 @@
 package vm
 
 import (
-	"github.com/Juneo-io/jeth/precompile/contract"
+	"github.com/ava-labs/coreth/precompile/contract"
 	"github.com/ethereum/go-ethereum/common"
 )
 

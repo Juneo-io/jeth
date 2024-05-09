@@ -8,9 +8,9 @@ import (
 	context "context"
 	reflect "reflect"
 
-	bls "github.com/Juneo-io/juneogo/utils/crypto/bls"
-	ids "github.com/Juneo-io/juneogo/ids"
-	warp "github.com/Juneo-io/juneogo/vms/platformvm/warp"
+	bls "github.com/ava-labs/avalanchego/utils/crypto/bls"
+	ids "github.com/ava-labs/avalanchego/ids"
+	warp "github.com/ava-labs/avalanchego/vms/platformvm/warp"
 	gomock "go.uber.org/mock/gomock"
 )
 

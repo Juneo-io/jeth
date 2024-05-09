@@ -13,8 +13,8 @@ import (
 	big "math/big"
 	reflect "reflect"
 
-	snow "github.com/Juneo-io/juneogo/snow"
-	precompileconfig "github.com/Juneo-io/jeth/precompile/precompileconfig"
+	snow "github.com/ava-labs/avalanchego/snow"
+	precompileconfig "github.com/ava-labs/coreth/precompile/precompileconfig"
 	common "github.com/ethereum/go-ethereum/common"
 	gomock "go.uber.org/mock/gomock"
 )

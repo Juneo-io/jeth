@@ -7,9 +7,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Juneo-io/juneogo/ids"
+	"github.com/ava-labs/avalanchego/ids"
 
-	"github.com/Juneo-io/juneogo/version"
+	"github.com/ava-labs/avalanchego/version"
 )
 
 var (

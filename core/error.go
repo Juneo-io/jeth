@@ -29,7 +29,7 @@ package core
 import (
 	"errors"
 
-	"github.com/Juneo-io/jeth/core/types"
+	"github.com/ava-labs/coreth/core/types"
 )
 
 var (

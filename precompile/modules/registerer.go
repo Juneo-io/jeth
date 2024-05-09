@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/Juneo-io/jeth/constants"
-	"github.com/Juneo-io/jeth/utils"
+	"github.com/ava-labs/coreth/constants"
+	"github.com/ava-labs/coreth/utils"
 	"github.com/ethereum/go-ethereum/common"
 )
 

@@ -7,11 +7,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/Juneo-io/juneogo/codec"
-	"github.com/Juneo-io/juneogo/ids"
-	"github.com/Juneo-io/juneogo/utils/crypto/bls"
-	"github.com/Juneo-io/jeth/plugin/evm/message"
-	"github.com/Juneo-io/jeth/warp"
+	"github.com/ava-labs/avalanchego/codec"
+	"github.com/ava-labs/avalanchego/ids"
+	"github.com/ava-labs/avalanchego/utils/crypto/bls"
+	"github.com/ava-labs/coreth/plugin/evm/message"
+	"github.com/ava-labs/coreth/warp"
 	"github.com/ethereum/go-ethereum/log"
 )
 

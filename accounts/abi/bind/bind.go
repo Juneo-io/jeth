@@ -39,7 +39,7 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/Juneo-io/jeth/accounts/abi"
+	"github.com/ava-labs/coreth/accounts/abi"
 	"github.com/ethereum/go-ethereum/log"
 )
 

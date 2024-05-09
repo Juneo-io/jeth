@@ -30,7 +30,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Juneo-io/jeth/metrics"
+	"github.com/ava-labs/coreth/metrics"
 )
 
 var (

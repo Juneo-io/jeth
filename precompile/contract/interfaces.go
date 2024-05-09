@@ -7,8 +7,8 @@ package contract
 import (
 	"math/big"
 
-	"github.com/Juneo-io/juneogo/snow"
-	"github.com/Juneo-io/jeth/precompile/precompileconfig"
+	"github.com/ava-labs/avalanchego/snow"
+	"github.com/ava-labs/coreth/precompile/precompileconfig"
 	"github.com/ethereum/go-ethereum/common"
 )
 

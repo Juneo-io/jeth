@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Juneo-io/jeth/precompile/precompileconfig"
-	"github.com/Juneo-io/jeth/precompile/testutils"
-	"github.com/Juneo-io/jeth/utils"
+	"github.com/ava-labs/coreth/precompile/precompileconfig"
+	"github.com/ava-labs/coreth/precompile/testutils"
+	"github.com/ava-labs/coreth/utils"
 	"go.uber.org/mock/gomock"
 )
 

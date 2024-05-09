@@ -31,7 +31,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/ava-labs/coreth/core/rawdb"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )

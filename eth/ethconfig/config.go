@@ -29,10 +29,10 @@ package ethconfig
 import (
 	"time"
 
-	"github.com/Juneo-io/jeth/core"
-	"github.com/Juneo-io/jeth/core/txpool"
-	"github.com/Juneo-io/jeth/eth/gasprice"
-	"github.com/Juneo-io/jeth/miner"
+	"github.com/ava-labs/coreth/core"
+	"github.com/ava-labs/coreth/core/txpool"
+	"github.com/ava-labs/coreth/eth/gasprice"
+	"github.com/ava-labs/coreth/miner"
 	"github.com/ethereum/go-ethereum/common"
 )
 

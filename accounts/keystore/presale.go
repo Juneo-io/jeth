@@ -35,7 +35,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Juneo-io/jeth/accounts"
+	"github.com/ava-labs/coreth/accounts"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/pbkdf2"

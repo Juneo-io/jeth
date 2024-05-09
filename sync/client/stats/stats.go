@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Juneo-io/jeth/metrics"
-	"github.com/Juneo-io/jeth/plugin/evm/message"
+	"github.com/ava-labs/coreth/metrics"
+	"github.com/ava-labs/coreth/plugin/evm/message"
 )
 
 var (

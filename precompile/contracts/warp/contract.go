@@ -7,11 +7,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Juneo-io/juneogo/vms/platformvm/warp"
-	"github.com/Juneo-io/juneogo/vms/platformvm/warp/payload"
-	"github.com/Juneo-io/jeth/accounts/abi"
-	"github.com/Juneo-io/jeth/precompile/contract"
-	"github.com/Juneo-io/jeth/vmerrs"
+	"github.com/ava-labs/avalanchego/vms/platformvm/warp"
+	"github.com/ava-labs/avalanchego/vms/platformvm/warp/payload"
+	"github.com/ava-labs/coreth/accounts/abi"
+	"github.com/ava-labs/coreth/precompile/contract"
+	"github.com/ava-labs/coreth/vmerrs"
 
 	_ "embed"
 

@@ -19,17 +19,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Juneo-io/jeth/core"
-	"github.com/Juneo-io/jeth/core/rawdb"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/core/vm"
-	"github.com/Juneo-io/jeth/tests"
+	"github.com/ava-labs/coreth/core"
+	"github.com/ava-labs/coreth/core/rawdb"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/core/vm"
+	"github.com/ava-labs/coreth/tests"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
 
 	// Force-load the native, to trigger registration
-	"github.com/Juneo-io/jeth/eth/tracers"
+	"github.com/ava-labs/coreth/eth/tracers"
 )
 
 // flatCallTrace is the result of a callTracerParity run.

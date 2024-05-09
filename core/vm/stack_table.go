@@ -27,7 +27,7 @@
 package vm
 
 import (
-	"github.com/Juneo-io/jeth/params"
+	"github.com/ava-labs/coreth/params"
 )
 
 func minSwapStack(n int) int {

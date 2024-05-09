@@ -7,11 +7,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Juneo-io/juneogo/utils/set"
-	"github.com/Juneo-io/jeth/core/types"
-	"github.com/Juneo-io/jeth/params"
-	"github.com/Juneo-io/jeth/precompile/precompileconfig"
-	"github.com/Juneo-io/jeth/predicate"
+	"github.com/ava-labs/avalanchego/utils/set"
+	"github.com/ava-labs/coreth/core/types"
+	"github.com/ava-labs/coreth/params"
+	"github.com/ava-labs/coreth/precompile/precompileconfig"
+	"github.com/ava-labs/coreth/predicate"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )

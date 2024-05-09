@@ -31,8 +31,8 @@ import (
 	"math/big"
 	"sort"
 
-	"github.com/Juneo-io/jeth/params"
-	"github.com/Juneo-io/jeth/utils"
+	"github.com/ava-labs/coreth/params"
+	"github.com/ava-labs/coreth/utils"
 )
 
 // Forks table defines supported forks and their chain config.

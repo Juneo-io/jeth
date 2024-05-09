@@ -7,8 +7,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/Juneo-io/juneogo/utils/formatting"
-	"github.com/Juneo-io/jeth/core"
+	"github.com/ava-labs/avalanchego/utils/formatting"
+	"github.com/ava-labs/coreth/core"
 )
 
 // StaticService defines the static API services exposed by the evm

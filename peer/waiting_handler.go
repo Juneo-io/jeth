@@ -6,7 +6,7 @@ package peer
 import (
 	"context"
 
-	"github.com/Juneo-io/jeth/plugin/evm/message"
+	"github.com/ava-labs/coreth/plugin/evm/message"
 )
 
 var _ message.ResponseHandler = &waitingResponseHandler{}

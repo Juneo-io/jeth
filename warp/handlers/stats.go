@@ -6,7 +6,7 @@ package handlers
 import (
 	"time"
 
-	"github.com/Juneo-io/jeth/metrics"
+	"github.com/ava-labs/coreth/metrics"
 )
 
 type handlerStats struct {

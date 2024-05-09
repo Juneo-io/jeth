@@ -4,7 +4,7 @@
 package syncutils
 
 import (
-	"github.com/Juneo-io/jeth/core/state/snapshot"
+	"github.com/ava-labs/coreth/core/state/snapshot"
 	"github.com/ethereum/go-ethereum/ethdb"
 )
 
