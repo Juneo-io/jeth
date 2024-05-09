@@ -29,6 +29,7 @@ package debug
 import (
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -94,8 +95,9 @@ var (
 		Category: flags.LoggingCategory,
 	}
 	logRotateFlag = &cli.BoolFlag{
-		Name:  "log.rotate",
-		Usage: "Enables log file rotation",
+		Name:     "log.rotate",
+		Usage:    "Enables log file rotation",
+		Category: flags.LoggingCategory,
 	}
 	logMaxSizeMBsFlag = &cli.IntFlag{
 		Name:     "log.maxsize",
@@ -316,7 +318,7 @@ func Setup(ctx *cli.Context) error {
 
 		port := ctx.Int(pprofPortFlag.Name)
 
-		address := fmt.Sprintf("%s:%d", listenHost, port)
+		address := net.JoinHostPort(listenHost, fmt.Sprintf("%d", port))
 		StartPProf(address)
 	}
 	if len(logFile) > 0 || rotation {

@@ -39,6 +39,7 @@ import (
 	"github.com/ava-labs/coreth/params"
 	"github.com/ava-labs/coreth/peer"
 	"github.com/ava-labs/coreth/plugin/evm/message"
+	"github.com/ava-labs/coreth/trie/triedb/hashdb"
 
 	warpPrecompile "github.com/ava-labs/coreth/precompile/contracts/warp"
 	"github.com/ava-labs/coreth/rpc"
@@ -560,8 +561,6 @@ func (vm *VM) Initialize(
 	vm.ethConfig.Preimages = vm.config.Preimages
 	vm.ethConfig.Pruning = vm.config.Pruning
 	vm.ethConfig.TrieCleanCache = vm.config.TrieCleanCache
-	vm.ethConfig.TrieCleanJournal = vm.config.TrieCleanJournal
-	vm.ethConfig.TrieCleanRejournal = vm.config.TrieCleanRejournal.Duration
 	vm.ethConfig.TrieDirtyCache = vm.config.TrieDirtyCache
 	vm.ethConfig.TrieDirtyCommitTarget = vm.config.TrieDirtyCommitTarget
 	vm.ethConfig.TriePrefetcherParallelism = vm.config.TriePrefetcherParallelism
@@ -654,14 +653,11 @@ func (vm *VM) Initialize(
 		bonusBlockRepair  map[uint64]*types.Block
 	)
 	if vm.chainID.Cmp(params.AvalancheMainnetChainID) == 0 {
-		bonusBlockHeights = bonusBlockMainnetHeights
-		bonusBlockRepair = mainnetBonusBlocksParsed
+		bonusBlockRepair, bonusBlockHeights, err = readMainnetBonusBlocks()
+		if err != nil {
+			return fmt.Errorf("failed to read mainnet bonus blocks: %w", err)
+		}
 	}
-	defer func() {
-		// Free memory after VM is initialized
-		mainnetBonusBlocksParsed = nil
-		mainnetBonusBlocksJson = nil
-	}()
 
 	// initialize atomic repository
 	vm.atomicTxRepository, err = NewAtomicTxRepository(
@@ -695,7 +691,7 @@ func (vm *VM) Initialize(
 	// so [vm.baseCodec] is a dummy codec use to fulfill the secp256k1fx VM
 	// interface. The fx will register all of its types, which can be safely
 	// ignored by the VM's codec.
-	vm.baseCodec = linearcodec.NewDefault(time.Time{})
+	vm.baseCodec = linearcodec.NewDefault()
 
 	if err := vm.fx.Initialize(vm); err != nil {
 		return err
@@ -754,8 +750,10 @@ func (vm *VM) initializeChain(lastAcceptedHash common.Hash) error {
 	vm.blockChain = vm.eth.BlockChain()
 	vm.miner = vm.eth.Miner()
 
-	// start goroutines to update the tx pool gas minimum gas price when upgrades go into effect
-	vm.handleGasPriceUpdates()
+	// Set the gas parameters for the tx pool to the minimum gas price for the
+	// latest upgrade.
+	vm.txPool.SetGasTip(big.NewInt(0))
+	vm.txPool.SetMinFee(big.NewInt(params.ApricotPhase4MinBaseFee))
 
 	vm.eth.Start()
 	return vm.initChainState(vm.blockChain.LastAcceptedBlock())
@@ -875,7 +873,7 @@ func (vm *VM) preBatchOnFinalizeAndAssemble(header *types.Header, state *state.S
 		// Note: snapshot is taken inside the loop because you cannot revert to the same snapshot more than
 		// once.
 		snapshot := state.Snapshot()
-		rules := vm.chainConfig.AvalancheRules(header.Number, header.Time)
+		rules := vm.chainConfig.Rules(header.Number, header.Time)
 		if err := vm.verifyTx(tx, header.ParentHash, header.BaseFee, state, rules); err != nil {
 			// Discard the transaction from the mempool on failed verification.
 			log.Debug("discarding tx from mempool on failed verification", "txID", tx.ID(), "err", err)
@@ -917,7 +915,7 @@ func (vm *VM) postBatchOnFinalizeAndAssemble(header *types.Header, state *state.
 		batchAtomicUTXOs  set.Set[ids.ID]
 		batchContribution *big.Int = new(big.Int).Set(common.Big0)
 		batchGasUsed      *big.Int = new(big.Int).Set(common.Big0)
-		rules                      = vm.chainConfig.AvalancheRules(header.Number, header.Time)
+		rules                      = vm.chainConfig.Rules(header.Number, header.Time)
 		size              int
 	)
 
@@ -1023,7 +1021,7 @@ func (vm *VM) onExtraStateChange(block *types.Block, state *state.StateDB) (*big
 		batchContribution *big.Int = big.NewInt(0)
 		batchGasUsed      *big.Int = big.NewInt(0)
 		header                     = block.Header()
-		rules                      = vm.chainConfig.AvalancheRules(header.Number, header.Time)
+		rules                      = vm.chainConfig.Rules(header.Number, header.Time)
 	)
 
 	txs, err := ExtractAtomicTxs(block.ExtData(), rules.IsApricotPhase5, vm.codec)
@@ -1135,8 +1133,9 @@ func (vm *VM) initBlockBuilding() error {
 	}
 
 	pushGossipParams := gossip.BranchingFactor{
-		Validators: vm.config.PushGossipNumValidators,
-		Peers:      vm.config.PushGossipNumPeers,
+		StakePercentage: vm.config.PushGossipPercentStake,
+		Validators:      vm.config.PushGossipNumValidators,
+		Peers:           vm.config.PushGossipNumPeers,
 	}
 	pushRegossipParams := gossip.BranchingFactor{
 		Validators: vm.config.PushRegossipNumValidators,
@@ -1148,6 +1147,7 @@ func (vm *VM) initBlockBuilding() error {
 		ethTxPushGossiper, err = gossip.NewPushGossiper[*GossipEthTx](
 			ethTxGossipMarshaller,
 			ethTxPool,
+			vm.validators,
 			ethTxGossipClient,
 			ethTxGossipMetrics,
 			pushGossipParams,
@@ -1166,6 +1166,7 @@ func (vm *VM) initBlockBuilding() error {
 		vm.atomicTxPushGossiper, err = gossip.NewPushGossiper[*GossipAtomicTx](
 			atomicTxGossipMarshaller,
 			vm.mempool,
+			vm.validators,
 			atomicTxGossipClient,
 			atomicTxGossipMetrics,
 			pushGossipParams,
@@ -1282,10 +1283,12 @@ func (vm *VM) setAppRequestHandlers() {
 	// Create separate EVM TrieDB (read only) for serving leafs requests.
 	// We create a separate TrieDB here, so that it has a separate cache from the one
 	// used by the node when processing blocks.
-	evmTrieDB := trie.NewDatabaseWithConfig(
+	evmTrieDB := trie.NewDatabase(
 		vm.chaindb,
 		&trie.Config{
-			Cache: vm.config.StateSyncServerTrieCache,
+			HashDB: &hashdb.Config{
+				CleanCacheSize: vm.config.StateSyncServerTrieCache * units.MiB,
+			},
 		},
 	)
 	networkHandler := newNetworkHandler(
@@ -1952,7 +1955,7 @@ func (vm *VM) GetCurrentNonce(address common.Address) (uint64, error) {
 // currentRules returns the chain rules for the current block.
 func (vm *VM) currentRules() params.Rules {
 	header := vm.eth.APIBackend.CurrentHeader()
-	return vm.chainConfig.AvalancheRules(header.Number, header.Time)
+	return vm.chainConfig.Rules(header.Number, header.Time)
 }
 
 func (vm *VM) startContinuousProfiler() {
