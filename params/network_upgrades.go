@@ -16,6 +16,7 @@ func (c *ChainConfig) forkOrder() []fork {
 		{name: "banffBlockTimestamp", timestamp: c.BanffBlockTimestamp},
 		{name: "cortinaBlockTimestamp", timestamp: c.CortinaBlockTimestamp},
 		{name: "durangoBlockTimestamp", timestamp: c.DurangoBlockTimestamp},
+		{name: "feeUpdate1BlockTimestamp", timestamp: c.FeeUpdate1BlockTimestamp},
 	}
 }
 
@@ -25,6 +26,7 @@ type AvalancheRules struct {
 	IsBanff                                                                             bool
 	IsCortina                                                                           bool
 	IsDurango                                                                           bool
+	IsFeeUpdate1                                                                        bool
 }
 
 func (c *ChainConfig) GetAvalancheRules(timestamp uint64) AvalancheRules {
@@ -40,6 +42,7 @@ func (c *ChainConfig) GetAvalancheRules(timestamp uint64) AvalancheRules {
 	rules.IsBanff = c.IsBanff(timestamp)
 	rules.IsCortina = c.IsCortina(timestamp)
 	rules.IsDurango = c.IsDurango(timestamp)
+	rules.IsFeeUpdate1 = c.IsFeeUpdate1(timestamp)
 
 	return rules
 }

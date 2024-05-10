@@ -619,8 +619,8 @@ func (c *ChainConfig) Description() string {
 	if err != nil {
 		upgradeConfigBytes = []byte("cannot marshal UpgradeConfig")
 	}
-	// banner += fmt.Sprintf("Upgrade Config: %s", string(upgradeConfigBytes))
-	// banner += "\n"
+	banner += fmt.Sprintf("Upgrade Config: %s", string(upgradeConfigBytes))
+	banner += "\n"
 	return banner
 }
 

@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/ava-labs/avalanchego/utils/wrappers"
 	"github.com/ava-labs/coreth/core/types"
 	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/avalanchego/utils/wrappers"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 )
@@ -199,6 +199,7 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	}
 
 	// Ensure that the base fee does not increase/decrease outside of the bounds
+	// TODO create fee config to get param
 	switch {
 	case isFeeUpdate1:
 		switch {
