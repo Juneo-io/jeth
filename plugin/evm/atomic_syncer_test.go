@@ -12,17 +12,17 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ava-labs/avalanchego/database"
-	"github.com/ava-labs/avalanchego/database/memdb"
-	"github.com/ava-labs/avalanchego/database/versiondb"
+	"github.com/Juneo-io/juneogo/database"
+	"github.com/Juneo-io/juneogo/database/memdb"
+	"github.com/Juneo-io/juneogo/database/versiondb"
 
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/plugin/evm/message"
-	syncclient "github.com/ava-labs/coreth/sync/client"
-	"github.com/ava-labs/coreth/sync/handlers"
-	handlerstats "github.com/ava-labs/coreth/sync/handlers/stats"
-	"github.com/ava-labs/coreth/sync/syncutils"
-	"github.com/ava-labs/coreth/trie"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/plugin/evm/message"
+	syncclient "github.com/Juneo-io/jeth/sync/client"
+	"github.com/Juneo-io/jeth/sync/handlers"
+	handlerstats "github.com/Juneo-io/jeth/sync/handlers/stats"
+	"github.com/Juneo-io/jeth/sync/syncutils"
+	"github.com/Juneo-io/jeth/trie"
 	"github.com/ethereum/go-ethereum/common"
 )
 

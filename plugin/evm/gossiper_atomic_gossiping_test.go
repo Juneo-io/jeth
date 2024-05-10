@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/avalanchego/utils/set"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/juneogo/utils/set"
 	"github.com/stretchr/testify/assert"
 
-	commonEng "github.com/ava-labs/avalanchego/snow/engine/common"
+	commonEng "github.com/Juneo-io/juneogo/snow/engine/common"
 
-	"github.com/ava-labs/coreth/plugin/evm/message"
+	"github.com/Juneo-io/jeth/plugin/evm/message"
 )
 
 // show that a txID discovered from gossip is requested to the same node only if

@@ -30,8 +30,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ava-labs/coreth/trie/trienode"
-	"github.com/ava-labs/coreth/trie/triestate"
+	"github.com/Juneo-io/jeth/trie/trienode"
+	"github.com/Juneo-io/jeth/trie/triestate"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 )

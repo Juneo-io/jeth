@@ -21,7 +21,7 @@ import (
 	"crypto/sha256"
 	"math/big"
 
-	"github.com/ava-labs/coreth/params"
+	"github.com/Juneo-io/jeth/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto/kzg4844"
 	"github.com/ethereum/go-ethereum/rlp"

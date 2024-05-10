@@ -27,14 +27,14 @@
 package tests
 
 import (
-	"github.com/ava-labs/coreth/core"
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/core/state"
-	"github.com/ava-labs/coreth/core/state/snapshot"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/trie"
-	"github.com/ava-labs/coreth/trie/triedb/hashdb"
-	"github.com/ava-labs/coreth/trie/triedb/pathdb"
+	"github.com/Juneo-io/jeth/core"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/core/state"
+	"github.com/Juneo-io/jeth/core/state/snapshot"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/trie"
+	"github.com/Juneo-io/jeth/trie/triedb/hashdb"
+	"github.com/Juneo-io/jeth/trie/triedb/pathdb"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethdb"
 )

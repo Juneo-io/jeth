@@ -19,7 +19,7 @@ struct WarpBlockHash {
 interface IWarpMessenger {
   event SendWarpMessage(address indexed sender, bytes32 indexed messageID, bytes message);
 
-  // sendWarpMessage emits a request for the subnet to send a warp message from [msg.sender]
+  // sendWarpMessage emits a request for the supernet to send a warp message from [msg.sender]
   // with the specified parameters.
   // This emits a SendWarpMessage log from the precompile. When the corresponding block is accepted
   // the Accept hook of the Warp precompile is invoked with all accepted logs emitted by the Warp

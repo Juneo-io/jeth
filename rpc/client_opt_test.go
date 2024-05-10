@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ava-labs/coreth/rpc"
+	"github.com/Juneo-io/jeth/rpc"
 )
 
 // This example configures a HTTP-based RPC client with two options - one setting the

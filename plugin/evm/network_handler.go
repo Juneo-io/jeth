@@ -6,15 +6,15 @@ package evm
 import (
 	"context"
 
-	"github.com/ava-labs/avalanchego/codec"
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/coreth/metrics"
-	"github.com/ava-labs/coreth/plugin/evm/message"
-	syncHandlers "github.com/ava-labs/coreth/sync/handlers"
-	syncStats "github.com/ava-labs/coreth/sync/handlers/stats"
-	"github.com/ava-labs/coreth/trie"
-	"github.com/ava-labs/coreth/warp"
-	warpHandlers "github.com/ava-labs/coreth/warp/handlers"
+	"github.com/Juneo-io/juneogo/codec"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/jeth/metrics"
+	"github.com/Juneo-io/jeth/plugin/evm/message"
+	syncHandlers "github.com/Juneo-io/jeth/sync/handlers"
+	syncStats "github.com/Juneo-io/jeth/sync/handlers/stats"
+	"github.com/Juneo-io/jeth/trie"
+	"github.com/Juneo-io/jeth/warp"
+	warpHandlers "github.com/Juneo-io/jeth/warp/handlers"
 	"github.com/ethereum/go-ethereum/ethdb"
 )
 

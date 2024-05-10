@@ -36,7 +36,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/coreth/accounts"
+	"github.com/Juneo-io/jeth/accounts"
 	"github.com/cespare/cp"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common"

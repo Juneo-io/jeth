@@ -32,12 +32,12 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/ava-labs/coreth/consensus/misc/eip4844"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/core/vm"
-	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/coreth/utils"
-	"github.com/ava-labs/coreth/vmerrs"
+	"github.com/Juneo-io/jeth/consensus/misc/eip4844"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/jeth/utils"
+	"github.com/Juneo-io/jeth/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
 	cmath "github.com/ethereum/go-ethereum/common/math"
 )

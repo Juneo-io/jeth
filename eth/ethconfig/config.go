@@ -29,13 +29,13 @@ package ethconfig
 import (
 	"time"
 
-	"github.com/ava-labs/coreth/core"
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/core/txpool/blobpool"
-	"github.com/ava-labs/coreth/core/txpool/legacypool"
-	"github.com/ava-labs/coreth/eth/gasprice"
-	"github.com/ava-labs/coreth/miner"
-	"github.com/ava-labs/coreth/params"
+	"github.com/Juneo-io/jeth/core"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/core/txpool/blobpool"
+	"github.com/Juneo-io/jeth/core/txpool/legacypool"
+	"github.com/Juneo-io/jeth/eth/gasprice"
+	"github.com/Juneo-io/jeth/miner"
+	"github.com/Juneo-io/jeth/params"
 	"github.com/ethereum/go-ethereum/common"
 )
 

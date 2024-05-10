@@ -10,13 +10,13 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ava-labs/avalanchego/utils/timer/mockable"
-	"github.com/ava-labs/coreth/consensus"
-	"github.com/ava-labs/coreth/consensus/misc/eip4844"
-	"github.com/ava-labs/coreth/core/state"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/coreth/trie"
+	"github.com/Juneo-io/juneogo/utils/timer/mockable"
+	"github.com/Juneo-io/jeth/consensus"
+	"github.com/Juneo-io/jeth/consensus/misc/eip4844"
+	"github.com/Juneo-io/jeth/core/state"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/jeth/trie"
 	"github.com/ethereum/go-ethereum/common"
 )
 

@@ -29,7 +29,7 @@ package trie
 import (
 	"fmt"
 
-	"github.com/ava-labs/coreth/trie/trienode"
+	"github.com/Juneo-io/jeth/trie/trienode"
 	"github.com/ethereum/go-ethereum/common"
 )
 

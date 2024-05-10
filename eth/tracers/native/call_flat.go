@@ -33,9 +33,9 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/ava-labs/coreth/core/vm"
-	"github.com/ava-labs/coreth/eth/tracers"
-	"github.com/ava-labs/coreth/vmerrs"
+	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/Juneo-io/jeth/eth/tracers"
+	"github.com/Juneo-io/jeth/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )

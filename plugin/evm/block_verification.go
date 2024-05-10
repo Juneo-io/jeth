@@ -10,12 +10,12 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	safemath "github.com/ava-labs/avalanchego/utils/math"
+	safemath "github.com/Juneo-io/juneogo/utils/math"
 
-	"github.com/ava-labs/coreth/constants"
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/params"
-	"github.com/ava-labs/coreth/trie"
+	"github.com/Juneo-io/jeth/constants"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/jeth/trie"
 )
 
 var (

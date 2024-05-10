@@ -6,7 +6,7 @@ package stats
 import (
 	"time"
 
-	"github.com/ava-labs/coreth/metrics"
+	"github.com/Juneo-io/jeth/metrics"
 )
 
 // HandlerStats reports prometheus metrics for the state sync handlers

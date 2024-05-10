@@ -32,8 +32,8 @@ import (
 	"strconv"
 	"sync/atomic"
 
-	"github.com/ava-labs/coreth/core/vm"
-	"github.com/ava-labs/coreth/eth/tracers"
+	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/Juneo-io/jeth/eth/tracers"
 	"github.com/ethereum/go-ethereum/common"
 )
 

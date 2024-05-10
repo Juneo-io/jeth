@@ -7,10 +7,10 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ava-labs/avalanchego/ids"
-	"github.com/ava-labs/coreth/peer"
+	"github.com/Juneo-io/juneogo/ids"
+	"github.com/Juneo-io/jeth/peer"
 
-	"github.com/ava-labs/avalanchego/version"
+	"github.com/Juneo-io/juneogo/version"
 )
 
 var _ peer.NetworkClient = &mockNetwork{}

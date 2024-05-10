@@ -33,10 +33,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/coreth/accounts/abi/bind"
-	"github.com/ava-labs/coreth/accounts/abi/bind/backends"
-	"github.com/ava-labs/coreth/core"
-	"github.com/ava-labs/coreth/core/types"
+	"github.com/Juneo-io/jeth/accounts/abi/bind"
+	"github.com/Juneo-io/jeth/accounts/abi/bind/backends"
+	"github.com/Juneo-io/jeth/core"
+	"github.com/Juneo-io/jeth/core/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )

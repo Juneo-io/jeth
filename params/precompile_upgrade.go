@@ -8,9 +8,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ava-labs/coreth/precompile/modules"
-	"github.com/ava-labs/coreth/precompile/precompileconfig"
-	"github.com/ava-labs/coreth/utils"
+	"github.com/Juneo-io/jeth/precompile/modules"
+	"github.com/Juneo-io/jeth/precompile/precompileconfig"
+	"github.com/Juneo-io/jeth/utils"
 	"github.com/ethereum/go-ethereum/common"
 )
 

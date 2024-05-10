@@ -30,9 +30,9 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/ava-labs/coreth/core/rawdb"
-	"github.com/ava-labs/coreth/trie/testutil"
-	"github.com/ava-labs/coreth/trie/trienode"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/trie/testutil"
+	"github.com/Juneo-io/jeth/trie/trienode"
 	"github.com/ethereum/go-ethereum/common"
 )
 

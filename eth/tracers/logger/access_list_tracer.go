@@ -19,8 +19,8 @@ package logger
 import (
 	"math/big"
 
-	"github.com/ava-labs/coreth/core/types"
-	"github.com/ava-labs/coreth/core/vm"
+	"github.com/Juneo-io/jeth/core/types"
+	"github.com/Juneo-io/jeth/core/vm"
 	"github.com/ethereum/go-ethereum/common"
 )
 

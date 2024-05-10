@@ -3,8 +3,8 @@ package miner
 import (
 	"math/big"
 
-	"github.com/ava-labs/coreth/core/txpool"
-	"github.com/ava-labs/coreth/core/types"
+	"github.com/Juneo-io/jeth/core/txpool"
+	"github.com/Juneo-io/jeth/core/types"
 	"github.com/ethereum/go-ethereum/common"
 )
 

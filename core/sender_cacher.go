@@ -29,7 +29,7 @@ package core
 import (
 	"sync"
 
-	"github.com/ava-labs/coreth/core/types"
+	"github.com/Juneo-io/jeth/core/types"
 )
 
 // txSenderCacherRequest is a request for recovering transaction senders with a
