@@ -10,7 +10,6 @@ import (
 
 	"github.com/Juneo-io/jeth/accounts/keystore"
 	"github.com/Juneo-io/jeth/core/rawdb"
-	"github.com/Juneo-io/jeth/core/state/snapshot"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/sync/syncutils"
 	"github.com/Juneo-io/jeth/trie"
@@ -48,7 +47,7 @@ func assertDBConsistency(t testing.TB, root common.Hash, clientDB ethdb.Database
 		}
 		// check snapshot consistency
 		snapshotVal := rawdb.ReadAccountSnapshot(clientDB, accHash)
-		expectedSnapshotVal := snapshot.SlimAccountRLP(acc.Nonce, acc.Balance, acc.Root, acc.CodeHash, acc.IsMultiCoin)
+		expectedSnapshotVal := types.SlimAccountRLP(acc)
 		assert.Equal(t, expectedSnapshotVal, snapshotVal)
 
 		// check code consistency

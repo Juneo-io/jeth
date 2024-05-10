@@ -29,17 +29,22 @@ package trie
 import (
 	"github.com/Juneo-io/jeth/core/rawdb"
 	"github.com/Juneo-io/jeth/trie/triedb/hashdb"
+	"github.com/Juneo-io/jeth/trie/triedb/pathdb"
 	"github.com/ethereum/go-ethereum/ethdb"
 )
 
 // newTestDatabase initializes the trie database with specified scheme.
 func newTestDatabase(diskdb ethdb.Database, scheme string) *Database {
-	db := prepare(diskdb, nil)
+	config := &Config{Preimages: false}
 	if scheme == rawdb.HashScheme {
-		db.backend = hashdb.New(diskdb, db.cleans, mptResolver{})
+		config.HashDB = &hashdb.Config{
+			CleanCacheSize: 0,
+		} // disable clean cache
+	} else {
+		config.PathDB = &pathdb.Config{
+			CleanCacheSize: 0,
+			DirtyCacheSize: 0,
+		} // disable clean/dirty cache
 	}
-	//} else {
-	//	db.backend = snap.New(diskdb, db.cleans, nil)
-	//}
-	return db
+	return NewDatabase(diskdb, config)
 }

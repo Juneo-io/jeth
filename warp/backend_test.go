@@ -12,6 +12,7 @@ import (
 	"github.com/Juneo-io/juneogo/ids"
 	"github.com/Juneo-io/juneogo/snow/choices"
 	"github.com/Juneo-io/juneogo/snow/consensus/snowman"
+	"github.com/Juneo-io/juneogo/snow/consensus/snowman/snowmantest"
 	"github.com/Juneo-io/juneogo/snow/engine/common"
 	"github.com/Juneo-io/juneogo/snow/engine/snowman/block"
 	"github.com/Juneo-io/juneogo/utils"
@@ -131,7 +132,7 @@ func TestGetBlockSignature(t *testing.T) {
 		TestVM: common.TestVM{T: t},
 		GetBlockF: func(ctx context.Context, i ids.ID) (snowman.Block, error) {
 			if i == blkID {
-				return &snowman.TestBlock{
+				return &snowmantest.Block{
 					TestDecidable: choices.TestDecidable{
 						IDV:     blkID,
 						StatusV: choices.Accepted,

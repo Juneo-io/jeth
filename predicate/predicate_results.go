@@ -6,7 +6,6 @@ package predicate
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/Juneo-io/juneogo/codec"
 	"github.com/Juneo-io/juneogo/codec/linearcodec"
@@ -25,7 +24,7 @@ var Codec codec.Manager
 func init() {
 	Codec = codec.NewManager(MaxResultsSize)
 
-	c := linearcodec.NewDefault(time.Time{})
+	c := linearcodec.NewDefault()
 	errs := wrappers.Errs{}
 	errs.Add(
 		c.RegisterType(Results{}),

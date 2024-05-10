@@ -7,6 +7,7 @@ import (
 	"github.com/Juneo-io/juneogo/api/metrics"
 	"github.com/Juneo-io/juneogo/ids"
 	"github.com/Juneo-io/juneogo/snow"
+	"github.com/Juneo-io/juneogo/snow/validators"
 	"github.com/Juneo-io/juneogo/utils/crypto/bls"
 	"github.com/Juneo-io/juneogo/utils/logging"
 )
@@ -18,14 +19,15 @@ func TestSnowContext() *snow.Context {
 	}
 	pk := bls.PublicFromSecretKey(sk)
 	return &snow.Context{
-		NetworkID:    0,
-		SupernetID:     ids.Empty,
-		ChainID:      ids.Empty,
-		NodeID:       ids.EmptyNodeID,
-		PublicKey:    pk,
-		Log:          logging.NoLog{},
-		BCLookup:     ids.NewAliaser(),
-		Metrics:      metrics.NewOptionalGatherer(),
-		ChainDataDir: "",
+		NetworkID:      0,
+		SupernetID:       ids.Empty,
+		ChainID:        ids.Empty,
+		NodeID:         ids.EmptyNodeID,
+		PublicKey:      pk,
+		Log:            logging.NoLog{},
+		BCLookup:       ids.NewAliaser(),
+		Metrics:        metrics.NewOptionalGatherer(),
+		ChainDataDir:   "",
+		ValidatorState: &validators.TestState{},
 	}
 }

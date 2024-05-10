@@ -32,6 +32,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/big"
 	"runtime"
 	"strings"
 	"sync"
@@ -39,6 +40,7 @@ import (
 	"time"
 
 	"github.com/Juneo-io/jeth/consensus"
+	"github.com/Juneo-io/jeth/consensus/misc/eip4844"
 	"github.com/Juneo-io/jeth/core/rawdb"
 	"github.com/Juneo-io/jeth/core/state"
 	"github.com/Juneo-io/jeth/core/state/snapshot"
@@ -48,6 +50,8 @@ import (
 	"github.com/Juneo-io/jeth/metrics"
 	"github.com/Juneo-io/jeth/params"
 	"github.com/Juneo-io/jeth/trie"
+	"github.com/Juneo-io/jeth/trie/triedb/hashdb"
+	"github.com/Juneo-io/jeth/trie/triedb/pathdb"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/lru"
 	"github.com/ethereum/go-ethereum/ethdb"
@@ -97,6 +101,8 @@ var (
 
 	errFutureBlockUnsupported  = errors.New("future block insertion not supported")
 	errCacheConfigNotSpecified = errors.New("must specify cache config")
+	errInvalidOldChain         = errors.New("invalid old chain")
+	errInvalidNewChain         = errors.New("invalid new chain")
 )
 
 const (
@@ -137,36 +143,57 @@ const (
 
 	// trieCleanCacheStatsNamespace is the namespace to surface stats from the trie
 	// clean cache's underlying fastcache.
-	trieCleanCacheStatsNamespace = "trie/memcache/clean/fastcache"
+	trieCleanCacheStatsNamespace = "hashdb/memcache/clean/fastcache"
 )
 
 // CacheConfig contains the configuration values for the trie database
-// that's resident in a blockchain.
+// and state snapshot these are resident in a blockchain.
 type CacheConfig struct {
-	TrieCleanLimit                  int           // Memory allowance (MB) to use for caching trie nodes in memory
-	TrieCleanJournal                string        // Disk journal for saving clean cache entries.
-	TrieCleanRejournal              time.Duration // Time interval to dump clean cache to disk periodically
-	TrieDirtyLimit                  int           // Memory limit (MB) at which to block on insert and force a flush of dirty trie nodes to disk
-	TrieDirtyCommitTarget           int           // Memory limit (MB) to target for the dirties cache before invoking commit
-	TriePrefetcherParallelism       int           // Max concurrent disk reads trie prefetcher should perform at once
-	CommitInterval                  uint64        // Commit the trie every [CommitInterval] blocks.
-	Pruning                         bool          // Whether to disable trie write caching and GC altogether (archive node)
-	AcceptorQueueLimit              int           // Blocks to queue before blocking during acceptance
-	PopulateMissingTries            *uint64       // If non-nil, sets the starting height for re-generating historical tries.
-	PopulateMissingTriesParallelism int           // Number of readers to use when trying to populate missing tries.
-	AllowMissingTries               bool          // Whether to allow an archive node to run with pruning enabled
-	SnapshotDelayInit               bool          // Whether to initialize snapshots on startup or wait for external call
-	SnapshotLimit                   int           // Memory allowance (MB) to use for caching snapshot entries in memory
-	SnapshotVerify                  bool          // Verify generated snapshots
-	Preimages                       bool          // Whether to store preimage of trie key to the disk
-	AcceptedCacheSize               int           // Depth of accepted headers cache and accepted logs cache at the accepted tip
-	TxLookupLimit                   uint64        // Number of recent blocks for which to maintain transaction lookup indices
-	SkipTxIndexing                  bool          // Whether to skip transaction indexing
+	TrieCleanLimit                  int     // Memory allowance (MB) to use for caching trie nodes in memory
+	TrieDirtyLimit                  int     // Memory limit (MB) at which to block on insert and force a flush of dirty trie nodes to disk
+	TrieDirtyCommitTarget           int     // Memory limit (MB) to target for the dirties cache before invoking commit
+	TriePrefetcherParallelism       int     // Max concurrent disk reads trie prefetcher should perform at once
+	CommitInterval                  uint64  // Commit the trie every [CommitInterval] blocks.
+	Pruning                         bool    // Whether to disable trie write caching and GC altogether (archive node)
+	AcceptorQueueLimit              int     // Blocks to queue before blocking during acceptance
+	PopulateMissingTries            *uint64 // If non-nil, sets the starting height for re-generating historical tries.
+	PopulateMissingTriesParallelism int     // Number of readers to use when trying to populate missing tries.
+	AllowMissingTries               bool    // Whether to allow an archive node to run with pruning enabled
+	SnapshotDelayInit               bool    // Whether to initialize snapshots on startup or wait for external call (= StateSyncEnabled)
+	SnapshotLimit                   int     // Memory allowance (MB) to use for caching snapshot entries in memory
+	SnapshotVerify                  bool    // Verify generated snapshots
+	Preimages                       bool    // Whether to store preimage of trie key to the disk
+	AcceptedCacheSize               int     // Depth of accepted headers cache and accepted logs cache at the accepted tip
+	TxLookupLimit                   uint64  // Number of recent blocks for which to maintain transaction lookup indices
+	SkipTxIndexing                  bool    // Whether to skip transaction indexing
+	StateHistory                    uint64  // Number of blocks from head whose state histories are reserved.
+	StateScheme                     string  // Scheme used to store ethereum states and merkle tree nodes on top
 
 	SnapshotNoBuild bool // Whether the background generation is allowed
 	SnapshotWait    bool // Wait for snapshot construction on startup. TODO(karalabe): This is a dirty hack for testing, nuke it
 }
 
+// triedbConfig derives the configures for trie database.
+func (c *CacheConfig) triedbConfig() *trie.Config {
+	config := &trie.Config{Preimages: c.Preimages}
+	if c.StateScheme == rawdb.HashScheme {
+		config.HashDB = &hashdb.Config{
+			CleanCacheSize: c.TrieCleanLimit * 1024 * 1024,
+			StatsPrefix:    trieCleanCacheStatsNamespace,
+		}
+	}
+	if c.StateScheme == rawdb.PathScheme {
+		config.PathDB = &pathdb.Config{
+			StateHistory:   c.StateHistory,
+			CleanCacheSize: c.TrieCleanLimit * 1024 * 1024,
+			DirtyCacheSize: c.TrieDirtyLimit * 1024 * 1024,
+		}
+	}
+	return config
+}
+
+// DefaultCacheConfig are the default caching values if none are specified by the
+// user (also used during testing).
 var DefaultCacheConfig = &CacheConfig{
 	TrieCleanLimit:            256,
 	TrieDirtyLimit:            256,
@@ -177,6 +204,15 @@ var DefaultCacheConfig = &CacheConfig{
 	AcceptorQueueLimit:        64, // Provides 2 minutes of buffer (2s block target) for a commit delay
 	SnapshotLimit:             256,
 	AcceptedCacheSize:         32,
+	StateScheme:               rawdb.HashScheme,
+}
+
+// DefaultCacheConfigWithScheme returns a deep copied default cache config with
+// a provided trie node scheme.
+func DefaultCacheConfigWithScheme(scheme string) *CacheConfig {
+	config := *DefaultCacheConfig
+	config.StateScheme = scheme
+	return &config
 }
 
 // BlockChain represents the canonical chain given a database with a genesis
@@ -278,6 +314,9 @@ type BlockChain struct {
 
 	// [acceptedLogsCache] stores recently accepted logs to improve the performance of eth_getLogs.
 	acceptedLogsCache FIFOCache[common.Hash, [][]*types.Log]
+
+	// [txIndexTailLock] is used to synchronize the updating of the tx index tail.
+	txIndexTailLock sync.Mutex
 }
 
 // NewBlockChain returns a fully initialised block chain using information
@@ -291,12 +330,8 @@ func NewBlockChain(
 		return nil, errCacheConfigNotSpecified
 	}
 	// Open trie database with provided config
-	triedb := trie.NewDatabaseWithConfig(db, &trie.Config{
-		Cache:       cacheConfig.TrieCleanLimit,
-		Journal:     cacheConfig.TrieCleanJournal,
-		Preimages:   cacheConfig.Preimages,
-		StatsPrefix: trieCleanCacheStatsNamespace,
-	})
+	triedb := trie.NewDatabase(db, cacheConfig.triedbConfig())
+
 	// Setup the genesis block, commit the provided genesis specification
 	// to database if the genesis block is not present yet, or load the
 	// stored one from database.
@@ -389,24 +424,32 @@ func NewBlockChain(
 	// Warm up [hc.acceptedNumberCache] and [acceptedLogsCache]
 	bc.warmAcceptedCaches()
 
+	// if txlookup limit is 0 (uindexing disabled), we don't need to repair the tx index tail.
+	if bc.cacheConfig.TxLookupLimit != 0 {
+		latestStateSynced := rawdb.GetLatestSyncPerformed(bc.db)
+		bc.setTxIndexTail(latestStateSynced)
+	}
+
 	// Start processing accepted blocks effects in the background
 	go bc.startAcceptor()
-
-	// If periodic cache journal is required, spin it up.
-	if bc.cacheConfig.TrieCleanRejournal > 0 && len(bc.cacheConfig.TrieCleanJournal) > 0 {
-		log.Info("Starting to save trie clean cache periodically", "journalDir", bc.cacheConfig.TrieCleanJournal, "freq", bc.cacheConfig.TrieCleanRejournal)
-
-		bc.wg.Add(1)
-		go func() {
-			defer bc.wg.Done()
-			bc.triedb.SaveCachePeriodically(bc.cacheConfig.TrieCleanJournal, bc.cacheConfig.TrieCleanRejournal, bc.quit)
-		}()
-	}
 
 	// Start tx indexer/unindexer if required.
 	if bc.cacheConfig.TxLookupLimit != 0 {
 		bc.wg.Add(1)
-		go bc.dispatchTxUnindexer()
+		var (
+			headCh = make(chan ChainEvent, 1) // Buffered to avoid locking up the event feed
+			sub    = bc.SubscribeChainAcceptedEvent(headCh)
+		)
+		go func() {
+			defer bc.wg.Done()
+			if sub == nil {
+				log.Warn("could not create chain accepted subscription to unindex txs")
+				return
+			}
+			defer sub.Unsubscribe()
+
+			bc.maintainTxIndex(headCh)
+		}()
 	}
 	return bc, nil
 }
@@ -415,10 +458,19 @@ func NewBlockChain(
 func (bc *BlockChain) unindexBlocks(tail uint64, head uint64, done chan struct{}) {
 	start := time.Now()
 	txLookupLimit := bc.cacheConfig.TxLookupLimit
+	bc.txIndexTailLock.Lock()
 	defer func() {
 		txUnindexTimer.Inc(time.Since(start).Milliseconds())
+		bc.txIndexTailLock.Unlock()
 		close(done)
+		bc.wg.Done()
 	}()
+
+	// If head is 0, it means the chain is just initialized and no blocks are inserted,
+	// so don't need to indexing anything.
+	if head == 0 {
+		return
+	}
 
 	if head-txLookupLimit+1 >= tail {
 		// Unindex a part of stale indices and forward index tail to HEAD-limit
@@ -426,12 +478,11 @@ func (bc *BlockChain) unindexBlocks(tail uint64, head uint64, done chan struct{}
 	}
 }
 
-// dispatchTxUnindexer is responsible for the deletion of the
-// transaction index.
+// maintainTxIndex is responsible for the deletion of the
+// transaction index. This does not support reconstruction of removed indexes.
 // Invariant: If TxLookupLimit is 0, it means all tx indices will be preserved.
 // Meaning that this function should never be called.
-func (bc *BlockChain) dispatchTxUnindexer() {
-	defer bc.wg.Done()
+func (bc *BlockChain) maintainTxIndex(headCh <-chan ChainEvent) {
 	txLookupLimit := bc.cacheConfig.TxLookupLimit
 
 	// If the user just upgraded to a new version which supports transaction
@@ -442,15 +493,19 @@ func (bc *BlockChain) dispatchTxUnindexer() {
 
 	// Any reindexing done, start listening to chain events and moving the index window
 	var (
-		done   chan struct{}              // Non-nil if background unindexing or reindexing routine is active.
-		headCh = make(chan ChainEvent, 1) // Buffered to avoid locking up the event feed
+		done chan struct{} // Non-nil if background unindexing or reindexing routine is active.
 	)
-	sub := bc.SubscribeChainAcceptedEvent(headCh)
-	if sub == nil {
-		log.Warn("could not create chain accepted subscription to unindex txs")
-		return
+	log.Info("Initialized transaction unindexer", "limit", txLookupLimit)
+
+	// Launch the initial processing if chain is not empty. This step is
+	// useful in these scenarios that chain has no progress and indexer
+	// is never triggered.
+	if head := bc.CurrentBlock(); head != nil && head.Number.Uint64() > txLookupLimit {
+		done = make(chan struct{})
+		tail := rawdb.ReadTxIndexTail(bc.db)
+		bc.wg.Add(1)
+		go bc.unindexBlocks(*tail, head.Number.Uint64(), done)
 	}
-	defer sub.Unsubscribe()
 
 	for {
 		select {
@@ -464,13 +519,14 @@ func (bc *BlockChain) dispatchTxUnindexer() {
 				done = make(chan struct{})
 				// Note: tail will not be nil since it is initialized in this function.
 				tail := rawdb.ReadTxIndexTail(bc.db)
+				bc.wg.Add(1)
 				go bc.unindexBlocks(*tail, headNum, done)
 			}
 		case <-done:
 			done = nil
 		case <-bc.quit:
 			if done != nil {
-				log.Info("Waiting background transaction indexer to exit")
+				log.Info("Waiting background transaction unindexer to exit")
 				<-done
 			}
 			return
@@ -484,14 +540,21 @@ func (bc *BlockChain) dispatchTxUnindexer() {
 // - updating the acceptor tip index
 func (bc *BlockChain) writeBlockAcceptedIndices(b *types.Block) error {
 	batch := bc.db.NewBatch()
+	if err := bc.batchBlockAcceptedIndices(batch, b); err != nil {
+		return err
+	}
+	if err := batch.Write(); err != nil {
+		return fmt.Errorf("%w: failed to write accepted indices entries batch", err)
+	}
+	return nil
+}
+
+func (bc *BlockChain) batchBlockAcceptedIndices(batch ethdb.Batch, b *types.Block) error {
 	if !bc.cacheConfig.SkipTxIndexing {
 		rawdb.WriteTxLookupEntriesByBlock(batch, b)
 	}
 	if err := rawdb.WriteAcceptorTip(batch, b.Hash()); err != nil {
 		return fmt.Errorf("%w: failed to write acceptor tip key", err)
-	}
-	if err := batch.Write(); err != nil {
-		return fmt.Errorf("%w: failed to write tx lookup entries batch", err)
 	}
 	return nil
 }
@@ -777,7 +840,7 @@ func (bc *BlockChain) ExportCallback(callback func(block *types.Block) error, fi
 			return fmt.Errorf("export failed on #%d: not found", nr)
 		}
 		if nr > first && block.ParentHash() != parentHash {
-			return fmt.Errorf("export failed: chain reorg during export")
+			return errors.New("export failed: chain reorg during export")
 		}
 		parentHash = block.Hash()
 		if err := callback(block); err != nil {
@@ -955,17 +1018,22 @@ func (bc *BlockChain) stopWithoutSaving() {
 func (bc *BlockChain) Stop() {
 	bc.stopWithoutSaving()
 
+	if bc.triedb.Scheme() == rawdb.PathScheme {
+		// Ensure that the in-memory trie nodes are journaled to disk properly.
+		if err := bc.triedb.Journal(bc.CurrentBlock().Root); err != nil {
+			log.Info("Failed to journal in-memory trie nodes", "err", err)
+		}
+	}
 	log.Info("Shutting down state manager")
 	start := time.Now()
 	if err := bc.stateManager.Shutdown(); err != nil {
 		log.Error("Failed to Shutdown state manager", "err", err)
 	}
 	log.Info("State manager shut down", "t", time.Since(start))
-	// Flush the collected preimages to disk
-	if err := bc.stateCache.TrieDB().Close(); err != nil {
-		log.Error("Failed to close trie db", "err", err)
+	// Close the trie database, release all the held resources as the last step.
+	if err := bc.triedb.Close(); err != nil {
+		log.Error("Failed to close trie database", "err", err)
 	}
-
 	log.Info("Blockchain stopped")
 }
 
@@ -1013,7 +1081,7 @@ func (bc *BlockChain) setPreference(block *types.Block) error {
 	return nil
 }
 
-// LastAcceptedBlock returns the last block to be marked as accepted. It may or
+// LastConsensusAcceptedBlock returns the last block to be marked as accepted. It may or
 // may not yet be processed.
 func (bc *BlockChain) LastConsensusAcceptedBlock() *types.Block {
 	bc.chainmu.Lock()
@@ -1167,12 +1235,17 @@ func (bc *BlockChain) writeBlockWithState(block *types.Block, receipts []*types.
 	// diff layer for the block.
 	var err error
 	if bc.snaps == nil {
-		_, err = state.Commit(bc.chainConfig.IsEIP158(block.Number()), true)
+		_, err = state.Commit(block.NumberU64(), bc.chainConfig.IsEIP158(block.Number()), true)
 	} else {
-		_, err = state.CommitWithSnap(bc.chainConfig.IsEIP158(block.Number()), bc.snaps, block.Hash(), block.ParentHash(), true)
+		_, err = state.CommitWithSnap(block.NumberU64(), bc.chainConfig.IsEIP158(block.Number()), bc.snaps, block.Hash(), block.ParentHash(), true)
 	}
 	if err != nil {
 		return err
+	}
+	// If node is running in path mode, skip explicit gc operation
+	// which is unnecessary in this mode.
+	if bc.triedb.Scheme() == rawdb.PathScheme {
+		return nil
 	}
 
 	// Note: if InsertTrie must be the last step in verification that can return an error.
@@ -1396,8 +1469,15 @@ func (bc *BlockChain) insertBlock(block *types.Block, writes bool) error {
 // collectUnflattenedLogs collects the logs that were generated or removed during
 // the processing of a block.
 func (bc *BlockChain) collectUnflattenedLogs(b *types.Block, removed bool) [][]*types.Log {
+	var blobGasPrice *big.Int
+	excessBlobGas := b.ExcessBlobGas()
+	if excessBlobGas != nil {
+		blobGasPrice = eip4844.CalcBlobFee(*excessBlobGas)
+	}
 	receipts := rawdb.ReadRawReceipts(bc.db, b.Hash(), b.NumberU64())
-	receipts.DeriveFields(bc.chainConfig, b.Hash(), b.NumberU64(), b.Time(), b.BaseFee(), b.Transactions())
+	if err := receipts.DeriveFields(bc.chainConfig, b.Hash(), b.NumberU64(), b.Time(), b.BaseFee(), blobGasPrice, b.Transactions()); err != nil {
+		log.Error("Failed to derive block receipts fields", "hash", b.Hash(), "number", b.NumberU64(), "err", err)
+	}
 
 	// Note: gross but this needs to be initialized here because returning nil will be treated specially as an incorrect
 	// error case downstream.
@@ -1405,11 +1485,10 @@ func (bc *BlockChain) collectUnflattenedLogs(b *types.Block, removed bool) [][]*
 	for i, receipt := range receipts {
 		receiptLogs := make([]*types.Log, len(receipt.Logs))
 		for i, log := range receipt.Logs {
-			l := *log
 			if removed {
-				l.Removed = true
+				log.Removed = true
 			}
-			receiptLogs[i] = &l
+			receiptLogs[i] = log
 		}
 		logs[i] = receiptLogs
 	}
@@ -1451,10 +1530,10 @@ func (bc *BlockChain) reorg(oldHead *types.Header, newHead *types.Block) error {
 		}
 	}
 	if oldBlock == nil {
-		return errors.New("invalid old chain")
+		return errInvalidOldChain
 	}
 	if newBlock == nil {
-		return errors.New("invalid new chain")
+		return errInvalidNewChain
 	}
 	// Both sides of the reorg are at the same number, reduce both until the common
 	// ancestor is found
@@ -1471,11 +1550,11 @@ func (bc *BlockChain) reorg(oldHead *types.Header, newHead *types.Block) error {
 		// Step back with both chains
 		oldBlock = bc.GetBlock(oldBlock.ParentHash(), oldBlock.NumberU64()-1)
 		if oldBlock == nil {
-			return fmt.Errorf("invalid old chain")
+			return errInvalidOldChain
 		}
 		newBlock = bc.GetBlock(newBlock.ParentHash(), newBlock.NumberU64()-1)
 		if newBlock == nil {
-			return fmt.Errorf("invalid new chain")
+			return errInvalidNewChain
 		}
 	}
 
@@ -1710,9 +1789,9 @@ func (bc *BlockChain) reprocessBlock(parent *types.Block, current *types.Block) 
 	// If snapshots are enabled, call CommitWithSnaps to explicitly create a snapshot
 	// diff layer for the block.
 	if bc.snaps == nil {
-		return statedb.Commit(bc.chainConfig.IsEIP158(current.Number()), false)
+		return statedb.Commit(current.NumberU64(), bc.chainConfig.IsEIP158(current.Number()), false)
 	}
-	return statedb.CommitWithSnap(bc.chainConfig.IsEIP158(current.Number()), bc.snaps, current.Hash(), current.ParentHash(), false)
+	return statedb.CommitWithSnap(current.NumberU64(), bc.chainConfig.IsEIP158(current.Number()), bc.snaps, current.Hash(), current.ParentHash(), false)
 }
 
 // initSnapshot instantiates a Snapshot instance and adds it to [bc]
@@ -1871,7 +1950,7 @@ func (bc *BlockChain) reprocessState(current *types.Block, reexec uint64) error 
 		}
 	}
 
-	nodes, imgs := triedb.Size()
+	_, nodes, imgs := triedb.Size()
 	log.Info("Historical state regenerated", "block", current.NumberU64(), "elapsed", time.Since(start), "nodes", nodes, "preimages", imgs)
 	if previousRoot != (common.Hash{}) {
 		return triedb.Commit(previousRoot, true)
@@ -1972,7 +2051,7 @@ func (bc *BlockChain) populateMissingTries() error {
 		return fmt.Errorf("failed to write offline pruning success marker: %w", err)
 	}
 
-	nodes, imgs := triedb.Size()
+	_, nodes, imgs := triedb.Size()
 	log.Info("All missing tries populated", "startHeight", startHeight, "lastAcceptedHeight", lastAccepted, "missing", missing, "elapsed", time.Since(startTime), "nodes", nodes, "preimages", imgs)
 	return nil
 }
@@ -2049,6 +2128,8 @@ func (bc *BlockChain) gatherBlockRootsAboveLastAccepted() map[common.Hash]struct
 	return blockRoots
 }
 
+// TODO: split extras to blockchain_extra.go
+
 // ResetToStateSyncedBlock reinitializes the state of the blockchain
 // to the trie represented by [block.Root()] after updating
 // in-memory and on disk current block pointers to [block].
@@ -2059,7 +2140,9 @@ func (bc *BlockChain) ResetToStateSyncedBlock(block *types.Block) error {
 
 	// Update head block and snapshot pointers on disk
 	batch := bc.db.NewBatch()
-	rawdb.WriteAcceptorTip(batch, block.Hash())
+	if err := bc.batchBlockAcceptedIndices(batch, block); err != nil {
+		return err
+	}
 	rawdb.WriteHeadBlockHash(batch, block.Hash())
 	rawdb.WriteHeadHeaderHash(batch, block.Hash())
 	rawdb.WriteSnapshotBlockHash(batch, block.Hash())
@@ -2070,6 +2153,11 @@ func (bc *BlockChain) ResetToStateSyncedBlock(block *types.Block) error {
 
 	if err := batch.Write(); err != nil {
 		return err
+	}
+
+	// if txlookup limit is 0 (uindexing disabled), we don't need to repair the tx index tail.
+	if bc.cacheConfig.TxLookupLimit != 0 {
+		bc.setTxIndexTail(block.NumberU64())
 	}
 
 	// Update all in-memory chain markers
@@ -2103,4 +2191,21 @@ func (bc *BlockChain) ResetToStateSyncedBlock(block *types.Block) error {
 // during block building.
 func (bc *BlockChain) CacheConfig() *CacheConfig {
 	return bc.cacheConfig
+}
+
+func (bc *BlockChain) setTxIndexTail(newTail uint64) error {
+	bc.txIndexTailLock.Lock()
+	defer bc.txIndexTailLock.Unlock()
+
+	tailP := rawdb.ReadTxIndexTail(bc.db)
+	var tailV uint64
+	if tailP != nil {
+		tailV = *tailP
+	}
+
+	if newTail > tailV {
+		log.Info("Repairing tx index tail", "old", tailV, "new", newTail)
+		rawdb.WriteTxIndexTail(bc.db, newTail)
+	}
+	return nil
 }

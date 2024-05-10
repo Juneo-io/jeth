@@ -52,7 +52,7 @@ import (
 
 var ErrUnfinalizedData = errors.New("cannot query unfinalized data")
 
-// EthAPIBackend implements ethapi.Backend for full nodes
+// EthAPIBackend implements ethapi.Backend and tracers.Backend for full nodes
 type EthAPIBackend struct {
 	extRPCEnabled            bool
 	allowUnprotectedTxs      bool
@@ -91,6 +91,9 @@ func (b *EthAPIBackend) HeaderByNumber(ctx context.Context, number rpc.BlockNumb
 	// identically.
 	acceptedBlock := b.eth.LastAcceptedBlock()
 	if number.IsAccepted() {
+		if b.isLatestAndAllowed(number) {
+			return b.eth.blockchain.CurrentHeader(), nil
+		}
 		return acceptedBlock.Header(), nil
 	}
 
@@ -151,6 +154,10 @@ func (b *EthAPIBackend) BlockByNumber(ctx context.Context, number rpc.BlockNumbe
 	// identically.
 	acceptedBlock := b.eth.LastAcceptedBlock()
 	if number.IsAccepted() {
+		if b.isLatestAndAllowed(number) {
+			header := b.eth.blockchain.CurrentBlock()
+			return b.eth.blockchain.GetBlock(header.Hash(), header.Number.Uint64()), nil
+		}
 		return acceptedBlock, nil
 	}
 
@@ -232,7 +239,10 @@ func (b *EthAPIBackend) StateAndHeaderByNumber(ctx context.Context, number rpc.B
 		return nil, nil, errors.New("header not found")
 	}
 	stateDb, err := b.eth.BlockChain().StateAt(header.Root)
-	return stateDb, header, err
+	if err != nil {
+		return nil, nil, err
+	}
+	return stateDb, header, nil
 }
 
 func (b *EthAPIBackend) StateAndHeaderByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*state.StateDB, *types.Header, error) {
@@ -251,7 +261,10 @@ func (b *EthAPIBackend) StateAndHeaderByNumberOrHash(ctx context.Context, blockN
 			return nil, nil, errors.New("header for hash not found")
 		}
 		stateDb, err := b.eth.BlockChain().StateAt(header.Root)
-		return stateDb, header, err
+		if err != nil {
+			return nil, nil, err
+		}
+		return stateDb, header, nil
 	}
 	return nil, nil, errors.New("invalid arguments; neither block nor hash specified")
 }
@@ -324,7 +337,7 @@ func (b *EthAPIBackend) SendTx(ctx context.Context, signedTx *types.Transaction)
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	if err := b.eth.txPool.AddLocal(signedTx); err != nil {
+	if err := b.eth.txPool.Add([]*types.Transaction{signedTx}, true, false)[0]; err != nil {
 		return err
 	}
 
@@ -338,7 +351,11 @@ func (b *EthAPIBackend) GetPoolTransactions() (types.Transactions, error) {
 	pending := b.eth.txPool.Pending(false)
 	var txs types.Transactions
 	for _, batch := range pending {
-		txs = append(txs, batch...)
+		for _, lazy := range batch {
+			if tx := lazy.Resolve(); tx != nil {
+				txs = append(txs, tx)
+			}
+		}
 	}
 	return txs, nil
 }
@@ -370,15 +387,15 @@ func (b *EthAPIBackend) GetPoolNonce(ctx context.Context, addr common.Address) (
 	return b.eth.txPool.Nonce(addr), nil
 }
 
-func (b *EthAPIBackend) Stats() (pending int, queued int) {
+func (b *EthAPIBackend) Stats() (runnable int, blocked int) {
 	return b.eth.txPool.Stats()
 }
 
-func (b *EthAPIBackend) TxPoolContent() (map[common.Address]types.Transactions, map[common.Address]types.Transactions) {
+func (b *EthAPIBackend) TxPoolContent() (map[common.Address][]*types.Transaction, map[common.Address][]*types.Transaction) {
 	return b.eth.txPool.Content()
 }
 
-func (b *EthAPIBackend) TxPoolContentFrom(addr common.Address) (types.Transactions, types.Transactions) {
+func (b *EthAPIBackend) TxPoolContentFrom(addr common.Address) ([]*types.Transaction, []*types.Transaction) {
 	return b.eth.txPool.ContentFrom(addr)
 }
 
@@ -474,7 +491,7 @@ func (b *EthAPIBackend) GetMaxBlocksPerRequest() int64 {
 }
 
 func (b *EthAPIBackend) StateAtBlock(ctx context.Context, block *types.Block, reexec uint64, base *state.StateDB, readOnly bool, preferDisk bool) (*state.StateDB, tracers.StateReleaseFunc, error) {
-	return b.eth.StateAtBlock(ctx, block, reexec, base, readOnly, preferDisk)
+	return b.eth.stateAtBlock(ctx, block, reexec, base, readOnly, preferDisk)
 }
 
 func (b *EthAPIBackend) StateAtNextBlock(ctx context.Context, parent, nextBlock *types.Block, reexec uint64, base *state.StateDB, readOnly bool, preferDisk bool) (*state.StateDB, tracers.StateReleaseFunc, error) {
@@ -487,4 +504,8 @@ func (b *EthAPIBackend) StateAtTransaction(ctx context.Context, block *types.Blo
 
 func (b *EthAPIBackend) MinRequiredTip(ctx context.Context, header *types.Header) (*big.Int, error) {
 	return dummy.MinRequiredTip(b.ChainConfig(), header)
+}
+
+func (b *EthAPIBackend) isLatestAndAllowed(number rpc.BlockNumber) bool {
+	return number.IsLatest() && b.IsAllowUnfinalizedQueries()
 }

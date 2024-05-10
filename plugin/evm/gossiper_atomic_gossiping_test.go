@@ -14,6 +14,8 @@ import (
 	"github.com/Juneo-io/juneogo/utils/set"
 	"github.com/stretchr/testify/assert"
 
+	commonEng "github.com/Juneo-io/juneogo/snow/engine/common"
+
 	"github.com/Juneo-io/jeth/plugin/evm/message"
 )
 
@@ -35,7 +37,7 @@ func TestMempoolAtmTxsAppGossipHandling(t *testing.T) {
 		txRequested    bool
 	)
 	sender.CantSendAppGossip = false
-	sender.SendAppGossipF = func(context.Context, []byte, int, int, int) error {
+	sender.SendAppGossipF = func(context.Context, commonEng.SendConfig, []byte) error {
 		txGossipedLock.Lock()
 		defer txGossipedLock.Unlock()
 
@@ -122,7 +124,7 @@ func TestMempoolAtmTxsAppGossipHandlingDiscardedTx(t *testing.T) {
 		txRequested    bool
 	)
 	sender.CantSendAppGossip = false
-	sender.SendAppGossipF = func(context.Context, []byte, int, int, int) error {
+	sender.SendAppGossipF = func(context.Context, commonEng.SendConfig, []byte) error {
 		txGossipedLock.Lock()
 		defer txGossipedLock.Unlock()
 

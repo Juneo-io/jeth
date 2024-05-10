@@ -8,18 +8,19 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/Juneo-io/juneogo/utils/wrappers"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/params"
-	"github.com/Juneo-io/juneogo/utils/wrappers"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 )
 
 var (
-	ApricotPhase3MinBaseFee = big.NewInt(params.ApricotPhase3MinBaseFee)
-	ApricotPhase3MaxBaseFee = big.NewInt(params.ApricotPhase3MaxBaseFee)
-	ApricotPhase4MinBaseFee = big.NewInt(params.ApricotPhase4MinBaseFee)
-	ApricotPhase4MaxBaseFee = big.NewInt(params.ApricotPhase4MaxBaseFee)
+	ApricotPhase3MinBaseFee     = big.NewInt(params.ApricotPhase3MinBaseFee)
+	ApricotPhase3MaxBaseFee     = big.NewInt(params.ApricotPhase3MaxBaseFee)
+	ApricotPhase4MinBaseFee     = big.NewInt(params.ApricotPhase4MinBaseFee)
+	ApricotPhase4MaxBaseFee     = big.NewInt(params.ApricotPhase4MaxBaseFee)
+	ApricotPhase3InitialBaseFee = big.NewInt(params.ApricotPhase3InitialBaseFee)
 
 	JUNEStartMinBaseFee = big.NewInt(params.JUNEStartMinBaseFee)
 	MBTCStartMinBaseFee = big.NewInt(params.MBTCStartMinBaseFee)
@@ -198,6 +199,7 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	}
 
 	// Ensure that the base fee does not increase/decrease outside of the bounds
+	// TODO create fee config to get param
 	switch {
 	case isFeeUpdate1:
 		switch {
@@ -266,7 +268,7 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	return newRollupWindow, baseFee, nil
 }
 
-// EstiamteNextBaseFee attempts to estimate the next base fee based on a block with [parent] being built at
+// EstimateNextBaseFee attempts to estimate the next base fee based on a block with [parent] being built at
 // [timestamp].
 // If [timestamp] is less than the timestamp of [parent], then it uses the same timestamp as parent.
 // Warning: This function should only be used in estimation and should not be used when calculating the canonical

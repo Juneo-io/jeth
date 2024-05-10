@@ -30,9 +30,12 @@ import (
 	"time"
 
 	"github.com/Juneo-io/jeth/core"
-	"github.com/Juneo-io/jeth/core/txpool"
+	"github.com/Juneo-io/jeth/core/rawdb"
+	"github.com/Juneo-io/jeth/core/txpool/blobpool"
+	"github.com/Juneo-io/jeth/core/txpool/legacypool"
 	"github.com/Juneo-io/jeth/eth/gasprice"
 	"github.com/Juneo-io/jeth/miner"
+	"github.com/Juneo-io/jeth/params"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -54,6 +57,8 @@ var DefaultConfig = NewDefaultConfig()
 func NewDefaultConfig() Config {
 	return Config{
 		NetworkId:                 1,
+		StateHistory:              params.FullImmutabilityThreshold,
+		StateScheme:               rawdb.HashScheme,
 		TrieCleanCache:            512,
 		TrieDirtyCache:            256,
 		TrieDirtyCommitTarget:     20,
@@ -61,7 +66,8 @@ func NewDefaultConfig() Config {
 		SnapshotCache:             256,
 		AcceptedCacheSize:         32,
 		Miner:                     miner.Config{},
-		TxPool:                    txpool.DefaultConfig,
+		TxPool:                    legacypool.DefaultConfig,
+		BlobPool:                  blobpool.DefaultConfig,
 		RPCGasCap:                 25000000,
 		RPCEVMTimeout:             5 * time.Second,
 		GPO:                       DefaultFullGPOConfig,
@@ -86,7 +92,7 @@ type Config struct {
 	PopulateMissingTries            *uint64 // Height at which to start re-populating missing tries on startup.
 	PopulateMissingTriesParallelism int     // Number of concurrent readers to use when re-populating missing tries on startup.
 	AllowMissingTries               bool    // Whether to allow an archival node to run with pruning enabled and corrupt a complete index.
-	SnapshotDelayInit               bool    // Whether snapshot tree should be initialized on startup or delayed until explicit call
+	SnapshotDelayInit               bool    // Whether snapshot tree should be initialized on startup or delayed until explicit call (= StateSyncEnabled)
 	SnapshotWait                    bool    // Whether to wait for the initial snapshot generation
 	SnapshotVerify                  bool    // Whether to verify generated snapshots
 	SkipSnapshotRebuild             bool    // Whether to skip rebuilding the snapshot in favor of returning an error (only set to true for tests)
@@ -96,8 +102,6 @@ type Config struct {
 
 	// TrieDB and snapshot options
 	TrieCleanCache            int
-	TrieCleanJournal          string
-	TrieCleanRejournal        time.Duration
 	TrieDirtyCache            int
 	TrieDirtyCommitTarget     int
 	TriePrefetcherParallelism int
@@ -112,7 +116,8 @@ type Config struct {
 	Miner miner.Config
 
 	// Transaction pool options
-	TxPool txpool.Config
+	TxPool   legacypool.Config
+	BlobPool blobpool.Config
 
 	// Gas Price Oracle options
 	GPO gasprice.Config
@@ -157,7 +162,11 @@ type Config struct {
 	// are reserved:
 	//  * 0:   means no limit
 	//  * N:   means N block limit [HEAD-N+1, HEAD] and delete extra indexes
-	TxLookupLimit uint64
+	// Deprecated, use 'TransactionHistory' instead.
+	TxLookupLimit      uint64 `toml:",omitempty"` // The maximum number of blocks from head whose tx indices are reserved.
+	TransactionHistory uint64 `toml:",omitempty"` // The maximum number of blocks from head whose tx indices are reserved.
+	StateHistory       uint64 `toml:",omitempty"` // The maximum number of blocks from head whose state histories are reserved.
+	StateScheme        string `toml:",omitempty"` // State scheme used to store ethereum state and merkle trie nodes on top
 
 	// SkipTxIndexing skips indexing transactions.
 	// This is useful for validators that don't need to index transactions.

@@ -106,10 +106,9 @@ func testPrestateDiffTracer(tracerName string, dirPath string, t *testing.T) {
 			}
 			// Configure a blockchain with the given prestate
 			var (
-				blockNumber = new(big.Int).SetUint64(uint64(test.Context.Number))
-				signer      = types.MakeSigner(test.Genesis.Config, blockNumber, uint64(test.Context.Time))
-				origin, _   = signer.Sender(tx)
-				txContext   = vm.TxContext{
+				signer    = types.MakeSigner(test.Genesis.Config, new(big.Int).SetUint64(uint64(test.Context.Number)), uint64(test.Context.Time))
+				origin, _ = signer.Sender(tx)
+				txContext = vm.TxContext{
 					Origin:   origin,
 					GasPrice: tx.GasPrice(),
 				}
@@ -119,14 +118,16 @@ func testPrestateDiffTracer(tracerName string, dirPath string, t *testing.T) {
 					Transfer:          core.Transfer,
 					TransferMultiCoin: core.TransferMultiCoin,
 					Coinbase:          test.Context.Miner,
-					BlockNumber:       blockNumber,
+					BlockNumber:       new(big.Int).SetUint64(uint64(test.Context.Number)),
 					Time:              uint64(test.Context.Time),
 					Difficulty:        (*big.Int)(test.Context.Difficulty),
 					GasLimit:          uint64(test.Context.GasLimit),
 					BaseFee:           test.Genesis.BaseFee,
 				}
-				_, statedb = tests.MakePreState(rawdb.NewMemoryDatabase(), test.Genesis.Alloc, false)
+				triedb, _, statedb = tests.MakePreState(rawdb.NewMemoryDatabase(), test.Genesis.Alloc, false, rawdb.HashScheme)
 			)
+			defer triedb.Close()
+
 			tracer, err := tracers.DefaultDirectory.New(tracerName, new(tracers.Context), test.TracerConfig)
 			if err != nil {
 				t.Fatalf("failed to create call tracer: %v", err)

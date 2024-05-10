@@ -30,6 +30,7 @@ package eth
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"sync"
 	"time"
 
@@ -42,6 +43,7 @@ import (
 	"github.com/Juneo-io/jeth/core/rawdb"
 	"github.com/Juneo-io/jeth/core/state/pruner"
 	"github.com/Juneo-io/jeth/core/txpool"
+	"github.com/Juneo-io/jeth/core/txpool/legacypool"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/core/vm"
 	"github.com/Juneo-io/jeth/eth/ethconfig"
@@ -81,7 +83,8 @@ type Ethereum struct {
 	config *Config
 
 	// Handlers
-	txPool     *txpool.TxPool
+	txPool *txpool.TxPool
+
 	blockchain *core.BlockChain
 	gossiper   PushGossiper
 
@@ -147,14 +150,17 @@ func New(
 		"snapshot clean", common.StorageSize(config.SnapshotCache)*1024*1024,
 	)
 
-	// Note: RecoverPruning must be called to handle the case that we are midway through offline pruning.
-	// If the data directory is changed in between runs preventing RecoverPruning from performing its job correctly,
-	// it may cause DB corruption.
-	// Since RecoverPruning will only continue a pruning run that already began, we do not need to ensure that
-	// reprocessState has already been called and completed successfully. To ensure this, we must maintain
-	// that Prune is only run after reprocessState has finished successfully.
-	if err := pruner.RecoverPruning(config.OfflinePruningDataDirectory, chainDb, config.TrieCleanJournal); err != nil {
-		log.Error("Failed to recover state", "error", err)
+	// Try to recover offline state pruning only in hash-based.
+	if config.StateScheme == rawdb.HashScheme {
+		// Note: RecoverPruning must be called to handle the case that we are midway through offline pruning.
+		// If the data directory is changed in between runs preventing RecoverPruning from performing its job correctly,
+		// it may cause DB corruption.
+		// Since RecoverPruning will only continue a pruning run that already began, we do not need to ensure that
+		// reprocessState has already been called and completed successfully. To ensure this, we must maintain
+		// that Prune is only run after reprocessState has finished successfully.
+		if err := pruner.RecoverPruning(config.OfflinePruningDataDirectory, chainDb); err != nil {
+			log.Error("Failed to recover state", "error", err)
+		}
 	}
 
 	eth := &Ethereum{
@@ -172,7 +178,6 @@ func New(
 		settings:          settings,
 		shutdownTracker:   shutdowncheck.NewShutdownTracker(chainDb),
 	}
-
 	bcVersion := rawdb.ReadDatabaseVersion(chainDb)
 	dbVer := "<nil>"
 	if bcVersion != nil {
@@ -194,8 +199,6 @@ func New(
 		}
 		cacheConfig = &core.CacheConfig{
 			TrieCleanLimit:                  config.TrieCleanCache,
-			TrieCleanJournal:                config.TrieCleanJournal,
-			TrieCleanRejournal:              config.TrieCleanRejournal,
 			TrieDirtyLimit:                  config.TrieDirtyCache,
 			TrieDirtyCommitTarget:           config.TrieDirtyCommitTarget,
 			TriePrefetcherParallelism:       config.TriePrefetcherParallelism,
@@ -214,13 +217,14 @@ func New(
 			AcceptedCacheSize:               config.AcceptedCacheSize,
 			TxLookupLimit:                   config.TxLookupLimit,
 			SkipTxIndexing:                  config.SkipTxIndexing,
+			StateHistory:                    config.StateHistory,
+			StateScheme:                     config.StateScheme,
 		}
 	)
 
 	if err := eth.precheckPopulateMissingTries(); err != nil {
 		return nil, err
 	}
-
 	var err error
 	eth.blockchain, err = core.NewBlockChain(chainDb, cacheConfig, config.Genesis, eth.engine, vmConfig, lastAcceptedHash, config.SkipUpgradeCheck)
 	if err != nil {
@@ -233,7 +237,17 @@ func New(
 
 	eth.bloomIndexer.Start(eth.blockchain)
 
-	eth.txPool = txpool.NewTxPool(config.TxPool, eth.blockchain.Config(), eth.blockchain)
+	// Uncomment the following to enable the new blobpool
+
+	// config.BlobPool.Datadir = ""
+	// blobPool := blobpool.New(config.BlobPool, &chainWithFinalBlock{eth.blockchain})
+
+	legacyPool := legacypool.New(config.TxPool, eth.blockchain)
+
+	eth.txPool, err = txpool.New(new(big.Int).SetUint64(config.TxPool.PriceLimit), eth.blockchain, []txpool.SubPool{legacyPool}) //, blobPool})
+	if err != nil {
+		return nil, err
+	}
 
 	eth.miner = miner.New(eth, &config.Miner, eth.blockchain.Config(), eth.EventMux(), eth.engine, clock)
 
@@ -360,7 +374,7 @@ func (s *Ethereum) Start() {
 func (s *Ethereum) Stop() error {
 	s.bloomIndexer.Close()
 	close(s.closeBloomHandler)
-	s.txPool.Stop()
+	s.txPool.Close()
 	s.blockchain.Stop()
 	s.engine.Close()
 
@@ -443,7 +457,6 @@ func (s *Ethereum) handleOfflinePruning(cacheConfig *core.CacheConfig, gspec *co
 	log.Info("Starting offline pruning", "dataDir", s.config.OfflinePruningDataDirectory, "bloomFilterSize", s.config.OfflinePruningBloomFilterSize)
 	prunerConfig := pruner.Config{
 		BloomSize: s.config.OfflinePruningBloomFilterSize,
-		Cachedir:  s.config.TrieCleanJournal,
 		Datadir:   s.config.OfflinePruningDataDirectory,
 	}
 

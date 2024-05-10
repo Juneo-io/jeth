@@ -62,8 +62,6 @@ import (
 var (
 	_ bind.AcceptedContractCaller = (*SimulatedBackend)(nil)
 	_ bind.ContractBackend        = (*SimulatedBackend)(nil)
-	_ bind.ContractFilterer       = (*SimulatedBackend)(nil)
-	_ bind.ContractTransactor     = (*SimulatedBackend)(nil)
 	_ bind.DeployBackend          = (*SimulatedBackend)(nil)
 
 	_ interfaces.ChainReader            = (*SimulatedBackend)(nil)
@@ -147,7 +145,7 @@ func (b *SimulatedBackend) Close() error {
 	return nil
 }
 
-// Commit imports all the pending transactions as a single block and starts a
+// Commit imports all the accepted transactions as a single block and starts a
 // fresh new state.
 func (b *SimulatedBackend) Commit(accept bool) common.Hash {
 	b.mu.Lock()
@@ -171,7 +169,7 @@ func (b *SimulatedBackend) Commit(accept bool) common.Hash {
 	return blockHash
 }
 
-// Rollback aborts all pending transactions, reverting to the last committed state.
+// Rollback aborts all accepted transactions, reverting to the last committed state.
 func (b *SimulatedBackend) Rollback() {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -206,7 +204,7 @@ func (b *SimulatedBackend) Fork(ctx context.Context, parent common.Hash) error {
 	defer b.mu.Unlock()
 
 	if len(b.acceptedBlock.Transactions()) != 0 {
-		return errors.New("pending block dirty")
+		return errors.New("accepted block dirty")
 	}
 	block, err := b.blockByHash(ctx, parent)
 	if err != nil {
@@ -237,7 +235,6 @@ func (b *SimulatedBackend) CodeAt(ctx context.Context, contract common.Address, 
 	if err != nil {
 		return nil, err
 	}
-
 	return stateDB.GetCode(contract), nil
 }
 
@@ -250,7 +247,6 @@ func (b *SimulatedBackend) BalanceAt(ctx context.Context, contract common.Addres
 	if err != nil {
 		return nil, err
 	}
-
 	return stateDB.GetBalance(contract), nil
 }
 
@@ -263,7 +259,6 @@ func (b *SimulatedBackend) NonceAt(ctx context.Context, contract common.Address,
 	if err != nil {
 		return 0, err
 	}
-
 	return stateDB.GetNonce(contract), nil
 }
 
@@ -276,7 +271,6 @@ func (b *SimulatedBackend) StorageAt(ctx context.Context, contract common.Addres
 	if err != nil {
 		return nil, err
 	}
-
 	val := stateDB.GetState(contract, key)
 	return val[:], nil
 }
@@ -293,10 +287,10 @@ func (b *SimulatedBackend) TransactionReceipt(ctx context.Context, txHash common
 	return receipt, nil
 }
 
-// TransactionByHash checks the pool of pending transactions in addition to the
-// blockchain. The isPending return value indicates whether the transaction has been
+// TransactionByHash checks the pool of accepted transactions in addition to the
+// blockchain. The isAccepted return value indicates whether the transaction has been
 // mined yet. Note that the transaction may not be part of the canonical chain even if
-// it's not pending.
+// it's not accepted.
 func (b *SimulatedBackend) TransactionByHash(ctx context.Context, txHash common.Hash) (*types.Transaction, bool, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -537,7 +531,7 @@ func (b *SimulatedBackend) SuggestGasTipCap(ctx context.Context) (*big.Int, erro
 	return big.NewInt(1), nil
 }
 
-// EstimateGas executes the requested code against the currently pending block/state and
+// EstimateGas executes the requested code against the currently accepted block/state and
 // returns the used amount of gas.
 func (b *SimulatedBackend) EstimateGas(ctx context.Context, call interfaces.CallMsg) (uint64, error) {
 	b.mu.Lock()
@@ -641,7 +635,7 @@ func (b *SimulatedBackend) EstimateGas(ctx context.Context, call interfaces.Call
 	return hi, nil
 }
 
-// callContract implements common code between normal and pending contract calls.
+// callContract implements common code between normal and accepted contract calls.
 // state is modified during execution, make sure to copy it if necessary.
 func (b *SimulatedBackend) callContract(ctx context.Context, call interfaces.CallMsg, header *types.Header, stateDB *state.StateDB) (*core.ExecutionResult, error) {
 	// Gas prices post 1559 need to be initialized
@@ -711,7 +705,7 @@ func (b *SimulatedBackend) callContract(ctx context.Context, call interfaces.Cal
 	return core.ApplyMessage(vmEnv, msg, gasPool)
 }
 
-// SendTransaction updates the pending block to include the given transaction.
+// SendTransaction updates the accepted block to include the given transaction.
 func (b *SimulatedBackend) SendTransaction(ctx context.Context, tx *types.Transaction) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
@@ -741,8 +735,10 @@ func (b *SimulatedBackend) SendTransaction(ctx context.Context, tx *types.Transa
 	if err != nil {
 		return err
 	}
-	stateDB, _ := b.blockchain.State()
-
+	stateDB, err := b.blockchain.State()
+	if err != nil {
+		return err
+	}
 	b.acceptedBlock = blocks[0]
 	b.acceptedState, _ = state.New(b.acceptedBlock.Root(), stateDB.Database(), nil)
 	return nil
@@ -768,7 +764,7 @@ func (b *SimulatedBackend) FilterLogs(ctx context.Context, query interfaces.Filt
 			to = query.ToBlock.Int64()
 		}
 		// Construct the range filter
-		filter, _ = b.filterSystem.NewRangeFilter(from, to, query.Addresses, query.Topics)
+		filter = b.filterSystem.NewRangeFilter(from, to, query.Addresses, query.Topics)
 	}
 	// Run the filter and return all the logs
 	logs, err := filter.Logs(ctx)
@@ -854,17 +850,18 @@ func (b *SimulatedBackend) AdjustTime(adjustment time.Duration) error {
 	}
 	block := b.blockchain.GetBlockByHash(b.acceptedBlock.ParentHash())
 	if block == nil {
-		return fmt.Errorf("could not find parent")
+		return errors.New("could not find parent")
 	}
 
 	blocks, _, _ := core.GenerateChain(b.config, block, dummy.NewFaker(), b.database, 1, 10, func(number int, block *core.BlockGen) {
 		block.OffsetTime(int64(adjustment.Seconds()))
 	})
-	stateDB, _ := b.blockchain.State()
-
+	stateDB, err := b.blockchain.State()
+	if err != nil {
+		return err
+	}
 	b.acceptedBlock = blocks[0]
 	b.acceptedState, _ = state.New(b.acceptedBlock.Root(), stateDB.Database(), nil)
-
 	return nil
 }
 
@@ -911,7 +908,7 @@ func (fb *filterBackend) EventMux() *event.TypeMux { panic("not supported") }
 
 func (fb *filterBackend) HeaderByNumber(ctx context.Context, number rpc.BlockNumber) (*types.Header, error) {
 	switch number {
-	case rpc.PendingBlockNumber, rpc.AcceptedBlockNumber:
+	case rpc.PendingBlockNumber, rpc.FinalizedBlockNumber:
 		if block := fb.backend.acceptedBlock; block != nil {
 			return block.Header(), nil
 		}
