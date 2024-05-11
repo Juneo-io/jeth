@@ -32,11 +32,11 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/Juneo-io/juneogo/utils/constants"
-	"github.com/Juneo-io/juneogo/version"
 	"github.com/Juneo-io/jeth/precompile/modules"
 	"github.com/Juneo-io/jeth/precompile/precompileconfig"
 	"github.com/Juneo-io/jeth/utils"
+	"github.com/Juneo-io/juneogo/utils/constants"
+	"github.com/Juneo-io/juneogo/version"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -510,6 +510,7 @@ func getChainConfig(networkID uint32, chainID *big.Int) *ChainConfig {
 		BanffBlockTimestamp:             getUpgradeTime(networkID, version.BanffTimes),
 		CortinaBlockTimestamp:           getUpgradeTime(networkID, version.CortinaTimes),
 		DurangoBlockTimestamp:           getUpgradeTime(networkID, version.DurangoTimes),
+		FeeUpdate1BlockTimestamp:        getUpgradeTime(networkID, version.FeeUpdate1Times),
 	}
 }
 
@@ -564,7 +565,7 @@ type ChainConfig struct {
 	// and Avalanche Warp Messaging. (nil = no fork, 0 = already activated)
 	// Note: EIP-4895 is excluded since withdrawals are not relevant to the Avalanche C-Chain or Supernets running the EVM.
 	DurangoBlockTimestamp    *uint64 `json:"durangoBlockTimestamp,omitempty"`
-	FeeUpdate1BlockTimestamp *uint64 `json:"feeUpdate0BlockTimestamp,omitempty"`
+	FeeUpdate1BlockTimestamp *uint64 `json:"feeUpdate1BlockTimestamp,omitempty"`
 	// Cancun activates the Cancun upgrade from Ethereum. (nil = no fork, 0 = already activated)
 	CancunTime *uint64 `json:"cancunTime,omitempty"`
 
