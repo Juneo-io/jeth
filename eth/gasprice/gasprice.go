@@ -31,12 +31,12 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/Juneo-io/juneogo/utils/timer/mockable"
 	"github.com/Juneo-io/jeth/consensus/dummy"
 	"github.com/Juneo-io/jeth/core"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/params"
 	"github.com/Juneo-io/jeth/rpc"
+	"github.com/Juneo-io/juneogo/utils/timer/mockable"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/lru"
 	"github.com/ethereum/go-ethereum/common/math"
@@ -191,10 +191,11 @@ func NewOracle(backend OracleBackend, config Config) (*Oracle, error) {
 	if err != nil {
 		return nil, err
 	}
+	time := backend.LastAcceptedBlock().Timestamp()
 	return &Oracle{
 		backend:             backend,
 		lastPrice:           minPrice,
-		lastBaseFee:         backend.ChainConfig().GetInitialBaseFee(),
+		lastBaseFee:         backend.ChainConfig().GetCurrentBaseFee(time),
 		minPrice:            minPrice,
 		maxPrice:            maxPrice,
 		checkBlocks:         blocks,

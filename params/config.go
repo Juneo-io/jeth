@@ -797,6 +797,43 @@ func (c *ChainConfig) GetInitialBaseFee() *big.Int {
 	}
 }
 
+func (c *ChainConfig) GetCurrentBaseFee(time uint64) *big.Int {
+	isFeeUpdate1 := c.IsFeeUpdate1(time)
+	switch {
+	case isFeeUpdate1:
+		switch {
+		case c.ChainID.Cmp(JUNEChainID) == 0:
+			return big.NewInt(JUNECurrentMinBaseFee)
+		case c.ChainID.Cmp(MBTC1ChainID) == 0:
+			return big.NewInt(MBTCCurrentMinBaseFee)
+		case c.ChainID.Cmp(DOGE1ChainID) == 0:
+			return big.NewInt(DOGECurrentMinBaseFee)
+		case c.ChainID.Cmp(USD1ChainID) == 0:
+			return big.NewInt(USDCurrentMinBaseFee)
+		case c.ChainID.Cmp(USDT1ChainID) == 0:
+			return big.NewInt(USDCurrentMinBaseFee)
+		case c.ChainID.Cmp(DAI1ChainID) == 0:
+			return big.NewInt(USDCurrentMinBaseFee)
+		case c.ChainID.Cmp(EUR1ChainID) == 0:
+			return big.NewInt(EUROCurrentMinBaseFee)
+		case c.ChainID.Cmp(LTC1ChainID) == 0:
+			return big.NewInt(LTCCurrentMinBaseFee)
+		case c.ChainID.Cmp(GLD1ChainID) == 0:
+			return big.NewInt(GLDCurrentMinBaseFee)
+		case c.ChainID.Cmp(SGD1ChainID) == 0:
+			return big.NewInt(SGDCurrentMinBaseFee)
+		case c.ChainID.Cmp(BCH1ChainID) == 0:
+			return big.NewInt(BCHCurrentMinBaseFee)
+		case c.ChainID.Cmp(LINK1ChainID) == 0:
+			return big.NewInt(LINKCurrentMinBaseFee)
+		default:
+			return big.NewInt(ApricotPhase3InitialBaseFee)
+		}
+	default:
+		return c.GetInitialBaseFee()
+	}
+}
+
 func (r *Rules) PredicatersExist() bool {
 	return len(r.Predicaters) > 0
 }
