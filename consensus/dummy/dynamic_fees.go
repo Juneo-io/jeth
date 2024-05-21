@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/Juneo-io/juneogo/utils/wrappers"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/params"
+	"github.com/Juneo-io/juneogo/utils/wrappers"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 )
@@ -21,28 +21,6 @@ var (
 	ApricotPhase4MinBaseFee     = big.NewInt(params.ApricotPhase4MinBaseFee)
 	ApricotPhase4MaxBaseFee     = big.NewInt(params.ApricotPhase4MaxBaseFee)
 	ApricotPhase3InitialBaseFee = big.NewInt(params.ApricotPhase3InitialBaseFee)
-
-	JUNEStartMinBaseFee = big.NewInt(params.JUNEStartMinBaseFee)
-	MBTCStartMinBaseFee = big.NewInt(params.MBTCStartMinBaseFee)
-	DOGEStartMinBaseFee = big.NewInt(params.DOGEStartMinBaseFee)
-	USDStartMinBaseFee  = big.NewInt(params.USDStartMinBaseFee)
-	LTCStartMinBaseFee  = big.NewInt(params.LTCStartMinBaseFee)
-	GLDStartMinBaseFee  = big.NewInt(params.GLDStartMinBaseFee)
-	EURStartMinBaseFee  = big.NewInt(params.EUROStartMinBaseFee)
-	SGDStartMinBaseFee  = big.NewInt(params.SGDStartMinBaseFee)
-	BCHStartMinBaseFee  = big.NewInt(params.BCHStartMinBaseFee)
-	LINKStartMinBaseFee = big.NewInt(params.LINKStartMinBaseFee)
-
-	JUNECurrentMinBaseFee = big.NewInt(params.JUNECurrentMinBaseFee)
-	MBTCCurrentMinBaseFee = big.NewInt(params.MBTCCurrentMinBaseFee)
-	DOGECurrentMinBaseFee = big.NewInt(params.DOGECurrentMinBaseFee)
-	USDCurrentMinBaseFee  = big.NewInt(params.USDCurrentMinBaseFee)
-	LTCCurrentMinBaseFee  = big.NewInt(params.LTCCurrentMinBaseFee)
-	GLDCurrentMinBaseFee  = big.NewInt(params.GLDCurrentMinBaseFee)
-	EURCurrentMinBaseFee  = big.NewInt(params.EUROCurrentMinBaseFee)
-	SGDCurrentMinBaseFee  = big.NewInt(params.SGDCurrentMinBaseFee)
-	BCHCurrentMinBaseFee  = big.NewInt(params.BCHCurrentMinBaseFee)
-	LINKCurrentMinBaseFee = big.NewInt(params.LINKCurrentMinBaseFee)
 
 	ApricotPhase4BaseFeeChangeDenominator = new(big.Int).SetUint64(params.ApricotPhase4BaseFeeChangeDenominator)
 	ApricotPhase5BaseFeeChangeDenominator = new(big.Int).SetUint64(params.ApricotPhase5BaseFeeChangeDenominator)
@@ -67,7 +45,6 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 		isApricotPhase3 = config.IsApricotPhase3(parent.Time)
 		isApricotPhase4 = config.IsApricotPhase4(parent.Time)
 		isApricotPhase5 = config.IsApricotPhase5(parent.Time)
-		isFeeUpdate1    = config.IsFeeUpdate1(parent.Time)
 	)
 	if !isApricotPhase3 || parent.Number.Cmp(common.Big0) == 0 {
 		initialSlice := make([]byte, params.DynamicFeeExtraDataSize)
@@ -199,66 +176,9 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	}
 
 	// Ensure that the base fee does not increase/decrease outside of the bounds
-	// TODO create fee config to get param
 	switch {
-	case isFeeUpdate1:
-		switch {
-		case config.ChainID.Cmp(params.JUNEChainID) == 0:
-			baseFee = selectBigWithinBounds(JUNECurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.MBTC1ChainID) == 0:
-			baseFee = selectBigWithinBounds(MBTCCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.DOGE1ChainID) == 0:
-			baseFee = selectBigWithinBounds(DOGECurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.USD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.USDT1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.DAI1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.EUR1ChainID) == 0:
-			baseFee = selectBigWithinBounds(EURCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.LTC1ChainID) == 0:
-			baseFee = selectBigWithinBounds(LTCCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.GLD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(GLDCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.SGD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(SGDCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.BCH1ChainID) == 0:
-			baseFee = selectBigWithinBounds(BCHCurrentMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.LINK1ChainID) == 0:
-			baseFee = selectBigWithinBounds(LINKCurrentMinBaseFee, baseFee, nil)
-		default:
-			baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, nil)
-		}
 	case isApricotPhase5:
-		switch {
-		case config.ChainID.Cmp(params.JUNEChainID) == 0:
-			baseFee = selectBigWithinBounds(JUNEStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.MBTC1ChainID) == 0:
-			baseFee = selectBigWithinBounds(MBTCStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.DOGE1ChainID) == 0:
-			baseFee = selectBigWithinBounds(DOGEStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.USD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.USDT1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.DAI1ChainID) == 0:
-			baseFee = selectBigWithinBounds(USDStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.EUR1ChainID) == 0:
-			baseFee = selectBigWithinBounds(EURStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.LTC1ChainID) == 0:
-			baseFee = selectBigWithinBounds(LTCStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.GLD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(GLDStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.SGD1ChainID) == 0:
-			baseFee = selectBigWithinBounds(SGDStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.BCH1ChainID) == 0:
-			baseFee = selectBigWithinBounds(BCHStartMinBaseFee, baseFee, nil)
-		case config.ChainID.Cmp(params.LINK1ChainID) == 0:
-			baseFee = selectBigWithinBounds(LINKStartMinBaseFee, baseFee, nil)
-		default:
-			baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, nil)
-		}
+		baseFee = selectBigWithinBounds(config.GetCurrentBaseFee(timestamp), baseFee, nil)
 	case isApricotPhase4:
 		baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, ApricotPhase4MaxBaseFee)
 	default:

@@ -64,7 +64,6 @@ var (
 	BCH1ChainID  = big.NewInt(101013)
 	LINK1ChainID = big.NewInt(101014)
 
-	ETH1AssetID  = "JeUvxJPXoL3EtVGSPwtyYXVymxGbpcBcaa2Kq7TCB43HsKMAS"
 	USDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
 	USD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
 	DAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
@@ -78,7 +77,6 @@ var (
 	LINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
 
 	PrimaryAssetIDs = []string{
-		ETH1AssetID,
 		USDT1AssetId,
 		USD1AssetId,
 		DAI1AssetId,
@@ -827,7 +825,7 @@ func (c *ChainConfig) GetCurrentBaseFee(time uint64) *big.Int {
 		case c.ChainID.Cmp(LINK1ChainID) == 0:
 			return big.NewInt(LINKCurrentMinBaseFee)
 		default:
-			return big.NewInt(ApricotPhase3InitialBaseFee)
+			return big.NewInt(ApricotPhase4MinBaseFee)
 		}
 	default:
 		return c.GetInitialBaseFee()
