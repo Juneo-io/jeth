@@ -48,7 +48,7 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	)
 	if !isApricotPhase3 || parent.Number.Cmp(common.Big0) == 0 {
 		initialSlice := make([]byte, params.DynamicFeeExtraDataSize)
-		initialBaseFee := config.GetInitialBaseFee()
+		initialBaseFee := big.NewInt(config.GetFeeConfig().InitialMinBaseFee)
 		return initialSlice, initialBaseFee, nil
 	}
 

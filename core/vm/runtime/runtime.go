@@ -105,7 +105,7 @@ func setDefaults(cfg *Config) {
 		}
 	}
 	if cfg.BaseFee == nil {
-		cfg.BaseFee = cfg.ChainConfig.GetInitialBaseFee()
+		cfg.BaseFee = big.NewInt(cfg.ChainConfig.GetFeeConfig().InitialMinBaseFee)
 	}
 }
 

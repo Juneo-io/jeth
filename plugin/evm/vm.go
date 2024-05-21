@@ -453,40 +453,40 @@ func (vm *VM) Initialize(
 	var extDataHashes map[common.Hash]common.Hash
 	// Set the chain config for mainnet/fuji chain IDs
 	switch {
-	case g.Config.ChainID.Cmp(params.JUNEChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraJUNEChainID) == 0:
 		config := *params.SocotraJUNEChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.MBTC1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraMBTC1ChainID) == 0:
 		config := *params.SocotraMBTC1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.DOGE1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraDOGE1ChainID) == 0:
 		config := *params.SocotraDOGE1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.USD1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraUSD1ChainID) == 0:
 		config := *params.SocotraUSD1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.USDT1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraUSDT1ChainID) == 0:
 		config := *params.SocotraUSDT1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.DAI1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraDAI1ChainID) == 0:
 		config := *params.SocotraDAI1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.EUR1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraEUR1ChainID) == 0:
 		config := *params.SocotraEUR1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.LTC1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraLTC1ChainID) == 0:
 		config := *params.SocotraLTC1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.GLD1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraGLD1ChainID) == 0:
 		config := *params.SocotraGLD1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SGD1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraSGD1ChainID) == 0:
 		config := *params.SocotraSGD1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.BCH1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraBCH1ChainID) == 0:
 		config := *params.SocotraBCH1ChainConfig
 		g.Config = &config
-	case g.Config.ChainID.Cmp(params.LINK1ChainID) == 0:
+	case g.Config.ChainID.Cmp(params.SocotraLINK1ChainID) == 0:
 		config := *params.SocotraLINK1ChainConfig
 		g.Config = &config
 	case g.Config.ChainID.Cmp(params.AvalancheMainnetChainID) == 0:

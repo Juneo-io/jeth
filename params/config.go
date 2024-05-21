@@ -51,43 +51,43 @@ var (
 	// AvalancheLocalChainID ...
 	AvalancheLocalChainID = big.NewInt(43112)
 
-	JUNEChainID  = big.NewInt(101003)
-	MBTC1ChainID = big.NewInt(101007)
-	DOGE1ChainID = big.NewInt(101010)
-	USD1ChainID  = big.NewInt(101006)
-	USDT1ChainID = big.NewInt(101005)
-	DAI1ChainID  = big.NewInt(101004)
-	EUR1ChainID  = big.NewInt(101011)
-	LTC1ChainID  = big.NewInt(101009)
-	GLD1ChainID  = big.NewInt(101008)
-	SGD1ChainID  = big.NewInt(101012)
-	BCH1ChainID  = big.NewInt(101013)
-	LINK1ChainID = big.NewInt(101014)
+	SocotraJUNEChainID  = big.NewInt(101003)
+	SocotraMBTC1ChainID = big.NewInt(101007)
+	SocotraDOGE1ChainID = big.NewInt(101010)
+	SocotraUSD1ChainID  = big.NewInt(101006)
+	SocotraUSDT1ChainID = big.NewInt(101005)
+	SocotraDAI1ChainID  = big.NewInt(101004)
+	SocotraEUR1ChainID  = big.NewInt(101011)
+	SocotraLTC1ChainID  = big.NewInt(101009)
+	SocotraGLD1ChainID  = big.NewInt(101008)
+	SocotraSGD1ChainID  = big.NewInt(101012)
+	SocotraBCH1ChainID  = big.NewInt(101013)
+	SocotraLINK1ChainID = big.NewInt(101014)
 
-	USDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
-	USD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
-	DAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
-	EUR1AssetId  = "2CkzBNwEKvreEwYp2froWJePpXfruZu6iemJVfNqUAtVjJDRkp"
-	SGD1AssetId  = "2Bi6ovdELbjXhSxs9fQTMPWUHcCbvJJZV4pHLkwcQyD7dDrqLG"
-	GLD1AssetId  = "HNihfvex33EDsuHuQddQpBpwUtkotLwnt54aj7GkGrxY9mLGz"
-	MBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
-	DOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
-	LTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
-	BCH1AssetId  = "2RBX4TiRmUxU1FsmNmEgdEGcFtgPr9NTGqnm5f33mK8adciKsA"
-	LINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
+	SocotraUSDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
+	SocotraUSD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
+	SocotraDAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
+	SocotraEUR1AssetId  = "2CkzBNwEKvreEwYp2froWJePpXfruZu6iemJVfNqUAtVjJDRkp"
+	SocotraSGD1AssetId  = "2Bi6ovdELbjXhSxs9fQTMPWUHcCbvJJZV4pHLkwcQyD7dDrqLG"
+	SocotraGLD1AssetId  = "HNihfvex33EDsuHuQddQpBpwUtkotLwnt54aj7GkGrxY9mLGz"
+	SocotraMBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
+	SocotraDOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
+	SocotraLTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
+	SocotraBCH1AssetId  = "2RBX4TiRmUxU1FsmNmEgdEGcFtgPr9NTGqnm5f33mK8adciKsA"
+	SocotraLINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
 
 	PrimaryAssetIDs = []string{
-		USDT1AssetId,
-		USD1AssetId,
-		DAI1AssetId,
-		EUR1AssetId,
-		SGD1AssetId,
-		GLD1AssetId,
-		MBTC1AssetId,
-		DOGE1AssetId,
-		LTC1AssetId,
-		BCH1AssetId,
-		LINK1AssetId,
+		SocotraUSDT1AssetId,
+		SocotraUSD1AssetId,
+		SocotraDAI1AssetId,
+		SocotraEUR1AssetId,
+		SocotraSGD1AssetId,
+		SocotraGLD1AssetId,
+		SocotraMBTC1AssetId,
+		SocotraDOGE1AssetId,
+		SocotraLTC1AssetId,
+		SocotraBCH1AssetId,
+		SocotraLINK1AssetId,
 	}
 
 	errNonGenesisForkByHeight = errors.New("coreth only supports forking by height at the genesis block")
@@ -104,18 +104,18 @@ var (
 	AvalancheLocalChainConfig = getChainConfig(constants.LocalID, AvalancheLocalChainID)
 
 	// Socotra network chains configs
-	SocotraJUNEChainConfig  = getChainConfig(constants.TestnetID, JUNEChainID)
-	SocotraMBTC1ChainConfig = getChainConfig(constants.TestnetID, MBTC1ChainID)
-	SocotraDOGE1ChainConfig = getChainConfig(constants.TestnetID, DOGE1ChainID)
-	SocotraUSD1ChainConfig  = getChainConfig(constants.TestnetID, USD1ChainID)
-	SocotraUSDT1ChainConfig = getChainConfig(constants.TestnetID, USDT1ChainID)
-	SocotraDAI1ChainConfig  = getChainConfig(constants.TestnetID, DAI1ChainID)
-	SocotraEUR1ChainConfig  = getChainConfig(constants.TestnetID, EUR1ChainID)
-	SocotraLTC1ChainConfig  = getChainConfig(constants.TestnetID, LTC1ChainID)
-	SocotraGLD1ChainConfig  = getChainConfig(constants.TestnetID, GLD1ChainID)
-	SocotraSGD1ChainConfig  = getChainConfig(constants.TestnetID, SGD1ChainID)
-	SocotraBCH1ChainConfig  = getChainConfig(constants.TestnetID, BCH1ChainID)
-	SocotraLINK1ChainConfig = getChainConfig(constants.TestnetID, LINK1ChainID)
+	SocotraJUNEChainConfig  = getChainConfig(constants.TestnetID, SocotraJUNEChainID)
+	SocotraMBTC1ChainConfig = getChainConfig(constants.TestnetID, SocotraMBTC1ChainID)
+	SocotraDOGE1ChainConfig = getChainConfig(constants.TestnetID, SocotraDOGE1ChainID)
+	SocotraUSD1ChainConfig  = getChainConfig(constants.TestnetID, SocotraUSD1ChainID)
+	SocotraUSDT1ChainConfig = getChainConfig(constants.TestnetID, SocotraUSDT1ChainID)
+	SocotraDAI1ChainConfig  = getChainConfig(constants.TestnetID, SocotraDAI1ChainID)
+	SocotraEUR1ChainConfig  = getChainConfig(constants.TestnetID, SocotraEUR1ChainID)
+	SocotraLTC1ChainConfig  = getChainConfig(constants.TestnetID, SocotraLTC1ChainID)
+	SocotraGLD1ChainConfig  = getChainConfig(constants.TestnetID, SocotraGLD1ChainID)
+	SocotraSGD1ChainConfig  = getChainConfig(constants.TestnetID, SocotraSGD1ChainID)
+	SocotraBCH1ChainConfig  = getChainConfig(constants.TestnetID, SocotraBCH1ChainID)
+	SocotraLINK1ChainConfig = getChainConfig(constants.TestnetID, SocotraLINK1ChainID)
 
 	TestChainConfig = &ChainConfig{
 		AvalancheContext:                AvalancheContext{utils.TestSnowContext()},
@@ -764,71 +764,101 @@ func IsPrimaryAssetID(assetID string) bool {
 	return false
 }
 
-func (c *ChainConfig) GetInitialBaseFee() *big.Int {
+type ChainFeeConfig struct {
+	InitialMinBaseFee  int64 `json:"initialMinBaseFee,omitempty"`
+	PreviousMinBaseFee int64 `json:"previousMinBaseFee,omitempty"`
+	LatestMinBaseFee   int64 `json:"latestMinBaseFee,omitempty"`
+}
+
+func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 	switch {
-	case c.ChainID.Cmp(JUNEChainID) == 0:
-		return big.NewInt(JUNEStartMinBaseFee)
-	case c.ChainID.Cmp(MBTC1ChainID) == 0:
-		return big.NewInt(MBTCStartMinBaseFee)
-	case c.ChainID.Cmp(DOGE1ChainID) == 0:
-		return big.NewInt(DOGEStartMinBaseFee)
-	case c.ChainID.Cmp(USD1ChainID) == 0:
-		return big.NewInt(USDStartMinBaseFee)
-	case c.ChainID.Cmp(USDT1ChainID) == 0:
-		return big.NewInt(USDStartMinBaseFee)
-	case c.ChainID.Cmp(DAI1ChainID) == 0:
-		return big.NewInt(USDStartMinBaseFee)
-	case c.ChainID.Cmp(EUR1ChainID) == 0:
-		return big.NewInt(EUROStartMinBaseFee)
-	case c.ChainID.Cmp(LTC1ChainID) == 0:
-		return big.NewInt(LTCStartMinBaseFee)
-	case c.ChainID.Cmp(GLD1ChainID) == 0:
-		return big.NewInt(GLDStartMinBaseFee)
-	case c.ChainID.Cmp(SGD1ChainID) == 0:
-		return big.NewInt(SGDStartMinBaseFee)
-	case c.ChainID.Cmp(BCH1ChainID) == 0:
-		return big.NewInt(BCHStartMinBaseFee)
-	case c.ChainID.Cmp(LINK1ChainID) == 0:
-		return big.NewInt(LINKStartMinBaseFee)
+	case c.ChainID.Cmp(SocotraJUNEChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  48_000_000_000,
+			PreviousMinBaseFee: 144_000_000_000,
+			LatestMinBaseFee:   144_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraMBTC1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  13_000_000_000,
+			PreviousMinBaseFee: 22_000_000_000,
+			LatestMinBaseFee:   22_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraDOGE1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  6477_000_000_000,
+			PreviousMinBaseFee: 9524_000_000_000,
+			LatestMinBaseFee:   9524_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraUSD1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  476_000_000_000,
+			PreviousMinBaseFee: 1429_000_000_000,
+			LatestMinBaseFee:   1429_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraUSDT1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  476_000_000_000,
+			PreviousMinBaseFee: 1429_000_000_000,
+			LatestMinBaseFee:   1429_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraDAI1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  476_000_000_000,
+			PreviousMinBaseFee: 1429_000_000_000,
+			LatestMinBaseFee:   1429_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraEUR1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  433_000_000_000,
+			PreviousMinBaseFee: 1299_000_000_000,
+			LatestMinBaseFee:   1299_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraLTC1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  54_000_000_000,
+			PreviousMinBaseFee: 17_000_000_000,
+			LatestMinBaseFee:   17_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraGLD1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  3_000_000_000,
+			PreviousMinBaseFee: 1_000_000_000,
+			LatestMinBaseFee:   1_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraSGD1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  635_000_000_000,
+			PreviousMinBaseFee: 1905_000_000_000,
+			LatestMinBaseFee:   1905_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraBCH1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  1_000_000_000,
+			PreviousMinBaseFee: 3_000_000_000,
+			LatestMinBaseFee:   3_000_000_000,
+		}
+	case c.ChainID.Cmp(SocotraLINK1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  26_000_000_000,
+			PreviousMinBaseFee: 102_000_000_000,
+			LatestMinBaseFee:   102_000_000_000,
+		}
 	default:
-		return big.NewInt(ApricotPhase3InitialBaseFee)
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  ApricotPhase3InitialBaseFee,
+			PreviousMinBaseFee: ApricotPhase4MinBaseFee,
+			LatestMinBaseFee:   ApricotPhase4MinBaseFee,
+		}
 	}
 }
 
 func (c *ChainConfig) GetCurrentBaseFee(time uint64) *big.Int {
-	isFeeUpdate1 := c.IsFeeUpdate1(time)
-	switch {
-	case isFeeUpdate1:
-		switch {
-		case c.ChainID.Cmp(JUNEChainID) == 0:
-			return big.NewInt(JUNECurrentMinBaseFee)
-		case c.ChainID.Cmp(MBTC1ChainID) == 0:
-			return big.NewInt(MBTCCurrentMinBaseFee)
-		case c.ChainID.Cmp(DOGE1ChainID) == 0:
-			return big.NewInt(DOGECurrentMinBaseFee)
-		case c.ChainID.Cmp(USD1ChainID) == 0:
-			return big.NewInt(USDCurrentMinBaseFee)
-		case c.ChainID.Cmp(USDT1ChainID) == 0:
-			return big.NewInt(USDCurrentMinBaseFee)
-		case c.ChainID.Cmp(DAI1ChainID) == 0:
-			return big.NewInt(USDCurrentMinBaseFee)
-		case c.ChainID.Cmp(EUR1ChainID) == 0:
-			return big.NewInt(EUROCurrentMinBaseFee)
-		case c.ChainID.Cmp(LTC1ChainID) == 0:
-			return big.NewInt(LTCCurrentMinBaseFee)
-		case c.ChainID.Cmp(GLD1ChainID) == 0:
-			return big.NewInt(GLDCurrentMinBaseFee)
-		case c.ChainID.Cmp(SGD1ChainID) == 0:
-			return big.NewInt(SGDCurrentMinBaseFee)
-		case c.ChainID.Cmp(BCH1ChainID) == 0:
-			return big.NewInt(BCHCurrentMinBaseFee)
-		case c.ChainID.Cmp(LINK1ChainID) == 0:
-			return big.NewInt(LINKCurrentMinBaseFee)
-		default:
-			return big.NewInt(ApricotPhase4MinBaseFee)
-		}
-	default:
-		return c.GetInitialBaseFee()
+	feeConfig := c.GetFeeConfig()
+	if c.IsFeeUpdate1(time) {
+		return big.NewInt(feeConfig.LatestMinBaseFee)
+	} else {
+		return big.NewInt(feeConfig.PreviousMinBaseFee)
 	}
 }
 

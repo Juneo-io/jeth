@@ -38,71 +38,8 @@ func (vm *VM) handleGasPriceUpdates() {
 
 // start handles the appropriate gas price and minimum fee updates required by [gpu.chainConfig]
 func (gpu *gasPriceUpdater) start() {
-	// Updates to the minimum gas price as of ApricotPhase4 if it's already in effect or starts a goroutine to enable it at the correct time
-	switch {
-	case gpu.chainConfig.ChainID.Cmp(params.JUNEChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.JUNEStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.JUNECurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.MBTC1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.MBTCStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.MBTCCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.DOGE1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.DOGEStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.DOGECurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.USD1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.USDStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.USDCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.USDT1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.USDStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.USDCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.DAI1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.USDStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.USDCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.EUR1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.EUROStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.EUROCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.LTC1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.LTCStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.LTCCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.GLD1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.GLDStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.GLDCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.SGD1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.SGDStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.SGDCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.BCH1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.BCHStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.BCHCurrentMinBaseFee))
-	case gpu.chainConfig.ChainID.Cmp(params.LINK1ChainID) == 0:
-		if disabled := gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.ApricotPhase4BlockTimestamp, big.NewInt(params.LINKStartMinBaseFee)); disabled {
-			return
-		}
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.LINKCurrentMinBaseFee))
-	default:
-		gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, big.NewInt(params.ApricotPhase4MinBaseFee))
-	}
+	latestBaseFee := big.NewInt(gpu.chainConfig.GetFeeConfig().LatestMinBaseFee)
+	gpu.handleUpdate(gpu.setter.SetMinFee, gpu.chainConfig.FeeUpdate1BlockTimestamp, latestBaseFee)
 }
 
 // handleUpdate handles calling update(price) at the appropriate time based on
