@@ -451,56 +451,9 @@ func (vm *VM) Initialize(
 	}
 
 	var extDataHashes map[common.Hash]common.Hash
-	// Set the chain config for mainnet/fuji chain IDs
-	switch {
-	case g.Config.ChainID.Cmp(params.SocotraJUNEChainID) == 0:
-		config := *params.SocotraJUNEChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraMBTC1ChainID) == 0:
-		config := *params.SocotraMBTC1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraDOGE1ChainID) == 0:
-		config := *params.SocotraDOGE1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraUSD1ChainID) == 0:
-		config := *params.SocotraUSD1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraUSDT1ChainID) == 0:
-		config := *params.SocotraUSDT1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraDAI1ChainID) == 0:
-		config := *params.SocotraDAI1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraEUR1ChainID) == 0:
-		config := *params.SocotraEUR1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraLTC1ChainID) == 0:
-		config := *params.SocotraLTC1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraGLD1ChainID) == 0:
-		config := *params.SocotraGLD1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraSGD1ChainID) == 0:
-		config := *params.SocotraSGD1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraBCH1ChainID) == 0:
-		config := *params.SocotraBCH1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.SocotraLINK1ChainID) == 0:
-		config := *params.SocotraLINK1ChainConfig
-		g.Config = &config
-	case g.Config.ChainID.Cmp(params.AvalancheMainnetChainID) == 0:
-		config := *params.AvalancheMainnetChainConfig
-		g.Config = &config
-		extDataHashes = mainnetExtDataHashes
-	case g.Config.ChainID.Cmp(params.AvalancheFujiChainID) == 0:
-		config := *params.AvalancheFujiChainConfig
-		g.Config = &config
-		extDataHashes = fujiExtDataHashes
-	case g.Config.ChainID.Cmp(params.AvalancheLocalChainID) == 0:
-		config := *params.AvalancheLocalChainConfig
-		g.Config = &config
-	}
+	// Set the chain config for mainnet/testnet chain IDs
+	vm.setConfig(g, extDataHashes)
+
 	// If the Durango is activated, activate the Warp Precompile at the same time
 	if g.Config.DurangoBlockTimestamp != nil {
 		g.Config.PrecompileUpgrades = append(g.Config.PrecompileUpgrades, params.PrecompileUpgrade{
@@ -2084,4 +2037,92 @@ func (vm *VM) stateSyncEnabled(lastAcceptedHeight uint64) bool {
 	// return lastAcceptedHeight == 0
 	// disable it by default for the start of the network
 	return false
+}
+
+func (vm *VM) setConfig(genesis *core.Genesis, extDataHashes map[common.Hash]common.Hash) {
+	switch {
+	case genesis.Config.ChainID.Cmp(params.JuneJUNEChainID) == 0:
+		config := *params.JuneJUNEChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneMBTC1ChainID) == 0:
+		config := *params.JuneMBTC1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneDOGE1ChainID) == 0:
+		config := *params.JuneDOGE1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneUSD1ChainID) == 0:
+		config := *params.JuneUSD1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneUSDT1ChainID) == 0:
+		config := *params.JuneUSDT1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneDAI1ChainID) == 0:
+		config := *params.JuneDAI1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneEUR1ChainID) == 0:
+		config := *params.JuneEUR1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneLTC1ChainID) == 0:
+		config := *params.JuneLTC1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneGLD1ChainID) == 0:
+		config := *params.JuneGLD1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneSGD1ChainID) == 0:
+		config := *params.JuneSGD1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneBCH1ChainID) == 0:
+		config := *params.JuneBCH1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.JuneLINK1ChainID) == 0:
+		config := *params.JuneLINK1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraJUNEChainID) == 0:
+		config := *params.SocotraJUNEChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraMBTC1ChainID) == 0:
+		config := *params.SocotraMBTC1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraDOGE1ChainID) == 0:
+		config := *params.SocotraDOGE1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraUSD1ChainID) == 0:
+		config := *params.SocotraUSD1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraUSDT1ChainID) == 0:
+		config := *params.SocotraUSDT1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraDAI1ChainID) == 0:
+		config := *params.SocotraDAI1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraEUR1ChainID) == 0:
+		config := *params.SocotraEUR1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraLTC1ChainID) == 0:
+		config := *params.SocotraLTC1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraGLD1ChainID) == 0:
+		config := *params.SocotraGLD1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraSGD1ChainID) == 0:
+		config := *params.SocotraSGD1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraBCH1ChainID) == 0:
+		config := *params.SocotraBCH1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.SocotraLINK1ChainID) == 0:
+		config := *params.SocotraLINK1ChainConfig
+		genesis.Config = &config
+	case genesis.Config.ChainID.Cmp(params.AvalancheMainnetChainID) == 0:
+		config := *params.AvalancheMainnetChainConfig
+		genesis.Config = &config
+		extDataHashes = mainnetExtDataHashes
+	case genesis.Config.ChainID.Cmp(params.AvalancheFujiChainID) == 0:
+		config := *params.AvalancheFujiChainConfig
+		genesis.Config = &config
+		extDataHashes = fujiExtDataHashes
+	case genesis.Config.ChainID.Cmp(params.AvalancheLocalChainID) == 0:
+		config := *params.AvalancheLocalChainConfig
+		genesis.Config = &config
+	}
 }
