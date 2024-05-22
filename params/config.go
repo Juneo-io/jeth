@@ -37,6 +37,7 @@ import (
 	"github.com/Juneo-io/jeth/utils"
 	"github.com/Juneo-io/juneogo/utils/constants"
 	"github.com/Juneo-io/juneogo/version"
+	"github.com/ava-labs/avalanchego/utils/constants"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -51,6 +52,19 @@ var (
 	// AvalancheLocalChainID ...
 	AvalancheLocalChainID = big.NewInt(43112)
 
+	JuneJUNEChainID  = big.NewInt(45003)
+	JuneMBTC1ChainID = big.NewInt(45007)
+	JuneDOGE1ChainID = big.NewInt(45010)
+	JuneUSD1ChainID  = big.NewInt(45006)
+	JuneUSDT1ChainID = big.NewInt(45005)
+	JuneDAI1ChainID  = big.NewInt(45004)
+	JuneEUR1ChainID  = big.NewInt(45011)
+	JuneLTC1ChainID  = big.NewInt(45009)
+	JuneGLD1ChainID  = big.NewInt(45008)
+	JuneSGD1ChainID  = big.NewInt(45012)
+	JuneBCH1ChainID  = big.NewInt(45013)
+	JuneLINK1ChainID = big.NewInt(45014)
+
 	SocotraJUNEChainID  = big.NewInt(101003)
 	SocotraMBTC1ChainID = big.NewInt(101007)
 	SocotraDOGE1ChainID = big.NewInt(101010)
@@ -64,6 +78,18 @@ var (
 	SocotraBCH1ChainID  = big.NewInt(101013)
 	SocotraLINK1ChainID = big.NewInt(101014)
 
+	JuneUSDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
+	JuneUSD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
+	JuneDAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
+	JuneEUR1AssetId  = "2CkzBNwEKvreEwYp2froWJePpXfruZu6iemJVfNqUAtVjJDRkp"
+	JuneSGD1AssetId  = "2Bi6ovdELbjXhSxs9fQTMPWUHcCbvJJZV4pHLkwcQyD7dDrqLG"
+	JuneGLD1AssetId  = "HNihfvex33EDsuHuQddQpBpwUtkotLwnt54aj7GkGrxY9mLGz"
+	JuneMBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
+	JuneDOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
+	JuneLTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
+	JuneBCH1AssetId  = "2RBX4TiRmUxU1FsmNmEgdEGcFtgPr9NTGqnm5f33mK8adciKsA"
+	JuneLINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
+
 	SocotraUSDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
 	SocotraUSD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
 	SocotraDAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
@@ -76,7 +102,21 @@ var (
 	SocotraBCH1AssetId  = "2RBX4TiRmUxU1FsmNmEgdEGcFtgPr9NTGqnm5f33mK8adciKsA"
 	SocotraLINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
 
-	PrimaryAssetIDs = []string{
+	JunePrimaryAssetIDs = []string{
+		JuneUSDT1AssetId,
+		JuneUSD1AssetId,
+		JuneDAI1AssetId,
+		JuneEUR1AssetId,
+		JuneSGD1AssetId,
+		JuneGLD1AssetId,
+		JuneMBTC1AssetId,
+		JuneDOGE1AssetId,
+		JuneLTC1AssetId,
+		JuneBCH1AssetId,
+		JuneLINK1AssetId,
+	}
+
+	SocotraPrimaryAssetIDs = []string{
 		SocotraUSDT1AssetId,
 		SocotraUSD1AssetId,
 		SocotraDAI1AssetId,
@@ -103,6 +143,19 @@ var (
 	// AvalancheLocalChainConfig is the configuration for the Avalanche Local Network
 	AvalancheLocalChainConfig = getChainConfig(constants.LocalID, AvalancheLocalChainID)
 
+	// June network chains configs
+	JuneJUNEChainConfig  = getChainConfig(constants.MainnetID, JuneJUNEChainID)
+	JuneMBTC1ChainConfig = getChainConfig(constants.MainnetID, JuneMBTC1ChainID)
+	JuneDOGE1ChainConfig = getChainConfig(constants.MainnetID, JuneDOGE1ChainID)
+	JuneUSD1ChainConfig  = getChainConfig(constants.MainnetID, JuneUSD1ChainID)
+	JuneUSDT1ChainConfig = getChainConfig(constants.MainnetID, JuneUSDT1ChainID)
+	JuneDAI1ChainConfig  = getChainConfig(constants.MainnetID, JuneDAI1ChainID)
+	JuneEUR1ChainConfig  = getChainConfig(constants.MainnetID, JuneEUR1ChainID)
+	JuneLTC1ChainConfig  = getChainConfig(constants.MainnetID, JuneLTC1ChainID)
+	JuneGLD1ChainConfig  = getChainConfig(constants.MainnetID, JuneGLD1ChainID)
+	JuneSGD1ChainConfig  = getChainConfig(constants.MainnetID, JuneSGD1ChainID)
+	JuneBCH1ChainConfig  = getChainConfig(constants.MainnetID, JuneBCH1ChainID)
+	JuneLINK1ChainConfig = getChainConfig(constants.MainnetID, JuneLINK1ChainID)
 	// Socotra network chains configs
 	SocotraJUNEChainConfig  = getChainConfig(constants.TestnetID, SocotraJUNEChainID)
 	SocotraMBTC1ChainConfig = getChainConfig(constants.TestnetID, SocotraMBTC1ChainID)
@@ -755,10 +808,19 @@ func (c *ChainConfig) IsCancun(num *big.Int, time uint64) bool {
 	return utils.IsTimestampForked(c.CancunTime, time)
 }
 
-func IsPrimaryAssetID(assetID string) bool {
-	for _, primaryAsset := range PrimaryAssetIDs {
-		if assetID == primaryAsset {
-			return true
+func IsPrimaryAssetID(networkID uint32, assetID string) bool {
+	switch {
+	case networkID == constants.MainnetID:
+		for _, primaryAsset := range JunePrimaryAssetIDs {
+			if assetID == primaryAsset {
+				return true
+			}
+		}
+	case networkID == constants.TestnetID:
+		for _, primaryAsset := range SocotraPrimaryAssetIDs {
+			if assetID == primaryAsset {
+				return true
+			}
 		}
 	}
 	return false
@@ -772,6 +834,80 @@ type ChainFeeConfig struct {
 
 func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 	switch {
+	// Mainnet chains
+	case c.ChainID.Cmp(JuneJUNEChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  48_000_000_000,
+			PreviousMinBaseFee: 144_000_000_000,
+			LatestMinBaseFee:   144_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneMBTC1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  13_000_000_000,
+			PreviousMinBaseFee: 22_000_000_000,
+			LatestMinBaseFee:   22_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneDOGE1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  6477_000_000_000,
+			PreviousMinBaseFee: 9524_000_000_000,
+			LatestMinBaseFee:   9524_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneUSD1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  476_000_000_000,
+			PreviousMinBaseFee: 1429_000_000_000,
+			LatestMinBaseFee:   1429_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneUSDT1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  476_000_000_000,
+			PreviousMinBaseFee: 1429_000_000_000,
+			LatestMinBaseFee:   1429_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneDAI1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  476_000_000_000,
+			PreviousMinBaseFee: 1429_000_000_000,
+			LatestMinBaseFee:   1429_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneEUR1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  433_000_000_000,
+			PreviousMinBaseFee: 1299_000_000_000,
+			LatestMinBaseFee:   1299_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneLTC1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  54_000_000_000,
+			PreviousMinBaseFee: 17_000_000_000,
+			LatestMinBaseFee:   17_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneGLD1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  3_000_000_000,
+			PreviousMinBaseFee: 1_000_000_000,
+			LatestMinBaseFee:   1_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneSGD1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  635_000_000_000,
+			PreviousMinBaseFee: 1905_000_000_000,
+			LatestMinBaseFee:   1905_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneBCH1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  1_000_000_000,
+			PreviousMinBaseFee: 3_000_000_000,
+			LatestMinBaseFee:   3_000_000_000,
+		}
+	case c.ChainID.Cmp(JuneLINK1ChainID) == 0:
+		return &ChainFeeConfig{
+			InitialMinBaseFee:  26_000_000_000,
+			PreviousMinBaseFee: 102_000_000_000,
+			LatestMinBaseFee:   102_000_000_000,
+		}
+	// Testnet chains
 	case c.ChainID.Cmp(SocotraJUNEChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  48_000_000_000,
