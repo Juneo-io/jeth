@@ -37,7 +37,6 @@ import (
 	"github.com/Juneo-io/jeth/utils"
 	"github.com/Juneo-io/juneogo/utils/constants"
 	"github.com/Juneo-io/juneogo/version"
-	"github.com/ava-labs/avalanchego/utils/constants"
 	"github.com/ethereum/go-ethereum/common"
 )
 

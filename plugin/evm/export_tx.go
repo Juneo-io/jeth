@@ -102,7 +102,7 @@ func (utx *UnsignedExportTx) Verify(
 			if ctx.ChainID != ctx.CChainID {
 				return errExportNonAVAXInputBanff
 			}
-			if !params.IsPrimaryAssetID(in.AssetID.String()) {
+			if !params.IsPrimaryAssetID(ctx.NetworkID, in.AssetID.String()) {
 				return errExportNonAVAXInputBanff
 			}
 		}
@@ -120,7 +120,7 @@ func (utx *UnsignedExportTx) Verify(
 			if ctx.ChainID != ctx.CChainID {
 				return errImportNonAVAXOutputBanff
 			}
-			if !params.IsPrimaryAssetID(assetID.String()) {
+			if !params.IsPrimaryAssetID(ctx.NetworkID, assetID.String()) {
 				return errExportNonAVAXOutputBanff
 			}
 		}
