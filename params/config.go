@@ -77,17 +77,17 @@ var (
 	SocotraBCH1ChainID  = big.NewInt(101013)
 	SocotraLINK1ChainID = big.NewInt(101014)
 
-	JuneUSDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
-	JuneUSD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
-	JuneDAI1AssetId  = "jB86KaCskBuRjqA6cUeyy2GtWpdF2i9MigV6yuGekojmTbQTC"
-	JuneEUR1AssetId  = "2CkzBNwEKvreEwYp2froWJePpXfruZu6iemJVfNqUAtVjJDRkp"
-	JuneSGD1AssetId  = "2Bi6ovdELbjXhSxs9fQTMPWUHcCbvJJZV4pHLkwcQyD7dDrqLG"
-	JuneGLD1AssetId  = "HNihfvex33EDsuHuQddQpBpwUtkotLwnt54aj7GkGrxY9mLGz"
-	JuneMBTC1AssetId = "2oWo7iw26bbY2bAt9pFfbFpTCnFVVY2CePDHM4tjTeV7e4FPoQ"
-	JuneDOGE1AssetId = "47Y4SGbEzTCQ1DCzBaSnE34qTuQH7MBV99FsFHptodbQEn32u"
-	JuneLTC1AssetId  = "27LfLHoSPYdspLG8QwMjvRby2XfLKS8eCZt2mTnJXM65fAduVv"
-	JuneBCH1AssetId  = "2RBX4TiRmUxU1FsmNmEgdEGcFtgPr9NTGqnm5f33mK8adciKsA"
-	JuneLINK1AssetId = "2No8EzWaiCH7TQUh3bUqaKhAY6TLxe8doo15ftvtnkgvGLX9K9"
+	JuneUSDT1AssetId = "2VsLGMQuboTekStUVqWC2JdLHQAb1rdYHTP9LRsy17ccEpNGH9"
+	JuneUSD1AssetId  = "pphgq7o18cXuAN5eKd8UAUwH82jbvBudZYbXZAXo6V8cQUqdi"
+	JuneDAI1AssetId  = "2CFSqAJmkcv1k3YztAti5xArYA2P1qLHQvYJMBMAastaK7uMZK"
+	JuneEUR1AssetId  = "2BmogavsvNJaHWPy57aBKbENDYsADnm5D9oZQBt6tLT9QZQQnk"
+	JuneSGD1AssetId  = "2d6VUk1PZuSsJnPLrQAUFAdu3CYP3qAdJBEVKALGbhvNYeCtoW"
+	JuneGLD1AssetId  = "xGp8EATJr9KQo6QzFvxMwuUmHxL1VeGJNtJioYtTyA3UkpU2n"
+	JuneMBTC1AssetId = "rkLkqF8AMeTkoYqJxfuYzaqkQeSNvdDiL4U22jpeRqmnF4viP"
+	JuneDOGE1AssetId = "d32ReERCrhugunBN5DAkpoyYn9fKkCWrGLzmuuP6yEpUi7ZhX"
+	JuneLTC1AssetId  = "oqeT5dYJ8137PLM2TNgqXMrZW5dxR5tkYkR4XaMuVyyWfnJ7a"
+	JuneBCH1AssetId  = "2ZYG9EjfvzarZ3mVcxZkop9NwKBLVKb8T9L2e2FMkNcrDTHeJY"
+	JuneLINK1AssetId = "2hPijeptQqHYwFEEpPBiuAWtAGNdiffWradYLvTXUMAc2r1YZf"
 
 	SocotraUSDT1AssetId = "Ld5aCozSMQ1hC5jdXS3mhGNgoYVjVDe8zPTtPSbs4xS5JQSfJ"
 	SocotraUSD1AssetId  = "2A1NW7YEoPSaKGy2LWUnbqiw2nFUTUt8rk9wzTzqZaqG2w7aB4"
@@ -837,8 +837,8 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 	case c.ChainID.Cmp(JuneJUNEChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  48_000_000_000,
-			PreviousMinBaseFee: 144_000_000_000,
-			LatestMinBaseFee:   144_000_000_000,
+			PreviousMinBaseFee: 48_000_000_000,
+			LatestMinBaseFee:   48_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneMBTC1ChainID) == 0:
 		return &ChainFeeConfig{
@@ -854,27 +854,27 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 		}
 	case c.ChainID.Cmp(JuneUSD1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  476_000_000_000,
-			PreviousMinBaseFee: 1429_000_000_000,
-			LatestMinBaseFee:   1429_000_000_000,
+			InitialMinBaseFee:  943_000_000_000,
+			PreviousMinBaseFee: 943_000_000_000,
+			LatestMinBaseFee:   943_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneUSDT1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  476_000_000_000,
-			PreviousMinBaseFee: 1429_000_000_000,
-			LatestMinBaseFee:   1429_000_000_000,
+			InitialMinBaseFee:  943_000_000_000,
+			PreviousMinBaseFee: 943_000_000_000,
+			LatestMinBaseFee:   943_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneDAI1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  476_000_000_000,
-			PreviousMinBaseFee: 1429_000_000_000,
-			LatestMinBaseFee:   1429_000_000_000,
+			InitialMinBaseFee:  943_000_000_000,
+			PreviousMinBaseFee: 943_000_000_000,
+			LatestMinBaseFee:   943_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneEUR1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  433_000_000_000,
-			PreviousMinBaseFee: 1299_000_000_000,
-			LatestMinBaseFee:   1299_000_000_000,
+			InitialMinBaseFee:  857_000_000_000,
+			PreviousMinBaseFee: 857_000_000_000,
+			LatestMinBaseFee:   857_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneLTC1ChainID) == 0:
 		return &ChainFeeConfig{
@@ -884,15 +884,15 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 		}
 	case c.ChainID.Cmp(JuneGLD1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  3_000_000_000,
-			PreviousMinBaseFee: 1_000_000_000,
-			LatestMinBaseFee:   1_000_000_000,
+			InitialMinBaseFee:  2_000_000_000,
+			PreviousMinBaseFee: 2_000_000_000,
+			LatestMinBaseFee:   2_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneSGD1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  635_000_000_000,
-			PreviousMinBaseFee: 1905_000_000_000,
-			LatestMinBaseFee:   1905_000_000_000,
+			InitialMinBaseFee:  1257_000_000_000,
+			PreviousMinBaseFee: 1257_000_000_000,
+			LatestMinBaseFee:   1257_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneBCH1ChainID) == 0:
 		return &ChainFeeConfig{
@@ -1392,7 +1392,6 @@ func (c *ChainConfig) Rules(blockNum *big.Int, timestamp uint64) Rules {
 	rules := c.rules(blockNum, timestamp)
 
 	rules.AvalancheRules = c.GetAvalancheRules(timestamp)
-	rules.IsFeeUpdate1 = c.IsFeeUpdate1(timestamp)
 
 	// Initialize the stateful precompiles that should be enabled at [blockTimestamp].
 	rules.ActivePrecompiles = make(map[common.Address]precompileconfig.Config)
