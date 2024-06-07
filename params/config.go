@@ -842,13 +842,13 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 		}
 	case c.ChainID.Cmp(JuneMBTC1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  13_000_000_000,
+			InitialMinBaseFee:  22_000_000_000,
 			PreviousMinBaseFee: 22_000_000_000,
 			LatestMinBaseFee:   22_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneDOGE1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  6477_000_000_000,
+			InitialMinBaseFee:  9524_000_000_000,
 			PreviousMinBaseFee: 9524_000_000_000,
 			LatestMinBaseFee:   9524_000_000_000,
 		}
@@ -878,7 +878,7 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 		}
 	case c.ChainID.Cmp(JuneLTC1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  54_000_000_000,
+			InitialMinBaseFee:  17_000_000_000,
 			PreviousMinBaseFee: 17_000_000_000,
 			LatestMinBaseFee:   17_000_000_000,
 		}
@@ -896,13 +896,13 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 		}
 	case c.ChainID.Cmp(JuneBCH1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  1_000_000_000,
+			InitialMinBaseFee:  3_000_000_000,
 			PreviousMinBaseFee: 3_000_000_000,
 			LatestMinBaseFee:   3_000_000_000,
 		}
 	case c.ChainID.Cmp(JuneLINK1ChainID) == 0:
 		return &ChainFeeConfig{
-			InitialMinBaseFee:  26_000_000_000,
+			InitialMinBaseFee:  102_000_000_000,
 			PreviousMinBaseFee: 102_000_000_000,
 			LatestMinBaseFee:   102_000_000_000,
 		}
