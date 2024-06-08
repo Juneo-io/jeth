@@ -42,6 +42,7 @@ func NewEnv(cfg *Config) *vm.EVM {
 		CanTransferMC:     core.CanTransferMC,
 		Transfer:          core.Transfer,
 		TransferMultiCoin: core.TransferMultiCoin,
+		TransferMC:        core.TransferMC,
 		GetHash:           cfg.GetHashFn,
 		Coinbase:          cfg.Coinbase,
 		BlockNumber:       cfg.BlockNumber,

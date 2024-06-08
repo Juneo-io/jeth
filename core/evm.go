@@ -32,6 +32,7 @@ import (
 	"github.com/Juneo-io/jeth/consensus"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/core/vm"
+	"github.com/Juneo-io/jeth/params"
 	"github.com/Juneo-io/jeth/predicate"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
@@ -96,6 +97,7 @@ func newEVMBlockContext(header *types.Header, chain ChainContext, author *common
 		CanTransferMC:     CanTransferMC,
 		Transfer:          Transfer,
 		TransferMultiCoin: TransferMultiCoin,
+		TransferMC:        TransferMC,
 		GetHash:           GetHashFn(header, chain),
 		PredicateResults:  predicateResults,
 		Coinbase:          beneficiary,
@@ -156,22 +158,6 @@ func GetHashFn(ref *types.Header, chain ChainContext) func(n uint64) common.Hash
 	}
 }
 
-var (
-	mintableAddresses = []common.Address{
-		common.Address{45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x2d00000000000000000000000000000000000000
-		common.Address{46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x2e00000000000000000000000000000000000000
-		common.Address{47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x2f00000000000000000000000000000000000000
-		common.Address{48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3000000000000000000000000000000000000000
-		common.Address{49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3100000000000000000000000000000000000000
-		common.Address{50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3200000000000000000000000000000000000000
-		common.Address{51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3300000000000000000000000000000000000000
-		common.Address{52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3400000000000000000000000000000000000000
-		common.Address{53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3500000000000000000000000000000000000000
-		common.Address{54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3600000000000000000000000000000000000000
-		common.Address{55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3700000000000000000000000000000000000000
-	}
-)
-
 // CanTransfer checks whether there are enough funds in the address' account to make a transfer.
 // This does not take the necessary gas in to account to make the transfer valid.
 func CanTransfer(db vm.StateDB, addr common.Address, amount *big.Int) bool {
@@ -179,10 +165,7 @@ func CanTransfer(db vm.StateDB, addr common.Address, amount *big.Int) bool {
 }
 
 func CanTransferMC(db vm.StateDB, addr common.Address, to common.Address, coinID common.Hash, amount *big.Int) bool {
-	if isMinter(addr) {
-		return true
-	}
-	return db.GetBalanceMultiCoin(addr, coinID).Cmp(amount) >= 0
+	return params.IsGenesisAssetContract(addr) || db.GetBalanceMultiCoin(addr, coinID).Cmp(amount) >= 0
 }
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
@@ -193,17 +176,16 @@ func Transfer(db vm.StateDB, sender, recipient common.Address, amount *big.Int) 
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
 func TransferMultiCoin(db vm.StateDB, sender, recipient common.Address, coinID common.Hash, amount *big.Int) {
-	if !isMinter(sender) {
+	if !params.IsGenesisAssetContract(sender) || db.GetBalanceMultiCoin(sender, coinID).Cmp(amount) >= 0 {
 		db.SubBalanceMultiCoin(sender, coinID, amount)
 	}
 	db.AddBalanceMultiCoin(recipient, coinID, amount)
 }
 
-func isMinter(addr common.Address) bool {
-	for _, ad := range mintableAddresses {
-		if addr == ad {
-			return true
-		}
+// Transfer subtracts amount from sender and adds amount to recipient using the given Db
+func TransferMC(db vm.StateDB, sender, recipient common.Address, coinID common.Hash, amount *big.Int) {
+	if !params.IsGenesisAssetContract(sender) {
+		db.SubBalanceMultiCoin(sender, coinID, amount)
 	}
-	return false
+	db.AddBalanceMultiCoin(recipient, coinID, amount)
 }

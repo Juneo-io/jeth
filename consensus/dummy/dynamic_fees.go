@@ -178,7 +178,7 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header, timestamp uin
 	// Ensure that the base fee does not increase/decrease outside of the bounds
 	switch {
 	case isApricotPhase5:
-		baseFee = selectBigWithinBounds(config.GetCurrentBaseFee(timestamp), baseFee, nil)
+		baseFee = selectBigWithinBounds(config.GetCurrentBaseFee(parent.Time), baseFee, nil)
 	case isApricotPhase4:
 		baseFee = selectBigWithinBounds(ApricotPhase4MinBaseFee, baseFee, ApricotPhase4MaxBaseFee)
 	default:

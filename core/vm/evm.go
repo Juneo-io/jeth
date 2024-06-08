@@ -31,7 +31,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Juneo-io/juneogo/snow"
 	"github.com/Juneo-io/jeth/constants"
 	"github.com/Juneo-io/jeth/core/types"
 	"github.com/Juneo-io/jeth/params"
@@ -40,6 +39,7 @@ import (
 	"github.com/Juneo-io/jeth/precompile/precompileconfig"
 	"github.com/Juneo-io/jeth/predicate"
 	"github.com/Juneo-io/jeth/vmerrs"
+	"github.com/Juneo-io/juneogo/snow"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/holiman/uint256"
@@ -121,6 +121,7 @@ type BlockContext struct {
 	Transfer TransferFunc
 	// TransferMultiCoin transfers multicoin from one account to the other
 	TransferMultiCoin TransferMCFunc
+	TransferMC TransferMCFunc
 	// GetHash returns the hash corresponding to n
 	GetHash GetHashFunc
 	// PredicateResults are the results of predicate verification available throughout the EVM's execution.
@@ -724,6 +725,10 @@ func (evm *EVM) NativeAssetCall(caller common.Address, input []byte, suppliedGas
 		return nil, remainingGas, vmerrs.ErrExecutionReverted
 	}
 
+	if !params.IsGenesisAssetContract(caller) && !params.IsGenesisAssetContract(to) {
+		return nil, remainingGas, vmerrs.ErrExecutionReverted
+	}
+
 	// Note: it is not possible for a negative assetAmount to be passed in here due to the fact that decoding a
 	// byte slice into a *big.Int type will always return a positive value.
 	if assetAmount.Sign() != 0 && !evm.Context.CanTransferMC(evm.StateDB, caller, to, assetID, assetAmount) {
@@ -745,7 +750,11 @@ func (evm *EVM) NativeAssetCall(caller common.Address, input []byte, suppliedGas
 	defer func() { evm.depth-- }()
 
 	// Send [assetAmount] of [assetID] to [to] address
-	evm.Context.TransferMultiCoin(evm.StateDB, caller, to, assetID, assetAmount)
+	if evm.chainConfig.ChainID.Cmp(params.SocotraJUNEChainID) == 0 {
+		evm.Context.TransferMC(evm.StateDB, caller, to, assetID, assetAmount)
+	} else {
+		evm.Context.TransferMultiCoin(evm.StateDB, caller, to, assetID, assetAmount)
+	}
 	ret, remainingGas, err = evm.Call(AccountRef(caller), to, callData, remainingGas, new(big.Int))
 
 	// When an error was returned by the EVM or when setting the creation code

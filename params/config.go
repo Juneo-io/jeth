@@ -129,6 +129,20 @@ var (
 		SocotraLINK1AssetId,
 	}
 
+	GenesisAssetContracts = []common.Address{
+		common.Address{45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x2d00000000000000000000000000000000000000
+		common.Address{46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x2e00000000000000000000000000000000000000
+		common.Address{47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x2f00000000000000000000000000000000000000
+		common.Address{48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3000000000000000000000000000000000000000
+		common.Address{49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3100000000000000000000000000000000000000
+		common.Address{50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3200000000000000000000000000000000000000
+		common.Address{51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3300000000000000000000000000000000000000
+		common.Address{52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3400000000000000000000000000000000000000
+		common.Address{53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3500000000000000000000000000000000000000
+		common.Address{54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3600000000000000000000000000000000000000
+		common.Address{55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0x3700000000000000000000000000000000000000
+	}
+
 	errNonGenesisForkByHeight = errors.New("coreth only supports forking by height at the genesis block")
 )
 
@@ -825,6 +839,15 @@ func IsPrimaryAssetID(networkID uint32, assetID string) bool {
 	return false
 }
 
+func IsGenesisAssetContract(addr common.Address) bool {
+	for _, ad := range GenesisAssetContracts {
+		if addr == ad {
+			return true
+		}
+	}
+	return false
+}
+
 type ChainFeeConfig struct {
 	InitialMinBaseFee  int64 `json:"initialMinBaseFee,omitempty"`
 	PreviousMinBaseFee int64 `json:"previousMinBaseFee,omitempty"`
@@ -910,73 +933,73 @@ func (c *ChainConfig) GetFeeConfig() *ChainFeeConfig {
 	case c.ChainID.Cmp(SocotraJUNEChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  48_000_000_000,
-			PreviousMinBaseFee: 144_000_000_000,
+			PreviousMinBaseFee: 48_000_000_000,
 			LatestMinBaseFee:   144_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraMBTC1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  13_000_000_000,
-			PreviousMinBaseFee: 22_000_000_000,
+			PreviousMinBaseFee: 13_000_000_000,
 			LatestMinBaseFee:   22_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraDOGE1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  6477_000_000_000,
-			PreviousMinBaseFee: 9524_000_000_000,
+			PreviousMinBaseFee: 6477_000_000_000,
 			LatestMinBaseFee:   9524_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraUSD1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  476_000_000_000,
-			PreviousMinBaseFee: 1429_000_000_000,
+			PreviousMinBaseFee: 476_000_000_000,
 			LatestMinBaseFee:   1429_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraUSDT1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  476_000_000_000,
-			PreviousMinBaseFee: 1429_000_000_000,
+			PreviousMinBaseFee: 476_000_000_000,
 			LatestMinBaseFee:   1429_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraDAI1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  476_000_000_000,
-			PreviousMinBaseFee: 1429_000_000_000,
+			PreviousMinBaseFee: 476_000_000_000,
 			LatestMinBaseFee:   1429_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraEUR1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  433_000_000_000,
-			PreviousMinBaseFee: 1299_000_000_000,
+			PreviousMinBaseFee: 433_000_000_000,
 			LatestMinBaseFee:   1299_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraLTC1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  54_000_000_000,
-			PreviousMinBaseFee: 17_000_000_000,
+			PreviousMinBaseFee: 54_000_000_000,
 			LatestMinBaseFee:   17_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraGLD1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  3_000_000_000,
-			PreviousMinBaseFee: 1_000_000_000,
+			PreviousMinBaseFee: 3_000_000_000,
 			LatestMinBaseFee:   1_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraSGD1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  635_000_000_000,
-			PreviousMinBaseFee: 1905_000_000_000,
+			PreviousMinBaseFee: 635_000_000_000,
 			LatestMinBaseFee:   1905_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraBCH1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  1_000_000_000,
-			PreviousMinBaseFee: 3_000_000_000,
+			PreviousMinBaseFee: 1_000_000_000,
 			LatestMinBaseFee:   3_000_000_000,
 		}
 	case c.ChainID.Cmp(SocotraLINK1ChainID) == 0:
 		return &ChainFeeConfig{
 			InitialMinBaseFee:  26_000_000_000,
-			PreviousMinBaseFee: 102_000_000_000,
+			PreviousMinBaseFee: 26_000_000_000,
 			LatestMinBaseFee:   102_000_000_000,
 		}
 	default:
