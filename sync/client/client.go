@@ -40,8 +40,8 @@ const (
 var (
 	StateSyncVersion = &version.Application{
 		Major: 1,
-		Minor: 7,
-		Patch: 13,
+		Minor: 0,
+		Patch: 0,
 	}
 	errEmptyResponse          = errors.New("empty response")
 	errTooManyBlocks          = errors.New("response contains more blocks than requested")

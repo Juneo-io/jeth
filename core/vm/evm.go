@@ -56,6 +56,9 @@ func IsProhibited(addr common.Address) bool {
 	if addr == constants.BlackholeAddr {
 		return true
 	}
+	if params.IsGenesisAssetContract(addr) {
+		return true
+	}
 
 	return modules.ReservedAddress(addr)
 }

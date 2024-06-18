@@ -2034,9 +2034,7 @@ func (vm *VM) stateSyncEnabled(lastAcceptedHeight uint64) bool {
 	}
 
 	// enable state sync by default if the chain is empty.
-	// return lastAcceptedHeight == 0
-	// disable it by default for the start of the network
-	return false
+	return lastAcceptedHeight == 0
 }
 
 func (vm *VM) setConfig(genesis *core.Genesis, extDataHashes map[common.Hash]common.Hash) {

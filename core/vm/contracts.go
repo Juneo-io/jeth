@@ -103,7 +103,6 @@ var PrecompiledContractsApricotPhase2 = map[common.Address]contract.StatefulPrec
 	common.BytesToAddress([]byte{7}): newWrappedPrecompiledContract(&bn256ScalarMulIstanbul{}),
 	common.BytesToAddress([]byte{8}): newWrappedPrecompiledContract(&bn256PairingIstanbul{}),
 	common.BytesToAddress([]byte{9}): newWrappedPrecompiledContract(&blake2F{}),
-	genesisContractAddr:              &deprecatedContract{},
 	NativeAssetBalanceAddr:           &nativeAssetBalance{gasCost: params.AssetBalanceApricot},
 	NativeAssetCallAddr:              &nativeAssetCall{gasCost: params.AssetCallApricot},
 }
@@ -120,9 +119,8 @@ var PrecompiledContractsApricotPhasePre6 = map[common.Address]contract.StatefulP
 	common.BytesToAddress([]byte{7}): newWrappedPrecompiledContract(&bn256ScalarMulIstanbul{}),
 	common.BytesToAddress([]byte{8}): newWrappedPrecompiledContract(&bn256PairingIstanbul{}),
 	common.BytesToAddress([]byte{9}): newWrappedPrecompiledContract(&blake2F{}),
-	genesisContractAddr:              &deprecatedContract{},
-	NativeAssetBalanceAddr:           &deprecatedContract{},
-	NativeAssetCallAddr:              &deprecatedContract{},
+	NativeAssetBalanceAddr:           &nativeAssetBalance{gasCost: params.AssetBalanceApricot},
+	NativeAssetCallAddr:              &nativeAssetCall{gasCost: params.AssetCallApricot},
 }
 
 // PrecompiledContractsApricotPhase6 contains the default set of pre-compiled Ethereum
@@ -137,7 +135,6 @@ var PrecompiledContractsApricotPhase6 = map[common.Address]contract.StatefulPrec
 	common.BytesToAddress([]byte{7}): newWrappedPrecompiledContract(&bn256ScalarMulIstanbul{}),
 	common.BytesToAddress([]byte{8}): newWrappedPrecompiledContract(&bn256PairingIstanbul{}),
 	common.BytesToAddress([]byte{9}): newWrappedPrecompiledContract(&blake2F{}),
-	genesisContractAddr:              &deprecatedContract{},
 	NativeAssetBalanceAddr:           &nativeAssetBalance{gasCost: params.AssetBalanceApricot},
 	NativeAssetCallAddr:              &nativeAssetCall{gasCost: params.AssetCallApricot},
 }
@@ -154,7 +151,6 @@ var PrecompiledContractsBanff = map[common.Address]contract.StatefulPrecompiledC
 	common.BytesToAddress([]byte{7}): newWrappedPrecompiledContract(&bn256ScalarMulIstanbul{}),
 	common.BytesToAddress([]byte{8}): newWrappedPrecompiledContract(&bn256PairingIstanbul{}),
 	common.BytesToAddress([]byte{9}): newWrappedPrecompiledContract(&blake2F{}),
-	// genesisContractAddr:              &deprecatedContract{},
 	NativeAssetBalanceAddr: &nativeAssetBalance{gasCost: params.AssetBalanceApricot},
 	NativeAssetCallAddr:    &nativeAssetCall{gasCost: params.AssetCallApricot},
 }
@@ -171,6 +167,8 @@ var PrecompiledContractsCancun = map[common.Address]contract.StatefulPrecompiled
 	common.BytesToAddress([]byte{7}):    newWrappedPrecompiledContract(&bn256ScalarMulIstanbul{}),
 	common.BytesToAddress([]byte{8}):    newWrappedPrecompiledContract(&bn256PairingIstanbul{}),
 	common.BytesToAddress([]byte{9}):    newWrappedPrecompiledContract(&blake2F{}),
+	NativeAssetBalanceAddr: &nativeAssetBalance{gasCost: params.AssetBalanceApricot},
+	NativeAssetCallAddr:    &nativeAssetCall{gasCost: params.AssetCallApricot},
 	common.BytesToAddress([]byte{0x0a}): newWrappedPrecompiledContract(&kzgPointEvaluation{}),
 }
 
