@@ -2033,6 +2033,9 @@ func (vm *VM) stateSyncEnabled(lastAcceptedHeight uint64) bool {
 		return *vm.config.StateSyncEnabled
 	}
 
+	if vm.chainID.Cmp(params.JuneJUNEChainID) == 0 {
+		return false
+	}
 	// enable state sync by default if the chain is empty.
 	return lastAcceptedHeight == 0
 }
