@@ -84,7 +84,7 @@ func (utx *UnsignedImportTx) Verify(
 			return errWrongChainID
 		}
 	} else {
-		if utx.SourceChain != ctx.XChainID {
+		if utx.SourceChain != ctx.JVMChainID {
 			return errWrongChainID
 		}
 	}
@@ -94,7 +94,7 @@ func (utx *UnsignedImportTx) Verify(
 			return fmt.Errorf("EVM Output failed verification: %w", err)
 		}
 		if rules.IsBanff && out.AssetID != ctx.ChainAssetID {
-			if ctx.ChainID != ctx.CChainID {
+			if ctx.ChainID != ctx.JUNEChainID {
 				return errImportNonAVAXOutputBanff
 			}
 			if !params.IsPrimaryAssetID(ctx.NetworkID, out.AssetID.String()) {
@@ -108,7 +108,7 @@ func (utx *UnsignedImportTx) Verify(
 			return fmt.Errorf("atomic input failed verification: %w", err)
 		}
 		if rules.IsBanff && in.AssetID() != ctx.ChainAssetID {
-			if ctx.ChainID != ctx.CChainID {
+			if ctx.ChainID != ctx.JUNEChainID {
 				return errImportNonAVAXInputBanff
 			}
 			if !params.IsPrimaryAssetID(ctx.NetworkID, in.AssetID().String()) {

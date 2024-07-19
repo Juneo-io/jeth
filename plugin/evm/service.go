@@ -75,7 +75,7 @@ func (service *AvaxAPI) parseAssetID(assetID string) (ids.ID, error) {
 	if assetID == "" {
 		return ids.ID{}, fmt.Errorf("assetID is required")
 	} else if assetID == "JUNE" {
-		return service.vm.ctx.AVAXAssetID, nil
+		return service.vm.ctx.JUNEAssetID, nil
 	} else {
 		return ids.FromString(assetID)
 	}

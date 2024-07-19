@@ -18,7 +18,7 @@ import (
 
 func testSharedMemory() atomic.SharedMemory {
 	m := atomic.NewMemory(memdb.New())
-	return m.NewSharedMemory(testCChainID)
+	return m.NewSharedMemory(testJUNEChainID)
 }
 
 func TestIteratorCanIterate(t *testing.T) {

@@ -166,8 +166,8 @@ func TestAtomicTxGossip(t *testing.T) {
 	require := require.New(t)
 	ctx := context.Background()
 	snowCtx := utils.TestSnowContext()
-	snowCtx.AVAXAssetID = ids.GenerateTestID()
-	snowCtx.XChainID = ids.GenerateTestID()
+	snowCtx.JUNEAssetID = ids.GenerateTestID()
+	snowCtx.JVMChainID = ids.GenerateTestID()
 	validatorState := &validators.TestState{
 		GetSupernetIDF: func(context.Context, ids.ID) (ids.ID, error) {
 			return ids.Empty, nil
@@ -266,12 +266,12 @@ func TestAtomicTxGossip(t *testing.T) {
 		snowCtx,
 		ids.GenerateTestID(),
 		0,
-		snowCtx.AVAXAssetID,
+		snowCtx.JUNEAssetID,
 		100_000_000_000,
 		pk.PublicKey().Address(),
 	)
 	require.NoError(err)
-	tx, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, address, initialBaseFee, secp256k1fx.NewKeychain(pk), []*avax.UTXO{utxo})
+	tx, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, address, initialBaseFee, secp256k1fx.NewKeychain(pk), []*avax.UTXO{utxo})
 	require.NoError(err)
 	require.NoError(vm.mempool.AddLocalTx(tx))
 
@@ -437,8 +437,8 @@ func TestAtomicTxPushGossipOutbound(t *testing.T) {
 	require := require.New(t)
 	ctx := context.Background()
 	snowCtx := utils.TestSnowContext()
-	snowCtx.AVAXAssetID = ids.GenerateTestID()
-	snowCtx.XChainID = ids.GenerateTestID()
+	snowCtx.JUNEAssetID = ids.GenerateTestID()
+	snowCtx.JVMChainID = ids.GenerateTestID()
 	validatorState := &validators.TestState{
 		GetSupernetIDF: func(context.Context, ids.ID) (ids.ID, error) {
 			return ids.Empty, nil
@@ -487,12 +487,12 @@ func TestAtomicTxPushGossipOutbound(t *testing.T) {
 		snowCtx,
 		ids.GenerateTestID(),
 		0,
-		snowCtx.AVAXAssetID,
+		snowCtx.JUNEAssetID,
 		100_000_000_000,
 		pk.PublicKey().Address(),
 	)
 	require.NoError(err)
-	tx, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, address, initialBaseFee, secp256k1fx.NewKeychain(pk), []*avax.UTXO{utxo})
+	tx, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, address, initialBaseFee, secp256k1fx.NewKeychain(pk), []*avax.UTXO{utxo})
 	require.NoError(err)
 	require.NoError(vm.mempool.AddLocalTx(tx))
 	vm.atomicTxPushGossiper.Add(&GossipAtomicTx{tx})
@@ -515,8 +515,8 @@ func TestAtomicTxPushGossipInbound(t *testing.T) {
 	require := require.New(t)
 	ctx := context.Background()
 	snowCtx := utils.TestSnowContext()
-	snowCtx.AVAXAssetID = ids.GenerateTestID()
-	snowCtx.XChainID = ids.GenerateTestID()
+	snowCtx.JUNEAssetID = ids.GenerateTestID()
+	snowCtx.JVMChainID = ids.GenerateTestID()
 	validatorState := &validators.TestState{
 		GetSupernetIDF: func(context.Context, ids.ID) (ids.ID, error) {
 			return ids.Empty, nil
@@ -563,12 +563,12 @@ func TestAtomicTxPushGossipInbound(t *testing.T) {
 		snowCtx,
 		ids.GenerateTestID(),
 		0,
-		snowCtx.AVAXAssetID,
+		snowCtx.JUNEAssetID,
 		100_000_000_000,
 		pk.PublicKey().Address(),
 	)
 	require.NoError(err)
-	tx, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, address, initialBaseFee, secp256k1fx.NewKeychain(pk), []*avax.UTXO{utxo})
+	tx, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, address, initialBaseFee, secp256k1fx.NewKeychain(pk), []*avax.UTXO{utxo})
 	require.NoError(err)
 	require.NoError(vm.mempool.AddLocalTx(tx))
 

@@ -123,7 +123,7 @@ func (m *Mempool) has(txID ids.ID) bool {
 }
 
 // atomicTxGasPrice is the [gasPrice] paid by a transaction to burn a given
-// amount of [AVAXAssetID] given the value of [gasUsed].
+// amount of [JUNEAssetID] given the value of [gasUsed].
 func (m *Mempool) atomicTxGasPrice(tx *Tx) (uint64, error) {
 	gasUsed, err := tx.GasUsed(true)
 	if err != nil {
@@ -132,7 +132,7 @@ func (m *Mempool) atomicTxGasPrice(tx *Tx) (uint64, error) {
 	if gasUsed == 0 {
 		return 0, errNoGasUsed
 	}
-	burned, err := tx.Burned(m.ctx.AVAXAssetID)
+	burned, err := tx.Burned(m.ctx.JUNEAssetID)
 	if err != nil {
 		return 0, err
 	}

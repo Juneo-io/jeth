@@ -229,10 +229,10 @@ func createValidPredicateTest(snowCtx *snow.Context, numKeys uint64, predicateBy
 func TestWarpMessageFromPrimaryNetwork(t *testing.T) {
 	require := require.New(t)
 	numKeys := 10
-	cChainID := ids.GenerateTestID()
+	juneChainID := ids.GenerateTestID()
 	addressedCall, err := payload.NewAddressedCall(agoUtils.RandomBytes(20), agoUtils.RandomBytes(100))
 	require.NoError(err)
-	unsignedMsg, err := avalancheWarp.NewUnsignedMessage(networkID, cChainID, addressedCall.Bytes())
+	unsignedMsg, err := avalancheWarp.NewUnsignedMessage(networkID, juneChainID, addressedCall.Bytes())
 	require.NoError(err)
 
 	getValidatorsOutput := make(map[ids.NodeID]*validators.GetValidatorOutput)
@@ -264,11 +264,11 @@ func TestWarpMessageFromPrimaryNetwork(t *testing.T) {
 	snowCtx := utils.TestSnowContext()
 	snowCtx.SupernetID = ids.GenerateTestID()
 	snowCtx.ChainID = ids.GenerateTestID()
-	snowCtx.CChainID = cChainID
+	snowCtx.JUNEChainID = juneChainID
 	snowCtx.NetworkID = networkID
 	snowCtx.ValidatorState = &validators.TestState{
 		GetSupernetIDF: func(ctx context.Context, chainID ids.ID) (ids.ID, error) {
-			require.Equal(chainID, cChainID)
+			require.Equal(chainID, juneChainID)
 			return constants.PrimaryNetworkID, nil // Return Primary Network SupernetID
 		},
 		GetValidatorSetF: func(ctx context.Context, height uint64, supernetID ids.ID) (map[ids.NodeID]*validators.GetValidatorOutput, error) {

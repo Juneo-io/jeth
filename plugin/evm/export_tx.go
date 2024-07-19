@@ -89,7 +89,7 @@ func (utx *UnsignedExportTx) Verify(
 			return errWrongChainID
 		}
 	} else {
-		if utx.DestinationChain != ctx.XChainID {
+		if utx.DestinationChain != ctx.JVMChainID {
 			return errWrongChainID
 		}
 	}
@@ -99,7 +99,7 @@ func (utx *UnsignedExportTx) Verify(
 			return err
 		}
 		if rules.IsBanff && in.AssetID != ctx.ChainAssetID {
-			if ctx.ChainID != ctx.CChainID {
+			if ctx.ChainID != ctx.JUNEChainID {
 				return errExportNonAVAXInputBanff
 			}
 			if !params.IsPrimaryAssetID(ctx.NetworkID, in.AssetID.String()) {
@@ -113,11 +113,11 @@ func (utx *UnsignedExportTx) Verify(
 			return err
 		}
 		assetID := out.AssetID()
-		if assetID != ctx.AVAXAssetID && utx.DestinationChain == constants.PlatformChainID {
+		if assetID != ctx.JUNEAssetID && utx.DestinationChain == constants.PlatformChainID {
 			return errWrongChainID
 		}
 		if rules.IsBanff && assetID != ctx.ChainAssetID {
-			if ctx.ChainID != ctx.CChainID {
+			if ctx.ChainID != ctx.JUNEChainID {
 				return errImportNonAVAXOutputBanff
 			}
 			if !params.IsPrimaryAssetID(ctx.NetworkID, assetID.String()) {

@@ -70,8 +70,8 @@ import (
 
 var (
 	testNetworkID    uint32 = 10
-	testCChainID            = ids.ID{'c', 'c', 'h', 'a', 'i', 'n', 't', 'e', 's', 't'}
-	testXChainID            = ids.ID{'t', 'e', 's', 't', 'x'}
+	testJUNEChainID            = ids.ID{'c', 'c', 'h', 'a', 'i', 'n', 't', 'e', 's', 't'}
+	testJVMChainID            = ids.ID{'t', 'e', 's', 't', 'x'}
 	nonExistentID           = ids.ID{'F'}
 	testKeys         []*secp256k1.PrivateKey
 	testEthAddrs     []common.Address // testEthAddrs[i] corresponds to testKeys[i]
@@ -167,21 +167,21 @@ func NewContext() *snow.Context {
 	ctx := utils.TestSnowContext()
 	ctx.NodeID = ids.GenerateTestNodeID()
 	ctx.NetworkID = testNetworkID
-	ctx.ChainID = testCChainID
-	ctx.AVAXAssetID = testAvaxAssetID
-	ctx.XChainID = testXChainID
+	ctx.ChainID = testJUNEChainID
+	ctx.JUNEAssetID = testAvaxAssetID
+	ctx.JVMChainID = testJVMChainID
 	ctx.SharedMemory = testSharedMemory()
 	aliaser := ctx.BCLookup.(ids.Aliaser)
-	_ = aliaser.Alias(testCChainID, "C")
-	_ = aliaser.Alias(testCChainID, testCChainID.String())
-	_ = aliaser.Alias(testXChainID, "X")
-	_ = aliaser.Alias(testXChainID, testXChainID.String())
+	_ = aliaser.Alias(testJUNEChainID, "C")
+	_ = aliaser.Alias(testJUNEChainID, testJUNEChainID.String())
+	_ = aliaser.Alias(testJVMChainID, "X")
+	_ = aliaser.Alias(testJVMChainID, testJVMChainID.String())
 	ctx.ValidatorState = &validators.TestState{
 		GetSupernetIDF: func(_ context.Context, chainID ids.ID) (ids.ID, error) {
 			supernetID, ok := map[ids.ID]ids.ID{
 				constants.PlatformChainID: constants.PrimaryNetworkID,
-				testXChainID:              constants.PrimaryNetworkID,
-				testCChainID:              constants.PrimaryNetworkID,
+				testJVMChainID:              constants.PrimaryNetworkID,
+				testJUNEChainID:              constants.PrimaryNetworkID,
 			}[chainID]
 			if !ok {
 				return ids.Empty, errors.New("unknown chain")
@@ -297,7 +297,7 @@ func addUTXO(sharedMemory *atomic.Memory, ctx *snow.Context, txID ids.ID, index 
 		return nil, err
 	}
 
-	xChainSharedMemory := sharedMemory.NewSharedMemory(ctx.XChainID)
+	xChainSharedMemory := sharedMemory.NewSharedMemory(ctx.JVMChainID)
 	inputID := utxo.InputID()
 	if err := xChainSharedMemory.Apply(map[ids.ID]*atomic.Requests{ctx.ChainID: {PutRequests: []*atomic.Element{{
 		Key:   inputID[:],
@@ -322,7 +322,7 @@ func GenesisVMWithUTXOs(t *testing.T, finishBootstrapping bool, genesisJSON stri
 		if err != nil {
 			t.Fatalf("Failed to generate txID from addr: %s", err)
 		}
-		if _, err := addUTXO(sharedMemory, vm.ctx, txID, 0, vm.ctx.AVAXAssetID, avaxAmount, addr); err != nil {
+		if _, err := addUTXO(sharedMemory, vm.ctx, txID, 0, vm.ctx.JUNEAssetID, avaxAmount, addr); err != nil {
 			t.Fatalf("Failed to add UTXO to shared memory: %s", err)
 		}
 	}
@@ -394,7 +394,7 @@ func TestCrossChainMessagestoVM(t *testing.T) {
 	newTxPoolHeadChan := make(chan core.NewTxPoolReorgEvent, 1)
 	vm.txPool.SubscribeNewReorgEvent(newTxPoolHeadChan)
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	require.NoError(err)
 
 	err = vm.mempool.AddLocalTx(importTx)
@@ -669,7 +669,7 @@ func TestImportMissingUTXOs(t *testing.T) {
 		require.NoError(t, err)
 	}()
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	require.NoError(t, err)
 	err = vm.mempool.AddLocalTx(importTx)
 	require.NoError(t, err)
@@ -709,7 +709,7 @@ func TestIssueAtomicTxs(t *testing.T) {
 		}
 	}()
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -768,7 +768,7 @@ func TestIssueAtomicTxs(t *testing.T) {
 		t.Fatal("Expected logs to be non-nil")
 	}
 
-	exportTx, err := vm.newExportTx(vm.ctx.AVAXAssetID, importAmount-(2*params.AvalancheAtomicTxFee), vm.ctx.XChainID, testShortIDAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	exportTx, err := vm.newExportTx(vm.ctx.JUNEAssetID, importAmount-(2*params.AvalancheAtomicTxFee), vm.ctx.JVMChainID, testShortIDAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -835,7 +835,7 @@ func TestBuildEthTxBlock(t *testing.T) {
 	newTxPoolHeadChan := make(chan core.NewTxPoolReorgEvent, 1)
 	vm.txPool.SubscribeNewReorgEvent(newTxPoolHeadChan)
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -996,14 +996,14 @@ func testConflictingImportTxs(t *testing.T, genesis string) {
 	importTxs := make([]*Tx, 0, 3)
 	conflictTxs := make([]*Tx, 0, 3)
 	for i, key := range testKeys {
-		importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[i], initialBaseFee, []*secp256k1.PrivateKey{key})
+		importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[i], initialBaseFee, []*secp256k1.PrivateKey{key})
 		if err != nil {
 			t.Fatal(err)
 		}
 		importTxs = append(importTxs, importTx)
 
 		conflictAddr := testEthAddrs[(i+1)%len(testEthAddrs)]
-		conflictTx, err := vm.newImportTx(vm.ctx.XChainID, conflictAddr, initialBaseFee, []*secp256k1.PrivateKey{key})
+		conflictTx, err := vm.newImportTx(vm.ctx.JVMChainID, conflictAddr, initialBaseFee, []*secp256k1.PrivateKey{key})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1166,15 +1166,15 @@ func TestReissueAtomicTxHigherGasPrice(t *testing.T) {
 
 	for name, issueTxs := range map[string]func(t *testing.T, vm *VM, sharedMemory *atomic.Memory) (issued []*Tx, discarded []*Tx){
 		"single UTXO override": func(t *testing.T, vm *VM, sharedMemory *atomic.Memory) (issued []*Tx, evicted []*Tx) {
-			utxo, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.AVAXAssetID, units.Avax, testShortIDAddrs[0])
+			utxo, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.JUNEAssetID, units.Avax, testShortIDAddrs[0])
 			if err != nil {
 				t.Fatal(err)
 			}
-			tx1, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo})
+			tx1, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo})
 			if err != nil {
 				t.Fatal(err)
 			}
-			tx2, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], new(big.Int).Mul(common.Big2, initialBaseFee), kc, []*avax.UTXO{utxo})
+			tx2, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], new(big.Int).Mul(common.Big2, initialBaseFee), kc, []*avax.UTXO{utxo})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1189,19 +1189,19 @@ func TestReissueAtomicTxHigherGasPrice(t *testing.T) {
 			return []*Tx{tx2}, []*Tx{tx1}
 		},
 		"one of two UTXOs overrides": func(t *testing.T, vm *VM, sharedMemory *atomic.Memory) (issued []*Tx, evicted []*Tx) {
-			utxo1, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.AVAXAssetID, units.Avax, testShortIDAddrs[0])
+			utxo1, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.JUNEAssetID, units.Avax, testShortIDAddrs[0])
 			if err != nil {
 				t.Fatal(err)
 			}
-			utxo2, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.AVAXAssetID, units.Avax, testShortIDAddrs[0])
+			utxo2, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.JUNEAssetID, units.Avax, testShortIDAddrs[0])
 			if err != nil {
 				t.Fatal(err)
 			}
-			tx1, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo1, utxo2})
+			tx1, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo1, utxo2})
 			if err != nil {
 				t.Fatal(err)
 			}
-			tx2, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], new(big.Int).Mul(common.Big2, initialBaseFee), kc, []*avax.UTXO{utxo1})
+			tx2, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], new(big.Int).Mul(common.Big2, initialBaseFee), kc, []*avax.UTXO{utxo1})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1216,26 +1216,26 @@ func TestReissueAtomicTxHigherGasPrice(t *testing.T) {
 			return []*Tx{tx2}, []*Tx{tx1}
 		},
 		"hola": func(t *testing.T, vm *VM, sharedMemory *atomic.Memory) (issued []*Tx, evicted []*Tx) {
-			utxo1, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.AVAXAssetID, units.Avax, testShortIDAddrs[0])
+			utxo1, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.JUNEAssetID, units.Avax, testShortIDAddrs[0])
 			if err != nil {
 				t.Fatal(err)
 			}
-			utxo2, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.AVAXAssetID, units.Avax, testShortIDAddrs[0])
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			importTx1, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo1})
+			utxo2, err := addUTXO(sharedMemory, vm.ctx, ids.GenerateTestID(), 0, vm.ctx.JUNEAssetID, units.Avax, testShortIDAddrs[0])
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			importTx2, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], new(big.Int).Mul(big.NewInt(3), initialBaseFee), kc, []*avax.UTXO{utxo2})
+			importTx1, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo1})
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			reissuanceTx1, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], new(big.Int).Mul(big.NewInt(2), initialBaseFee), kc, []*avax.UTXO{utxo1, utxo2})
+			importTx2, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], new(big.Int).Mul(big.NewInt(3), initialBaseFee), kc, []*avax.UTXO{utxo2})
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			reissuanceTx1, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], new(big.Int).Mul(big.NewInt(2), initialBaseFee), kc, []*avax.UTXO{utxo1, utxo2})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1255,7 +1255,7 @@ func TestReissueAtomicTxHigherGasPrice(t *testing.T) {
 			assert.True(t, vm.mempool.has(importTx2.ID()))
 			assert.False(t, vm.mempool.has(reissuanceTx1.ID()))
 
-			reissuanceTx2, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], new(big.Int).Mul(big.NewInt(4), initialBaseFee), kc, []*avax.UTXO{utxo1, utxo2})
+			reissuanceTx2, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], new(big.Int).Mul(big.NewInt(4), initialBaseFee), kc, []*avax.UTXO{utxo1, utxo2})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -1334,7 +1334,7 @@ func TestSetPreferenceRace(t *testing.T) {
 	newTxPoolHeadChan2 := make(chan core.NewTxPoolReorgEvent, 1)
 	vm2.txPool.SubscribeNewReorgEvent(newTxPoolHeadChan2)
 
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, testEthAddrs[1], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, testEthAddrs[1], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1578,12 +1578,12 @@ func TestConflictingTransitiveAncestryWithGap(t *testing.T) {
 	newTxPoolHeadChan := make(chan core.NewTxPoolReorgEvent, 1)
 	vm.txPool.SubscribeNewReorgEvent(newTxPoolHeadChan)
 
-	importTx0A, err := vm.newImportTx(vm.ctx.XChainID, key.Address, initialBaseFee, []*secp256k1.PrivateKey{key0})
+	importTx0A, err := vm.newImportTx(vm.ctx.JVMChainID, key.Address, initialBaseFee, []*secp256k1.PrivateKey{key0})
 	if err != nil {
 		t.Fatal(err)
 	}
 	// Create a conflicting transaction
-	importTx0B, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[2], initialBaseFee, []*secp256k1.PrivateKey{key0})
+	importTx0B, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[2], initialBaseFee, []*secp256k1.PrivateKey{key0})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1641,7 +1641,7 @@ func TestConflictingTransitiveAncestryWithGap(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	importTx1, err := vm.newImportTx(vm.ctx.XChainID, key.Address, initialBaseFee, []*secp256k1.PrivateKey{key1})
+	importTx1, err := vm.newImportTx(vm.ctx.JVMChainID, key.Address, initialBaseFee, []*secp256k1.PrivateKey{key1})
 	if err != nil {
 		t.Fatalf("Failed to issue importTx1 due to: %s", err)
 	}
@@ -1694,7 +1694,7 @@ func TestBonusBlocksTxs(t *testing.T) {
 
 	utxo := &avax.UTXO{
 		UTXOID: utxoID,
-		Asset:  avax.Asset{ID: vm.ctx.AVAXAssetID},
+		Asset:  avax.Asset{ID: vm.ctx.JUNEAssetID},
 		Out: &secp256k1fx.TransferOutput{
 			Amt: importAmount,
 			OutputOwners: secp256k1fx.OutputOwners{
@@ -1708,7 +1708,7 @@ func TestBonusBlocksTxs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	xChainSharedMemory := sharedMemory.NewSharedMemory(vm.ctx.XChainID)
+	xChainSharedMemory := sharedMemory.NewSharedMemory(vm.ctx.JVMChainID)
 	inputID := utxo.InputID()
 	if err := xChainSharedMemory.Apply(map[ids.ID]*atomic.Requests{vm.ctx.ChainID: {PutRequests: []*atomic.Element{{
 		Key:   inputID[:],
@@ -1720,7 +1720,7 @@ func TestBonusBlocksTxs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1740,7 +1740,7 @@ func TestBonusBlocksTxs(t *testing.T) {
 	vm.atomicBackend.(*atomicBackend).bonusBlocks = map[uint64]ids.ID{blk.Height(): blk.ID()}
 
 	// Remove the UTXOs from shared memory, so that non-bonus blocks will fail verification
-	if err := vm.ctx.SharedMemory.Apply(map[ids.ID]*atomic.Requests{vm.ctx.XChainID: {RemoveRequests: [][]byte{inputID[:]}}}); err != nil {
+	if err := vm.ctx.SharedMemory.Apply(map[ids.ID]*atomic.Requests{vm.ctx.JVMChainID: {RemoveRequests: [][]byte{inputID[:]}}}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -1813,7 +1813,7 @@ func TestReorgProtection(t *testing.T) {
 	key := testKeys[0].ToECDSA()
 	address := testEthAddrs[0]
 
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1995,7 +1995,7 @@ func TestNonCanonicalAccept(t *testing.T) {
 	key := testKeys[0].ToECDSA()
 	address := testEthAddrs[0]
 
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2170,7 +2170,7 @@ func TestStickyPreference(t *testing.T) {
 	key := testKeys[0].ToECDSA()
 	address := testEthAddrs[0]
 
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2443,7 +2443,7 @@ func TestUncleBlock(t *testing.T) {
 	key := testKeys[0].ToECDSA()
 	address := testEthAddrs[0]
 
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2626,7 +2626,7 @@ func TestEmptyBlock(t *testing.T) {
 		}
 	}()
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2707,7 +2707,7 @@ func TestAcceptReorg(t *testing.T) {
 	key := testKeys[0].ToECDSA()
 	address := testEthAddrs[0]
 
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2902,7 +2902,7 @@ func TestFutureBlock(t *testing.T) {
 		}
 	}()
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2967,7 +2967,7 @@ func TestBuildApricotPhase1Block(t *testing.T) {
 	key := testKeys[0].ToECDSA()
 	address := testEthAddrs[0]
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3083,7 +3083,7 @@ func TestLastAcceptedBlockNumberAllow(t *testing.T) {
 		}
 	}()
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3161,7 +3161,7 @@ func TestReissueAtomicTx(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3323,11 +3323,11 @@ func TestBuildInvalidBlockHead(t *testing.T) {
 		Outs: []EVMOutput{{
 			Address: common.Address(addr0),
 			Amount:  1 * units.Avax,
-			AssetID: vm.ctx.AVAXAssetID,
+			AssetID: vm.ctx.JUNEAssetID,
 		}},
 		ImportedInputs: []*avax.TransferableInput{
 			{
-				Asset: avax.Asset{ID: vm.ctx.AVAXAssetID},
+				Asset: avax.Asset{ID: vm.ctx.JUNEAssetID},
 				In: &secp256k1fx.TransferInput{
 					Amt: 1 * units.Avax,
 					Input: secp256k1fx.Input{
@@ -3336,7 +3336,7 @@ func TestBuildInvalidBlockHead(t *testing.T) {
 				},
 			},
 		},
-		SourceChain: vm.ctx.XChainID,
+		SourceChain: vm.ctx.JVMChainID,
 	}
 	tx := &Tx{UnsignedAtomicTx: utx}
 	if err := tx.Sign(vm.codec, [][]*secp256k1.PrivateKey{{key0}}); err != nil {
@@ -3464,7 +3464,7 @@ func TestBuildApricotPhase4Block(t *testing.T) {
 
 	utxo := &avax.UTXO{
 		UTXOID: utxoID,
-		Asset:  avax.Asset{ID: vm.ctx.AVAXAssetID},
+		Asset:  avax.Asset{ID: vm.ctx.JUNEAssetID},
 		Out: &secp256k1fx.TransferOutput{
 			Amt: importAmount,
 			OutputOwners: secp256k1fx.OutputOwners{
@@ -3478,7 +3478,7 @@ func TestBuildApricotPhase4Block(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	xChainSharedMemory := sharedMemory.NewSharedMemory(vm.ctx.XChainID)
+	xChainSharedMemory := sharedMemory.NewSharedMemory(vm.ctx.JVMChainID)
 	inputID := utxo.InputID()
 	if err := xChainSharedMemory.Apply(map[ids.ID]*atomic.Requests{vm.ctx.ChainID: {PutRequests: []*atomic.Element{{
 		Key:   inputID[:],
@@ -3490,7 +3490,7 @@ func TestBuildApricotPhase4Block(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3646,7 +3646,7 @@ func TestBuildApricotPhase5Block(t *testing.T) {
 
 	utxo := &avax.UTXO{
 		UTXOID: utxoID,
-		Asset:  avax.Asset{ID: vm.ctx.AVAXAssetID},
+		Asset:  avax.Asset{ID: vm.ctx.JUNEAssetID},
 		Out: &secp256k1fx.TransferOutput{
 			Amt: importAmount,
 			OutputOwners: secp256k1fx.OutputOwners{
@@ -3660,7 +3660,7 @@ func TestBuildApricotPhase5Block(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	xChainSharedMemory := sharedMemory.NewSharedMemory(vm.ctx.XChainID)
+	xChainSharedMemory := sharedMemory.NewSharedMemory(vm.ctx.JVMChainID)
 	inputID := utxo.InputID()
 	if err := xChainSharedMemory.Apply(map[ids.ID]*atomic.Requests{vm.ctx.ChainID: {PutRequests: []*atomic.Element{{
 		Key:   inputID[:],
@@ -3672,7 +3672,7 @@ func TestBuildApricotPhase5Block(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, address, initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3879,7 +3879,7 @@ func TestAtomicTxBuildBlockDropsConflicts(t *testing.T) {
 	// Create a conflict set for each pair of transactions
 	conflictSets := make([]set.Set[ids.ID], len(testKeys))
 	for index, key := range testKeys {
-		importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[index], initialBaseFee, []*secp256k1.PrivateKey{key})
+		importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[index], initialBaseFee, []*secp256k1.PrivateKey{key})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3887,7 +3887,7 @@ func TestAtomicTxBuildBlockDropsConflicts(t *testing.T) {
 			t.Fatal(err)
 		}
 		conflictSets[index].Add(importTx.ID())
-		conflictTx, err := vm.newImportTx(vm.ctx.XChainID, conflictKey.Address, initialBaseFee, []*secp256k1.PrivateKey{key})
+		conflictTx, err := vm.newImportTx(vm.ctx.JVMChainID, conflictKey.Address, initialBaseFee, []*secp256k1.PrivateKey{key})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3945,10 +3945,10 @@ func TestBuildBlockDoesNotExceedAtomicGasLimit(t *testing.T) {
 
 	mempoolTxs := 200
 	for i := 0; i < mempoolTxs; i++ {
-		utxo, err := addUTXO(sharedMemory, vm.ctx, txID, uint32(i), vm.ctx.AVAXAssetID, importAmount, testShortIDAddrs[0])
+		utxo, err := addUTXO(sharedMemory, vm.ctx, txID, uint32(i), vm.ctx.JUNEAssetID, importAmount, testShortIDAddrs[0])
 		assert.NoError(t, err)
 
-		importTx, err := vm.newImportTxWithUTXOs(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo})
+		importTx, err := vm.newImportTxWithUTXOs(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, kc, []*avax.UTXO{utxo})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3998,16 +3998,16 @@ func TestExtraStateChangeAtomicGasLimitExceeded(t *testing.T) {
 	// Add enough UTXOs, such that the created import transaction will attempt to consume more gas than allowed
 	// in ApricotPhase5.
 	for i := 0; i < 100; i++ {
-		_, err := addUTXO(sharedMemory1, vm1.ctx, txID, uint32(i), vm1.ctx.AVAXAssetID, importAmount, testShortIDAddrs[0])
+		_, err := addUTXO(sharedMemory1, vm1.ctx, txID, uint32(i), vm1.ctx.JUNEAssetID, importAmount, testShortIDAddrs[0])
 		assert.NoError(t, err)
 
-		_, err = addUTXO(sharedMemory2, vm2.ctx, txID, uint32(i), vm2.ctx.AVAXAssetID, importAmount, testShortIDAddrs[0])
+		_, err = addUTXO(sharedMemory2, vm2.ctx, txID, uint32(i), vm2.ctx.JUNEAssetID, importAmount, testShortIDAddrs[0])
 		assert.NoError(t, err)
 	}
 
 	// Double the initial base fee used when estimating the cost of this transaction to ensure that when it is
 	// used in ApricotPhase5 it still pays a sufficient fee with the fixed fee per atomic transaction.
-	importTx, err := vm1.newImportTx(vm1.ctx.XChainID, testEthAddrs[0], new(big.Int).Mul(common.Big2, initialBaseFee), []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm1.newImportTx(vm1.ctx.JVMChainID, testEthAddrs[0], new(big.Int).Mul(common.Big2, initialBaseFee), []*secp256k1.PrivateKey{testKeys[0]})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -4066,7 +4066,7 @@ func TestSkipChainConfigCheckCompatible(t *testing.T) {
 
 	// Since rewinding is permitted for last accepted height of 0, we must
 	// accept one block to test the SkipUpgradeCheck functionality.
-	importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+	importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 	require.NoError(t, err)
 	require.NoError(t, vm.mempool.AddLocalTx(importTx))
 	<-issuer
@@ -4159,7 +4159,7 @@ func TestParentBeaconRootBlock(t *testing.T) {
 				}
 			}()
 
-			importTx, err := vm.newImportTx(vm.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+			importTx, err := vm.newImportTx(vm.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 			if err != nil {
 				t.Fatal(err)
 			}

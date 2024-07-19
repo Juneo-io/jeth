@@ -302,15 +302,15 @@ func createSyncServerAndClientVMs(t *testing.T, test syncTest, numBlocks int) *s
 		switch i {
 		case 0:
 			// spend the UTXOs from shared memory
-			importTx, err = serverVM.newImportTx(serverVM.ctx.XChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
+			importTx, err = serverVM.newImportTx(serverVM.ctx.JVMChainID, testEthAddrs[0], initialBaseFee, []*secp256k1.PrivateKey{testKeys[0]})
 			require.NoError(err)
 			require.NoError(serverVM.mempool.AddLocalTx(importTx))
 		case 1:
 			// export some of the imported UTXOs to test exportTx is properly synced
 			exportTx, err = serverVM.newExportTx(
-				serverVM.ctx.AVAXAssetID,
+				serverVM.ctx.JUNEAssetID,
 				importAmount/2,
-				serverVM.ctx.XChainID,
+				serverVM.ctx.JVMChainID,
 				testShortIDAddrs[0],
 				initialBaseFee,
 				[]*secp256k1.PrivateKey{testKeys[0]},
@@ -334,7 +334,7 @@ func createSyncServerAndClientVMs(t *testing.T, test syncTest, numBlocks int) *s
 	require.NoError(serverAtomicTrie.commit(test.syncableInterval, serverAtomicTrie.LastAcceptedRoot()))
 	require.NoError(serverVM.db.Commit())
 
-	serverSharedMemories := newSharedMemories(serverAtomicMemory, serverVM.ctx.ChainID, serverVM.ctx.XChainID)
+	serverSharedMemories := newSharedMemories(serverAtomicMemory, serverVM.ctx.ChainID, serverVM.ctx.JVMChainID)
 	serverSharedMemories.assertOpsApplied(t, importTx.mustAtomicOps())
 	serverSharedMemories.assertOpsApplied(t, exportTx.mustAtomicOps())
 
@@ -557,7 +557,7 @@ func testSyncerVM(t *testing.T, vmSetup *syncVMSetup, test syncTest) {
 	require.True(syncerVM.bootstrapped)
 
 	// check atomic memory was synced properly
-	syncerSharedMemories := newSharedMemories(syncerAtomicMemory, syncerVM.ctx.ChainID, syncerVM.ctx.XChainID)
+	syncerSharedMemories := newSharedMemories(syncerAtomicMemory, syncerVM.ctx.ChainID, syncerVM.ctx.JVMChainID)
 
 	for _, tx := range includedAtomicTxs {
 		syncerSharedMemories.assertOpsApplied(t, tx.mustAtomicOps())

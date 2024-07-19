@@ -534,7 +534,7 @@ func TestApplyToSharedMemory(t *testing.T) {
 
 			// Initialize atomic repository
 			m := atomic.NewMemory(db)
-			sharedMemories := newSharedMemories(m, testCChainID, blockChainID)
+			sharedMemories := newSharedMemories(m, testJUNEChainID, blockChainID)
 			backend, err := NewAtomicBackend(db, sharedMemories.thisChain, test.bonusBlockHeights, repo, test.lastAcceptedHeight, common.Hash{}, test.commitInterval)
 			assert.NoError(t, err)
 			atomicTrie := backend.AtomicTrie().(*atomicTrie)
